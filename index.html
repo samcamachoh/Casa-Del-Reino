@@ -64,18 +64,14 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .btn-outline-light:hover{border-color:var(--white);background:rgba(255,255,255,.08)}
 .btn-outline-dark{background:transparent;color:var(--black);border-color:var(--black)}
 .btn-outline-dark:hover{background:var(--black);color:var(--white)}
-.btn-row{display:flex;gap:16px;flex-wrap:wrap}
+.btn-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
 
 /* hero */
-.hero{background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%),var(--black) url('Hero%20Image') center/cover no-repeat;color:var(--white);overflow:hidden;padding-top:clamp(56px,9vw,96px)}
-.hero-inner{display:grid;justify-items:center;text-align:center;gap:22px;padding-bottom:36px}
+.hero{background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%),var(--black) url('Hero%20Image') center/cover no-repeat;color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:min(760px,90vh);padding:clamp(56px,9vw,96px) 0 56px}
+.hero-inner{display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
 .hero-inner .eyebrow{color:var(--blue)}
 .hero h1{font-size:clamp(48px,9vw,96px)}
 .hero-sub{font-size:clamp(16px,2vw,19px);color:rgba(255,255,255,.78);max-width:480px;font-weight:400;text-transform:none}
-.door-wrap{width:min(560px,86vw);margin:18px auto 0}
-.door-svg path,.door-svg line{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.6s var(--ease) forwards}
-.door-svg .delay-1{animation-delay:.1s}.door-svg .delay-2{animation-delay:.5s}.door-svg .delay-3{animation-delay:.9s}
-@keyframes draw{to{stroke-dashoffset:0}}
 .schedule-strip{background:var(--blue);padding:16px var(--pad);text-align:center}
 .schedule-strip span{font-family:var(--font-mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--white);font-weight:600}
 
@@ -170,6 +166,7 @@ a.sermon-title:hover{color:var(--blue)}
 a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 
 @media (max-width:900px){
+  .container{padding-left:28px;padding-right:28px}
   .nav-links,.lang-toggle{display:none}
   .menu-btn{display:flex}
   .nav.is-open{position:absolute;top:100%;left:0;right:0;background:var(--black);border-bottom:1px solid rgba(255,255,255,.12);flex-direction:column;align-items:stretch;padding:24px var(--pad);gap:20px}
@@ -184,7 +181,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   .logo-img{height:36px}
 }
 @media (prefers-reduced-motion:reduce){
-  .door-svg path,.door-svg line{animation:none;stroke-dashoffset:0}
   .reveal{opacity:1;transform:none;transition:none}
   html{scroll-behavior:auto}
 }
@@ -226,14 +222,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
       <a href="#ministries" class="btn btn-outline-light">
         <span data-lang-es>Ver ministerios</span><span data-lang-en>See ministries</span>
       </a>
-    </div>
-    <div class="door-wrap">
-      <svg class="door-svg" viewBox="0 0 500 470" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <line class="delay-1" pathLength="1" x1="28" y1="430" x2="184" y2="430" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round"/>
-        <line class="delay-1" pathLength="1" x1="316" y1="430" x2="472" y2="430" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round"/>
-        <line class="delay-2" pathLength="1" x1="185" y1="430" x2="185" y2="305" stroke="#b23a78" stroke-width="2.5" stroke-linecap="round"/>
-        <path class="delay-3" pathLength="1" d="M 305 430 A 120 120 0 0 0 185 305" stroke="#b23a78" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
     </div>
   </div>
 </section>
