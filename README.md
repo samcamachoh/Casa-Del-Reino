@@ -48,12 +48,11 @@ If the section shows "couldn't load" or no videos:
 - Diagnostics: open `/api/livestream?debug=1` to see the upstream status and whether a live signal was found.
 
 ## About Us page photos
-`about.html` reserves space for two photos that haven't been uploaded yet — until they are, the page shows an empty placeholder box in their place (same pattern as the homepage hero, which reads the `Hero Image` file):
-- **`Apostoles.jpg`** — a photo of both apostles, Luis Pérez and Shirley Roldán, together. Upload it to the repo root with that exact filename.
+`about.html` shows a shared photo of both apostles (`Apostoles.jpg`, already uploaded) and reserves space for a campus photo that hasn't been uploaded yet — until it is, the page shows an empty placeholder box in its place (same pattern as the homepage hero, which reads the `Hero Image` file):
 - **`Campus.jpg`** — a wide photo of the campus. Upload it to the repo root with that exact filename.
 
 ## Notes / open items
 - Logo "10" mark in the header is a raster (PNG) embedded inline; swap in an SVG if you ever have the vector. Footer logo is already vector.
 - Ministries list and "what to expect" copy are sensible placeholders — confirm against the real ministries.
-- The apostles' bios on `about.html` are placeholder copy — replace with their real bios whenever you have them.
+- The apostles' bio on `about.html` is placeholder copy — replace with their real bio whenever you have it.
 - Contact uses `mailto:` (no backend form). Easy to add later.
