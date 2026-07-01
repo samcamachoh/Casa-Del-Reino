@@ -8,7 +8,7 @@ index.html          The homepage (HTML, CSS, JS, logos all inline)
 about.html           The "About Us" page — apostles + campus photo, linked from
                      the "Conoce más sobre nosotros" button in the homepage's
                      Nosotros section
-api/sermons.js       Vercel serverless function: returns the 3 newest YouTube
+api/sermons.js       Vercel serverless function: returns the 6 newest YouTube
                      videos as JSON (server-side, so no CORS / no third-party proxy)
 api/livestream.js    Vercel serverless function: reports whether the channel is
                      currently live, and the video id to embed if so
@@ -21,7 +21,7 @@ api/livestream.js    Vercel serverless function: reports whether the channel is
 3. Requires Vercel's default Node runtime (Node 18+) — already the default.
 
 ## How the sermons section works
-- On load, the page calls `/api/sermons` (your own backend). That function fetches the channel's public feed server-side and returns the 3 newest videos as JSON. No CORS issue, no third-party dependency in the normal path.
+- On load, the page calls `/api/sermons` (your own backend). That function fetches the channel's public feed server-side and returns the 6 newest videos as JSON. No CORS issue, no third-party dependency in the normal path.
 - If YouTube refuses the direct request from Vercel's IP, the function automatically retries through a couple of proxies server-side, so it still returns data.
 - The feed is cached at Vercel's edge for 10 min (`stale-while-revalidate`), so a newly posted sermon appears quickly without hammering YouTube.
 - Click any thumbnail to play inline (privacy-friendly youtube-nocookie embed). Titles + dates follow the ES/EN toggle.
