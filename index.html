@@ -102,15 +102,6 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .ministry-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:14.5px;color:var(--gray)}
 .ministry-card .tag{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
 
-/* series banner */
-.series-banner{display:grid;grid-template-columns:1fr 1.2fr;border:1px solid var(--black)}
-.series-media{background:var(--blue);position:relative;min-height:280px;overflow:hidden}
-.series-media svg{position:absolute;inset:0;width:100%;height:100%}
-.series-copy{padding:48px;display:grid;gap:18px;align-content:center}
-.series-copy h2{font-size:clamp(32px,4vw,48px)}
-.series-copy .theme{font-family:var(--font-mono);font-size:14px;color:var(--blue);letter-spacing:.05em;text-transform:uppercase}
-.series-copy p{font-family:var(--font-body);text-transform:none;font-weight:400;color:var(--gray);font-size:16px}
-
 /* visit */
 .visit-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
 .detail-row{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:20px 0;border-bottom:1px solid var(--line)}
@@ -174,8 +165,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   .nav.is-open .lang-toggle{display:flex;width:max-content}
   .grid-3,.ministry-grid{grid-template-columns:1fr}
   .sermon-grid{grid-template-columns:1fr}
-  .series-banner{grid-template-columns:1fr}
-  .series-media{min-height:180px}
   .visit-grid{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr;gap:36px}
   .logo-img{height:36px}
@@ -194,7 +183,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
     <nav class="nav">
       <ul class="nav-links">
         <li><a href="#welcome"><span data-lang-es>Nosotros</span><span data-lang-en>About</span></a></li>
-        <li><a href="#series"><span data-lang-es>Serie</span><span data-lang-en>Series</span></a></li>
         <li><a href="#sermons"><span data-lang-es>Sermones</span><span data-lang-en>Sermons</span></a></li>
         <li><a href="#ministries"><span data-lang-es>Ministerios</span><span data-lang-en>Ministries</span></a></li>
         <li><a href="#visit"><span data-lang-es>Visítanos</span><span data-lang-en>Visit</span></a></li>
@@ -257,31 +245,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
         <h3 data-lang-en>Transformation</h3>
         <p data-lang-es>Creemos que cada persona puede ser transformada por el poder de Dios, un paso a la vez.</p>
         <p data-lang-en>We believe every person can be transformed by the power of God, one step at a time.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section section-paper" id="series">
-  <div class="container">
-    <div class="series-banner reveal">
-      <div class="series-media">
-        <svg viewBox="0 0 300 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M150 30 L150 250 M40 90 Q150 60 260 90 M40 150 Q150 190 260 150 M40 210 Q150 170 260 210" stroke="rgba(255,255,255,0.35)" stroke-width="2" fill="none"/>
-          <circle cx="150" cy="140" r="6" fill="#ffffff"/>
-        </svg>
-      </div>
-      <div class="series-copy">
-        <span class="eyebrow"><span data-lang-es>Serie actual</span><span data-lang-en>Current series</span></span>
-        <h2><span data-lang-es>Vida Nueva</span><span data-lang-en>New Life</span></h2>
-        <p class="theme"><span data-lang-es>Tema: El Laberinto</span><span data-lang-en>Theme: The Labyrinth</span></p>
-        <p data-lang-es>Acompáñanos cada domingo mientras exploramos lo que significa caminar en una vida nueva, aún cuando el camino se sienta como un laberinto.</p>
-        <p data-lang-en>Join us every Sunday as we explore what it means to walk in a new life — even when the path feels like a labyrinth.</p>
-        <div class="btn-row">
-          <a href="#visit" class="btn btn-outline-dark">
-            <span data-lang-es>Únete este domingo</span><span data-lang-en>Join us Sunday</span>
-          </a>
-        </div>
       </div>
     </div>
   </div>
