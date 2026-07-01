@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es" data-active-lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sobre Nosotros | Casa Del Reino</title>
+<meta name="description" content="Conoce a los Apóstoles Luis Pérez y Shirley Roldán, líderes de Casa Del Reino, y nuestro campus en Kissimmee, FL.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230b0b0c'/%3E%3Cline x1='8' y1='50' x2='22' y2='50' stroke='%23fff' stroke-width='2.5' stroke-linecap='round' opacity='0.5'/%3E%3Cline x1='40' y1='50' x2='56' y2='50' stroke='%23fff' stroke-width='2.5' stroke-linecap='round' opacity='0.5'/%3E%3Cline x1='22' y1='50' x2='22' y2='26' stroke='%23b23a78' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M 40 50 A 18 18 0 0 0 22 26' stroke='%23b23a78' stroke-width='2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E" type="image/svg+xml">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --black:#0b0b0c; --white:#ffffff; --paper:#f7f7f5; --line:#e3e3e0;
+  --gray:#5d5d61; --blue:#b23a78; --blue-deep:#8a2c5c; --live:#e11d3c;
+  --font-display:'Big Shoulders Display',sans-serif;
+  --font-body:'Inter',sans-serif; --font-mono:'JetBrains Mono',monospace;
+  --container:1180px; --pad:clamp(20px,5vw,64px);
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html{scroll-behavior:smooth; scroll-padding-top:72px}
+body{margin:0;background:var(--white);color:var(--black);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.01em;line-height:.92;margin:0}
+p{margin:0}
+.container{max-width:var(--container);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
+
+.eyebrow{font-family:var(--font-mono);font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:'';width:18px;height:1px;background:var(--blue);display:inline-block}
+
+/* bilingual show/hide — hide the INACTIVE language only, with !important so
+   component rules (e.g. .expect-item strong{display:block}) can't override it.
+   The visible language keeps its own natural/component display. */
+html[data-active-lang="es"] [data-lang-en]{display:none !important}
+html[data-active-lang="en"] [data-lang-es]{display:none !important}
+
+/* header */
+.site-header{position:sticky;top:0;z-index:100;background:rgba(11,11,12,.85);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.12)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+.logo{font-family:var(--font-display);font-weight:900;font-size:21px;text-transform:uppercase;letter-spacing:.02em;color:var(--white);display:flex;align-items:center;gap:12px}
+.logo .mark{width:12px;height:12px;background:var(--blue);display:inline-block}
+.logo-img{height:40px;width:auto;display:block}
+.nav{display:flex;align-items:center;gap:36px}
+.nav-links{display:flex;gap:30px;list-style:none;margin:0;padding:0}
+.nav-links a{font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--white);position:relative;padding-bottom:4px}
+.nav-links a::after{content:'';position:absolute;left:0;right:100%;bottom:0;height:2px;background:var(--blue);transition:right .25s var(--ease)}
+.nav-links a:hover::after{right:0}
+.lang-toggle{display:flex;border:1px solid rgba(255,255,255,.5);border-radius:999px;overflow:hidden;font-family:var(--font-mono);font-size:12px;font-weight:600}
+.lang-toggle button{background:transparent;border:none;padding:7px 14px;cursor:pointer;color:var(--white);font:inherit;letter-spacing:.04em}
+.lang-toggle button.is-active{background:var(--white);color:var(--black)}
+.menu-btn{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:6px}
+.menu-btn span{width:22px;height:2px;background:var(--white)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:15px 26px;border-radius:2px;border:1px solid transparent;cursor:pointer;transition:all .2s var(--ease)}
+.btn-primary{background:var(--blue);color:var(--white);border-color:var(--blue)}
+.btn-primary:hover{background:var(--blue-deep);border-color:var(--blue-deep)}
+.btn-outline-light{background:transparent;color:var(--white);border-color:rgba(255,255,255,.4)}
+.btn-outline-light:hover{border-color:var(--white);background:rgba(255,255,255,.08)}
+.btn-outline-dark{background:transparent;color:var(--black);border-color:var(--black)}
+.btn-outline-dark:hover{background:var(--black);color:var(--white)}
+.btn-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+
+/* hero */
+.hero{position:relative;background:var(--black) url('Hero%20Image') center/cover no-repeat;color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:min(760px,90vh);padding:clamp(56px,9vw,96px) 0 56px}
+.hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
+.hero.is-live::before{background:linear-gradient(180deg,rgba(11,11,12,.35) 0%,rgba(11,11,12,.55) 55%,rgba(11,11,12,.85) 100%)}
+.hero-media{position:absolute;inset:0;z-index:0;overflow:hidden}
+.hero-media iframe{position:absolute;top:50%;left:50%;width:100%;height:100%;min-width:177.78vh;min-height:56.25vw;transform:translate(-50%,-50%);border:0;pointer-events:none}
+.hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
+.hero-inner .eyebrow{color:var(--blue)}
+.hero h1{font-size:clamp(48px,9vw,96px)}
+.hero-sub{font-size:clamp(16px,2vw,19px);color:rgba(255,255,255,.78);max-width:480px;font-weight:400;text-transform:none}
+.live-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--white);background:var(--live);padding:6px 14px;border-radius:999px}
+.live-dot{width:7px;height:7px;border-radius:999px;background:var(--white);animation:livepulse 1.4s ease-in-out infinite;flex:none}
+@keyframes livepulse{0%,100%{opacity:1}50%{opacity:.3}}
+.live-bar{display:none;align-items:center;justify-content:center;gap:10px;background:var(--live);color:var(--white);text-align:center;padding:10px var(--pad);font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.live-bar.is-visible{display:flex}
+.schedule-strip{background:var(--blue);padding:16px var(--pad);text-align:center}
+.schedule-strip span{font-family:var(--font-mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--white);font-weight:600}
+
+/* sections */
+.section{padding:clamp(70px,9vw,120px) 0}
+.section-paper{background:var(--paper)}
+.section-dark{background:var(--black);color:var(--white)}
+.section-blue{background:var(--blue);color:var(--white)}
+.section-head{display:grid;gap:18px;max-width:640px;margin-bottom:56px}
+.section-head h2{font-size:clamp(34px,5vw,54px)}
+.section-head p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:17px;color:var(--gray);letter-spacing:0}
+.section-dark .section-head p{color:rgba(255,255,255,.7)}
+
+/* grids / cards */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.section-dark .grid-3{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.15)}
+.value-card{background:var(--white);padding:40px 32px;display:grid;gap:16px}
+.section-dark .value-card{background:var(--black)}
+.value-card .num{font-family:var(--font-mono);font-size:12px;color:var(--blue);letter-spacing:.1em}
+.value-card h3{font-size:26px}
+.value-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:15px;color:var(--gray)}
+.section-dark .value-card p{color:rgba(255,255,255,.68)}
+
+.ministry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.ministry-card{border:1px solid var(--line);padding:32px 28px;display:grid;gap:14px;transition:border-color .2s var(--ease),transform .2s var(--ease)}
+.ministry-card:hover{border-color:var(--blue);transform:translateY(-3px)}
+.ministry-card h3{font-size:24px}
+.ministry-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:14.5px;color:var(--gray)}
+.ministry-card .tag{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+
+/* visit */
+.visit-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.detail-row{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:20px 0;border-bottom:1px solid var(--line)}
+.detail-row .label{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.detail-row .value{font-size:16px}
+.detail-row .value a:hover{color:var(--blue)}
+.map-frame{border:1px solid var(--line);height:100%;min-height:380px;background:var(--paper)}
+.map-frame iframe{width:100%;height:100%;min-height:380px;border:0;filter:grayscale(.4) contrast(1.05)}
+.expect-list{display:grid;gap:22px;margin-top:36px}
+.expect-item{display:grid;grid-template-columns:26px 1fr;gap:14px}
+.expect-item .dot{width:8px;height:8px;background:var(--blue);margin-top:7px}
+.expect-item p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:15px;color:var(--gray)}
+.expect-item strong{display:block;font-size:15.5px;margin-bottom:3px;color:var(--black)}
+
+/* footer */
+.site-footer{background:var(--black);color:var(--white);padding:70px 0 28px}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.15)}
+.footer-logo{display:flex;align-items:center;gap:12px;font-family:var(--font-display);font-weight:900;font-size:26px;text-transform:uppercase;margin-bottom:14px}
+.footer-logo-mark{height:32px;width:auto;display:block}
+.footer-tagline{font-family:var(--font-body);font-weight:400;text-transform:none;color:rgba(255,255,255,.6);font-size:14.5px;max-width:280px}
+.footer-col h4{font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;color:var(--blue);margin-bottom:18px;font-weight:600}
+.footer-col p,.footer-col a{display:block;font-family:var(--font-body);font-weight:400;text-transform:none;font-size:14.5px;color:rgba(255,255,255,.75);margin-bottom:10px}
+.footer-col a:hover{color:var(--blue)}
+.footer-social{display:flex;gap:14px;margin-top:6px}
+.footer-social a{width:36px;height:36px;border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;margin-bottom:0}
+.footer-social a:hover{border-color:var(--blue);background:var(--blue)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-family:var(--font-mono);font-size:12px;color:rgba(255,255,255,.4);flex-wrap:wrap;gap:12px}
+
+/* sermons */
+.sermon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.sermon-card{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--white);overflow:hidden;transition:border-color .2s var(--ease),transform .2s var(--ease)}
+.sermon-card:not(.is-skeleton):hover{border-color:var(--blue);transform:translateY(-3px)}
+.sermon-thumb{position:relative;aspect-ratio:16/9;background:#0b0b0c center/cover no-repeat;cursor:pointer;display:block;border:0;width:100%;padding:0}
+.sermon-thumb .play{position:absolute;inset:0;margin:auto;width:56px;height:56px;border-radius:999px;background:rgba(178,58,120,.92);display:flex;align-items:center;justify-content:center;transition:transform .2s var(--ease),background .2s var(--ease)}
+.sermon-thumb .play svg{width:20px;height:20px;margin-left:3px;fill:#fff}
+.sermon-card:hover .sermon-thumb .play{transform:scale(1.08);background:var(--blue)}
+.sermon-thumb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.sermon-body{padding:22px 22px 24px;display:grid;gap:8px}
+.sermon-date{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.sermon-title{font-family:var(--font-display);font-weight:700;text-transform:uppercase;font-size:19px;line-height:1.05;letter-spacing:.01em;color:var(--black);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+a.sermon-title:hover{color:var(--blue)}
+.sermon-note{grid-column:1/-1;font-family:var(--font-body);color:var(--gray);font-size:15px}
+/* skeleton */
+.is-skeleton .sermon-thumb{cursor:default}
+.sk-line{display:block;height:13px;border-radius:3px;background:linear-gradient(90deg,var(--line) 25%,#eee 37%,var(--line) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite}
+.sk-line.short{width:55%}
+.is-skeleton .sermon-thumb{background:linear-gradient(90deg,var(--line) 25%,#eee 37%,var(--line) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.is-visible{opacity:1;transform:translateY(0)}
+
+a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+
+@media (max-width:900px){
+  .container{padding-left:28px;padding-right:28px}
+  .nav-links,.lang-toggle{display:none}
+  .menu-btn{display:flex}
+  .nav.is-open{position:absolute;top:100%;left:0;right:0;background:var(--black);border-bottom:1px solid rgba(255,255,255,.12);flex-direction:column;align-items:stretch;padding:24px var(--pad);gap:20px}
+  .nav.is-open .nav-links{display:flex;flex-direction:column;gap:20px}
+  .nav.is-open .lang-toggle{display:flex;width:max-content}
+  .grid-3,.ministry-grid{grid-template-columns:1fr}
+  .sermon-grid{grid-template-columns:1fr}
+  .visit-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr;gap:36px;text-align:center}
+  .footer-logo,.footer-social{justify-content:center}
+  .footer-tagline{margin-left:auto;margin-right:auto}
+  .footer-bottom{flex-direction:column;justify-content:center;text-align:center}
+  .logo-img{height:36px}
+}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  .live-dot{animation:none}
+  html{scroll-behavior:auto}
+}
+
+/* about page */
+.about-photo{background:var(--paper) center/cover no-repeat;border:1px solid var(--line)}
+.leaders-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:56px;align-items:center}
+.leader-photo{aspect-ratio:4/5}
+.leader-list{display:grid;gap:32px}
+.leader-item .role{margin-bottom:10px}
+.leader-item h3{font-size:26px;margin-bottom:8px}
+.leader-item p{font-family:var(--font-body);font-weight:400;text-transform:none;font-size:15.5px;color:var(--gray)}
+.campus-photo{aspect-ratio:21/9}
+.photo-caption{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--gray);margin-top:14px}
+@media (max-width:900px){
+  .leaders-grid{grid-template-columns:1fr;gap:32px}
+  .leader-photo{aspect-ratio:4/3}
+  .campus-photo{aspect-ratio:4/3}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="logo" aria-label="Casa Del Reino — Inicio"><img class="logo-img" alt="" src="data:image/png;base64,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">Casa Del Reino</a>
+    <nav class="nav">
+      <ul class="nav-links">
+        <li><a href="index.html#welcome"><span data-lang-es>Nosotros</span><span data-lang-en>About</span></a></li>
+        <li><a href="index.html#sermons"><span data-lang-es>Sermones</span><span data-lang-en>Sermons</span></a></li>
+        <li><a href="index.html#ministries"><span data-lang-es>Ministerios</span><span data-lang-en>Ministries</span></a></li>
+        <li><a href="index.html#visit"><span data-lang-es>Visítanos</span><span data-lang-en>Visit</span></a></li>
+      </ul>
+      <div class="lang-toggle">
+        <button data-lang="es" class="is-active">ES</button>
+        <button data-lang="en">EN</button>
+      </div>
+    </nav>
+    <button class="menu-btn" aria-label="Abrir menú / Open menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<a id="top"></a>
+<section class="section" id="about-intro">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span data-lang-es>Nosotros</span><span data-lang-en>About</span></span>
+      <h2><span data-lang-es>Sobre Nosotros</span><span data-lang-en>About Us</span></h2>
+      <p data-lang-es>Casa Del Reino es una familia de fe liderada con un corazón pastoral, dedicada a ver vidas transformadas a través del amor de Dios.</p>
+      <p data-lang-en>Casa Del Reino is a family of faith led with a pastoral heart, dedicated to seeing lives transformed through the love of God.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-paper" id="leaders">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span data-lang-es>Liderazgo</span><span data-lang-en>Leadership</span></span>
+      <h2><span data-lang-es>Nuestros Apóstoles</span><span data-lang-en>Our Apostles</span></h2>
+    </div>
+    <div class="leaders-grid reveal">
+      <div>
+        <div class="about-photo leader-photo" style="background-image:url('Apostoles.jpg')"></div>
+        <p class="photo-caption" data-lang-es>Apóstol Luis Pérez y Apóstol Shirley Roldán</p>
+        <p class="photo-caption" data-lang-en>Apostle Luis Pérez and Apostle Shirley Roldán</p>
+      </div>
+      <div class="leader-list">
+        <div class="leader-item">
+          <span class="eyebrow role"><span data-lang-es>Apóstol</span><span data-lang-en>Apostle</span></span>
+          <h3>Luis Pérez</h3>
+          <p data-lang-es>Junto a Apóstol Shirley Roldán, lidera Casa Del Reino con un corazón pastoral, guiando a la congregación en fe, familia y propósito.</p>
+          <p data-lang-en>Alongside Apostle Shirley Roldán, he leads Casa Del Reino with a pastoral heart, guiding the congregation in faith, family, and purpose.</p>
+        </div>
+        <div class="leader-item">
+          <span class="eyebrow role"><span data-lang-es>Apóstol</span><span data-lang-en>Apostle</span></span>
+          <h3>Shirley Roldán</h3>
+          <p data-lang-es>Junto a Apóstol Luis Pérez, lidera Casa Del Reino con un corazón pastoral, guiando a la congregación en fe, familia y propósito.</p>
+          <p data-lang-en>Alongside Apostle Luis Pérez, she leads Casa Del Reino with a pastoral heart, guiding the congregation in faith, family, and purpose.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="campus">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span data-lang-es>Nuestro Hogar</span><span data-lang-en>Our Home</span></span>
+      <h2><span data-lang-es>El Campus</span><span data-lang-en>The Campus</span></h2>
+    </div>
+    <div class="reveal">
+      <div class="about-photo campus-photo" style="background-image:url('Campus.jpg')"></div>
+      <p class="photo-caption">Casa Del Reino — Kissimmee, FL</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section-blue">
+  <div class="container" style="display:grid;gap:22px;text-align:center;justify-items:center;">
+    <h2 class="reveal"><span data-lang-es>Te esperamos esta semana</span><span data-lang-en>We'll see you this week</span></h2>
+    <a href="index.html#visit" class="btn btn-outline-light reveal">
+      <span data-lang-es>Visítanos</span><span data-lang-en>Plan your visit</span>
+    </a>
+  </div>
+</section>
+
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">
+          <img class="footer-logo-mark" alt="" src="data:image/png;base64,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">
+          <span>Casa Del Reino</span>
+        </div>
+        <p class="footer-tagline" data-lang-es>Un lugar de Amor, Familia y Transformación.</p>
+        <p class="footer-tagline" data-lang-en>A place of Love, Family, and Transformation.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/CasaDelReinoInc/" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/casadelreinofl/" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+          </a>
+          <a href="https://www.youtube.com/@casadelreinomaincampus" target="_blank" rel="noopener" aria-label="YouTube">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.5v-7l6.3 3.5-6.3 3.5Z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4><span data-lang-es>Visítanos</span><span data-lang-en>Visit</span></h4>
+        <p>1050 Aeronautical Drive<br>Kissimmee, FL 34744</p>
+        <a href="tel:+14074835001">(407) 483-5001</a>
+        <a href="mailto:Info@casadelreino.com">Info@casadelreino.com</a>
+      </div>
+      <div class="footer-col">
+        <h4><span data-lang-es>Horarios</span><span data-lang-en>Service Times</span></h4>
+        <p><span data-lang-es>Celebración Domingos</span><span data-lang-en>Celebration Sundays</span> · 10:00 AM &amp; 1:00 PM</p>
+        <p><span data-lang-es>Fundamentos de Fe Jueves</span><span data-lang-en>Fundamentos de Fe Thursdays</span> · 7:30 PM</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="year"></span> Casa Del Reino</span>
+      <span>Kissimmee, Florida</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+(function(){
+  var KEY='cdr-lang';
+  function setLang(l){
+    document.documentElement.setAttribute('data-active-lang',l);
+    document.querySelectorAll('.lang-toggle button').forEach(function(b){
+      b.classList.toggle('is-active', b.dataset.lang===l);
+    });
+    try{localStorage.setItem(KEY,l);}catch(e){}
+    if(window.__reformatSermonDates){window.__reformatSermonDates(l);}
+  }
+  var saved='es'; try{saved=localStorage.getItem(KEY)||'es';}catch(e){}
+  setLang(saved);
+  document.querySelectorAll('.lang-toggle button').forEach(function(b){
+    b.addEventListener('click',function(){setLang(b.dataset.lang);});
+  });
+
+  var menuBtn=document.querySelector('.menu-btn'), nav=document.querySelector('.nav');
+  menuBtn.addEventListener('click',function(){nav.classList.toggle('is-open');});
+  document.querySelectorAll('.nav-links a').forEach(function(a){
+    a.addEventListener('click',function(){nav.classList.remove('is-open');});
+  });
+
+  var items=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window && items.length){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('is-visible');io.unobserve(e.target);}});
+    },{threshold:.15});
+    items.forEach(function(el){io.observe(el);});
+  }else{
+    items.forEach(function(el){el.classList.add('is-visible');});
+  }
+})();
+</script>
+</body>
+</html>

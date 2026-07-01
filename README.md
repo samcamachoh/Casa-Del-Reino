@@ -4,7 +4,10 @@ Single-page static site plus two serverless functions: one for the sermons feed,
 
 ## Structure
 ```
-index.html          The whole site (HTML, CSS, JS, logos all inline)
+index.html          The homepage (HTML, CSS, JS, logos all inline)
+about.html           The "About Us" page — apostles + campus photo, linked from
+                     the "Conoce más sobre nosotros" button in the homepage's
+                     Nosotros section
 api/sermons.js       Vercel serverless function: returns the 3 newest YouTube
                      videos as JSON (server-side, so no CORS / no third-party proxy)
 api/livestream.js    Vercel serverless function: reports whether the channel is
@@ -44,7 +47,13 @@ If the section shows "couldn't load" or no videos:
 - Channel ID is set in `CHANNEL_ID` in `api/livestream.js` (same channel as the sermons feed).
 - Diagnostics: open `/api/livestream?debug=1` to see the upstream status and whether a live signal was found.
 
+## About Us page photos
+`about.html` reserves space for two photos that haven't been uploaded yet — until they are, the page shows an empty placeholder box in their place (same pattern as the homepage hero, which reads the `Hero Image` file):
+- **`Apostoles.jpg`** — a photo of both apostles, Luis Pérez and Shirley Roldán, together. Upload it to the repo root with that exact filename.
+- **`Campus.jpg`** — a wide photo of the campus. Upload it to the repo root with that exact filename.
+
 ## Notes / open items
 - Logo "10" mark in the header is a raster (PNG) embedded inline; swap in an SVG if you ever have the vector. Footer logo is already vector.
 - Ministries list and "what to expect" copy are sensible placeholders — confirm against the real ministries.
+- The apostles' bios on `about.html` are placeholder copy — replace with their real bios whenever you have them.
 - Contact uses `mailto:` (no backend form). Easy to add later.
