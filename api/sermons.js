@@ -1,4 +1,4 @@
-// Vercel serverless function: returns the church's 3 newest YouTube videos
+// Vercel serverless function: returns the church's 6 newest YouTube videos
 // as JSON. Runs server-side (no browser CORS limits). Vercel auto-detects any
 // file in /api as a function — no config needed. Requires Node 18+ (default).
 //
@@ -77,7 +77,7 @@ module.exports = async function handler(req, res) {
 
   const feed = await getFeed();
   const all = feed.xml ? parseFeed(feed.xml) : [];
-  const items = all.slice(0, 3);
+  const items = all.slice(0, 6);
 
   if (debug) {
     res.setHeader('Cache-Control', 'no-store');
