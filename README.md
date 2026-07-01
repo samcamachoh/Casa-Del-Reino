@@ -1,18 +1,20 @@
 # Casa Del Reino — Website
 
-Single-page static site plus one serverless function for the sermons feed.
+Single-page static site plus two serverless functions: one for the sermons feed, one for the live indicator.
 
 ## Structure
 ```
-index.html        The whole site (HTML, CSS, JS, logos all inline)
-api/sermons.js    Vercel serverless function: returns the 3 newest YouTube
-                  videos as JSON (server-side, so no CORS / no third-party proxy)
+index.html          The whole site (HTML, CSS, JS, logos all inline)
+api/sermons.js       Vercel serverless function: returns the 3 newest YouTube
+                     videos as JSON (server-side, so no CORS / no third-party proxy)
+api/livestream.js    Vercel serverless function: reports whether the channel is
+                     currently live, and the video id to embed if so
 ```
 
 ## Deploy on Vercel
 1. Push this folder to a GitHub repo, then import it in Vercel (Framework preset: **Other**). No build command or output dir needed.
    - Or drag the folder into vercel.com/new.
-2. Vercel automatically detects `api/sermons.js` and deploys it as a function at `/api/sermons`. Nothing to configure.
+2. Vercel automatically detects everything in `api/` and deploys each file as a function (`/api/sermons`, `/api/livestream`). Nothing to configure.
 3. Requires Vercel's default Node runtime (Node 18+) — already the default.
 
 ## How the sermons section works
@@ -33,6 +35,14 @@ If the section shows "couldn't load" or no videos:
    - `entriesParsed` + `sample` — how many videos parsed and the newest few
    This tells you immediately whether it's a deploy issue, a YouTube-blocking issue, or a parsing issue.
 3. Channel ID is set in `CHANNEL_ID` (currently `UCnmH19dzWxrnHigDRzhE0ZQ`) in both `api/sermons.js` and the inline script in `index.html`.
+
+## How the live indicator works
+- Every 45s (and once on page load), the page calls `/api/livestream`. That function checks YouTube's public `/channel/<id>/live` page server-side (no API key, no quota) to see if a broadcast is currently active.
+- **While live:** a red bar appears at the top ("We're live right now"), the hero shows a pulsing "Live now" badge and a "Watch live" button linking straight to the stream, and the hero's background photo is swapped for the embedded stream itself.
+- **Autoplay:** the embedded stream is always muted, and only starts playing once the visitor has been on the page 5+ seconds — it never yanks video/audio in the instant someone lands on the site. The live badge/button/bar still appear immediately.
+- **When the stream ends:** the very next poll (≤45s later) detects it and everything reverts to the normal hero automatically — no page reload needed.
+- Channel ID is set in `CHANNEL_ID` in `api/livestream.js` (same channel as the sermons feed).
+- Diagnostics: open `/api/livestream?debug=1` to see the upstream status and whether a live signal was found.
 
 ## Notes / open items
 - Logo "10" mark in the header is a raster (PNG) embedded inline; swap in an SVG if you ever have the vector. Footer logo is already vector.
