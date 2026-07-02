@@ -45,7 +45,8 @@ If the section shows "couldn't load" or no videos:
 - **Autoplay:** the embedded stream is always muted, and only starts playing once the visitor has been on the page 5+ seconds — it never yanks video/audio in the instant someone lands on the site. The live badge/button/bar still appear immediately.
 - **When the stream ends:** the very next poll (≤45s later) detects it and everything reverts to the normal hero automatically — no page reload needed.
 - Channel ID is set in `CHANNEL_ID` in `api/livestream.js` (same channel as the sermons feed).
-- Diagnostics: open `/api/livestream?debug=1` to see the upstream status and whether a live signal was found.
+- The live check parses YouTube's `ytInitialPlayerResponse` JSON block from the `/live` page and reads `videoDetails.isLive` / `videoDetails.videoId` from that *same* object — not independent page-wide text searches. (An earlier version searched for `"isLive":true` and `"videoId":"..."` separately anywhere in the page, which could pick up an unrelated video from a sidebar/recommended panel — showing the "live" badge while embedding the wrong video.)
+- Diagnostics: open `/api/livestream?debug=1` to see the upstream status, whether YouTube's player response was found and parsed (`foundPlayerResponse`/`parseError`), and whether a live signal was found.
 
 ## About Us page photos
 `about.html` shows a shared photo of both apostles (`Apostoles.jpg`, already uploaded) and reserves space for a campus photo that hasn't been uploaded yet — until it is, the page shows an empty placeholder box in its place (same pattern as the homepage hero, which reads the `Hero Image` file):
