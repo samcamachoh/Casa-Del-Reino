@@ -69,9 +69,6 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 /* hero */
 .hero{position:relative;background:var(--black) url('Hero%20Image') center/cover no-repeat;color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:min(760px,90vh);padding:clamp(56px,9vw,96px) 0 56px}
 .hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
-.hero.is-live::before{background:linear-gradient(180deg,rgba(11,11,12,.35) 0%,rgba(11,11,12,.55) 55%,rgba(11,11,12,.85) 100%)}
-.hero-media{position:absolute;inset:0;z-index:0;overflow:hidden}
-.hero-media iframe{position:absolute;top:50%;left:50%;width:100%;height:100%;min-width:177.78vh;min-height:56.25vw;transform:translate(-50%,-50%);border:0;pointer-events:none}
 .hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
 .hero-inner .eyebrow{color:var(--blue)}
 .hero h1{font-size:clamp(48px,9vw,96px)}
@@ -221,7 +218,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 
 <a id="top"></a>
 <section class="hero">
-  <div class="hero-media" id="hero-live-media" hidden></div>
   <div class="container hero-inner">
     <span class="live-tag" id="hero-live-tag" hidden>
       <span class="live-dot"></span>
@@ -233,7 +229,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
     <p class="hero-sub" data-lang-en>A place of Love, Family, and Transformation.</p>
     <div class="btn-row">
       <a href="#" id="hero-live-btn" class="btn btn-primary" target="_blank" rel="noopener" hidden>
-        <span data-lang-es>Ver en vivo</span><span data-lang-en>Watch live</span>
+        <span data-lang-es>Únete al servicio en vivo</span><span data-lang-en>Join the live service</span>
       </a>
       <a href="#visit" class="btn btn-primary">
         <span data-lang-es>Visítanos este domingo</span><span data-lang-en>Plan your visit</span>
@@ -511,54 +507,33 @@ document.getElementById('year').textContent = new Date().getFullYear();
 })();
 
 /* ---- Live indicator ----
-   Polls our own backend (which checks YouTube server-side, no API key/CORS
-   issues) to see if the channel is currently live. While live: shows the red
-   bar and a "watch live" button right away, and embeds the stream itself as
-   the hero background — muted, autoplaying only once the visitor has been on
-   the page 5+ seconds (so it never yanks video/audio in on arrival). As soon
-   as a poll reports the stream has ended, everything reverts to the normal
-   hero automatically — no reload needed. */
+   Polls our own backend (which checks YouTube server-side) to see if the
+   channel is currently live. While live: shows the red bar at the top, a
+   pulsing "Live now" badge in the hero, and a "Join the live service"
+   button linking to the stream on YouTube. As soon as a poll reports the
+   stream has ended, everything reverts to the default hero automatically —
+   no reload needed. */
 (function(){
-  var hero=document.querySelector('.hero');
-  var media=document.getElementById('hero-live-media');
   var bar=document.getElementById('live-bar');
   var tag=document.getElementById('hero-live-tag');
   var btn=document.getElementById('hero-live-btn');
-  if(!hero||!media||!bar||!tag||!btn) return;
+  if(!bar||!tag||!btn) return;
 
   var isLive=false;
-  var autoplayReady=false;
-  var pendingVideoId=null;
-
-  function embed(videoId){
-    media.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+videoId+'?autoplay=1&mute=1&controls=0&modestbranding=1&playsinline=1&rel=0" title="Live stream" allow="autoplay; encrypted-media" frameborder="0"></iframe>';
-    media.hidden=false;
-  }
-
-  setTimeout(function(){
-    autoplayReady=true;
-    if(pendingVideoId){ embed(pendingVideoId); pendingVideoId=null; }
-  },5000);
 
   function goLive(videoId){
     isLive=true;
-    hero.classList.add('is-live');
     bar.classList.add('is-visible');
     tag.hidden=false;
     btn.hidden=false;
     btn.href='https://www.youtube.com/watch?v='+videoId;
-    if(autoplayReady) embed(videoId); else pendingVideoId=videoId;
   }
 
   function goOffline(){
     isLive=false;
-    pendingVideoId=null;
-    hero.classList.remove('is-live');
     bar.classList.remove('is-visible');
     tag.hidden=true;
     btn.hidden=true;
-    media.hidden=true;
-    media.innerHTML='';
   }
 
   function poll(){
