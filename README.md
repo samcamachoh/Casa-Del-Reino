@@ -45,8 +45,18 @@ If the section shows "couldn't load" or no videos:
 - **Autoplay:** the embedded stream is always muted, and only starts playing once the visitor has been on the page 5+ seconds — it never yanks video/audio in the instant someone lands on the site. The live badge/button/bar still appear immediately.
 - **When the stream ends:** the very next poll (≤45s later) detects it and everything reverts to the normal hero automatically — no page reload needed.
 - Channel ID is set in `CHANNEL_ID` in `api/livestream.js` (same channel as the sermons feed).
-- The live check reads `videoDetails.isLive`/`videoId` from YouTube's `ytInitialPlayerResponse` JSON when available. YouTube sometimes strips `videoDetails` out of that JSON for datacenter IPs (its bot heuristic — observed in production), so there are two fallbacks that survive stripped pages: the microformat `liveBroadcastDetails.isLiveNow` flag, and the page's canonical `watch?v=` link combined with `"isLiveNow":true` (that field only appears for the page's primary video, never sidebar items, so this can't re-introduce the old wrong-video bug; a scheduled-but-not-started stream has the canonical link but `isLiveNow:false`, so it stays "not live").
-- Diagnostics: open `/api/livestream?debug=1` to see the upstream status, which signal fired (`signal`: `videoDetails`/`microformat`/`canonical`), the canonical video id, playability status, and whether YouTube's player response was found and parsed.
+- YouTube login-walls its watch pages for datacenter IPs like Vercel's (`playabilityStatus: LOGIN_REQUIRED`, "sign in to confirm you're not a bot" — observed in production during a real broadcast), so the function checks up to three sources, most reliable first:
+  1. **YouTube Data API** (only if a `YOUTUBE_API_KEY` env var is set — see below). Recent video ids come from the channel's free RSS feed, then one `videos.list` call (1 quota unit) checks if any is live. Authoritative and immune to the bot wall. **This is the recommended setup.**
+  2. **The `/embed/live_stream` page** — embeds are served to anonymous contexts everywhere, so they're less likely to be login-walled than watch pages.
+  3. **The `/channel/<id>/live` watch page** — the original approach; works whenever YouTube doesn't bot-wall the request.
+- Diagnostics: open `/api/livestream?debug=1` to see per-probe results and which signal fired (`signal`: `api`/`embed`/`livepage`).
+
+### Setting up the YouTube API key (recommended, free)
+1. Go to https://console.cloud.google.com/ → create a project (any name).
+2. "APIs & Services" → "Library" → enable **YouTube Data API v3**.
+3. "APIs & Services" → "Credentials" → "Create credentials" → **API key**. (Optionally restrict it to the YouTube Data API.)
+4. In Vercel: Project → Settings → Environment Variables → add `YOUTUBE_API_KEY` with the key value → redeploy.
+5. Usage is ~1 quota unit per poll (edge-cached 30s) ≈ 3k units/day, well inside the 10k/day free quota. Verify with `/api/livestream?debug=1` — it should report `apiKeyConfigured: true` and, while live, `signal: "api"`.
 
 ## About Us page photos
 `about.html` shows a shared photo of both apostles (`Apostoles.jpg`, already uploaded) and reserves space for a campus photo that hasn't been uploaded yet — until it is, the page shows an empty placeholder box in its place (same pattern as the homepage hero, which reads the `Hero Image` file):
