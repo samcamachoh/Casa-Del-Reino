@@ -40,7 +40,7 @@ If the section shows "couldn't load" or no videos:
 3. Channel ID is set in `CHANNEL_ID` (currently `UCnmH19dzWxrnHigDRzhE0ZQ`) in both `api/sermons.js` and the inline script in `index.html`.
 
 ## How the live indicator works
-- Every 45s (and once on page load), the page calls `/api/livestream`. That function checks YouTube's public `/channel/<id>/live` page server-side (no API key, no quota) to see if a broadcast is currently active.
+- Every 45s (and once on page load), the page calls `/api/livestream`. That function checks server-side whether a broadcast is currently active (see the probes below).
 - **While live:** a red bar appears at the top ("We're live right now"), and the hero shows a pulsing "Live now" badge plus a "Join the live service" button linking straight to the stream on YouTube. The hero background photo stays as-is (no embedded video).
 - **When the stream ends:** the very next poll (≤45s later) detects it and everything reverts to the default hero automatically — no page reload needed.
 - Channel ID is set in `CHANNEL_ID` in `api/livestream.js` (same channel as the sermons feed).
@@ -48,6 +48,8 @@ If the section shows "couldn't load" or no videos:
   1. **YouTube Data API** (only if a `YOUTUBE_API_KEY` env var is set — see below). Recent video ids come from the channel's free RSS feed, then one `videos.list` call (1 quota unit) checks if any is live. Authoritative and immune to the bot wall. **This is the recommended setup.**
   2. **The `/embed/live_stream` page** — embeds are served to anonymous contexts everywhere, so they're less likely to be login-walled than watch pages.
   3. **The `/channel/<id>/live` watch page** — the original approach; works whenever YouTube doesn't bot-wall the request.
+
+  Every probe requires a genuine positive signal (isLive/isLiveNow actually `true`) before reporting live — never an absence of a "not live" marker. An earlier version treated *any* video id found on the embed page as live whenever it didn't spot an explicit offline marker; in production that showed the site as permanently live, because the embed page pointed at the channel's last-ended broadcast with no such marker present. **Without the API key, detection is deliberately conservative** — it may occasionally miss a broadcast rather than risk showing "live" when the channel is offline, which is why the key is the recommended setup.
 - Diagnostics: open `/api/livestream?debug=1` to see per-probe results and which signal fired (`signal`: `api`/`embed`/`livepage`).
 
 ### Setting up the YouTube API key (recommended, free)

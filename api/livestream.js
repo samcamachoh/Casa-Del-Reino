@@ -19,6 +19,16 @@
 //   3. The /channel/<id>/live watch page (original approach — works when
 //      YouTube doesn't bot-wall the request).
 //
+// Every probe requires a genuine positive signal (isLive/isLiveNow actually
+// true) before reporting live — never an absence of a "not live" marker.
+// An earlier version guessed "live" whenever the embed page merely
+// mentioned *a* video id without spotting an explicit offline marker; in
+// production that showed the site as permanently live because the embed
+// pointed at the channel's last-ended broadcast with no such marker on the
+// page. Without an API key, detection is deliberately conservative: it may
+// occasionally miss a broadcast rather than risk showing "live" when the
+// channel is actually offline.
+//
 // Diagnostics: open /api/livestream?debug=1 to see what every probe found.
 
 const CHANNEL_ID = 'UCnmH19dzWxrnHigDRzhE0ZQ';
@@ -93,9 +103,15 @@ function parsePlayerResponse(html) {
 // broadcast — there's no sidebar noise — but its exact shape varies: some
 // variants inline ytInitialPlayerResponse, others only carry an escaped
 // "video_id" in the player config and fetch the player response at runtime.
-// So: collect a candidate id from any of those shapes, and treat the page's
-// LIVE_STREAM_OFFLINE marker (present for scheduled-but-not-started streams
-// and offline channels) as the not-live-yet signal.
+//
+// Only a genuine positive signal (videoDetails.isLive) counts as live here.
+// Earlier this also guessed "live" from finding *a* video id with no
+// "LIVE_STREAM_OFFLINE" string nearby — that's an absence-based guess, and
+// a real false positive: the embed can point at the channel's last-ended
+// broadcast without that exact string appearing, which read as permanently
+// live. A candidate id with no confirmed isLive is still returned so the
+// API probe (proper source of truth) can verify it — it must never be
+// trusted on its own.
 async function checkViaEmbed(dbg) {
   try {
     const r = await fetchWithTimeout(EMBED_URL, 7000);
@@ -111,17 +127,9 @@ async function checkViaEmbed(dbg) {
       const m = html.match(/\\?"video_?[iI]d\\?"\s*:\s*\\?"([\w-]{6,20})\\?"/);
       candidateId = m ? m[1] : null;
     }
-    const offlineMarker = html.indexOf('LIVE_STREAM_OFFLINE') !== -1;
     dbg.embedCandidateId = candidateId;
-    dbg.embedOfflineMarker = offlineMarker;
 
     if (vd && vd.isLive && vd.videoId) return { isLive: true, videoId: vd.videoId, candidateId: candidateId };
-    // No parseable player response, but a video id and no "offline" marker:
-    // the embed is pointing at a broadcast that isn't scheduled-for-later,
-    // i.e. live now.
-    if (candidateId && !pr.videoDetails && !offlineMarker && pr.playabilityStatus !== 'LIVE_STREAM_OFFLINE') {
-      return { isLive: true, videoId: candidateId, candidateId: candidateId };
-    }
     return { isLive: false, candidateId: candidateId };
   } catch (e) {
     dbg.embedError = (e && e.name === 'AbortError') ? 'timeout' : String((e && e.message) || e);
