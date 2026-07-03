@@ -41,9 +41,8 @@ If the section shows "couldn't load" or no videos:
 
 ## How the live indicator works
 - Every 45s (and once on page load), the page calls `/api/livestream`. That function checks YouTube's public `/channel/<id>/live` page server-side (no API key, no quota) to see if a broadcast is currently active.
-- **While live:** a red bar appears at the top ("We're live right now"), the hero shows a pulsing "Live now" badge and a "Watch live" button linking straight to the stream, and the hero's background photo is swapped for the embedded stream itself.
-- **Autoplay:** the embedded stream is always muted, and only starts playing once the visitor has been on the page 5+ seconds — it never yanks video/audio in the instant someone lands on the site. The live badge/button/bar still appear immediately.
-- **When the stream ends:** the very next poll (≤45s later) detects it and everything reverts to the normal hero automatically — no page reload needed.
+- **While live:** a red bar appears at the top ("We're live right now"), and the hero shows a pulsing "Live now" badge plus a "Join the live service" button linking straight to the stream on YouTube. The hero background photo stays as-is (no embedded video).
+- **When the stream ends:** the very next poll (≤45s later) detects it and everything reverts to the default hero automatically — no page reload needed.
 - Channel ID is set in `CHANNEL_ID` in `api/livestream.js` (same channel as the sermons feed).
 - YouTube login-walls its watch pages for datacenter IPs like Vercel's (`playabilityStatus: LOGIN_REQUIRED`, "sign in to confirm you're not a bot" — observed in production during a real broadcast), so the function checks up to three sources, most reliable first:
   1. **YouTube Data API** (only if a `YOUTUBE_API_KEY` env var is set — see below). Recent video ids come from the channel's free RSS feed, then one `videos.list` call (1 quota unit) checks if any is live. Authoritative and immune to the bot wall. **This is the recommended setup.**
