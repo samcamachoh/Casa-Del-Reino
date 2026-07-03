@@ -59,6 +59,14 @@ async function checkLive() {
   const r = await fetchWithTimeout(LIVE_URL, 7000);
   const html = await r.text();
 
+  // YouTube sometimes serves a cookie-consent interstitial instead of the
+  // actual page to server-side/datacenter requests (common for EU-flagged
+  // IPs, which Vercel's serverless regions can be). If that happens, none
+  // of the expected page data is present at all — worth surfacing directly
+  // rather than just looking like "not live".
+  const consentWall = r.url.indexOf('consent.youtube.com') !== -1 || html.indexOf('consent.youtube.com/m?') !== -1;
+  const titleMatch = html.match(/<title>([^<]*)<\/title>/);
+
   // YouTube's live watch page embeds the primary video's player response as
   // a single JSON object (ytInitialPlayerResponse). videoDetails.isLive is
   // true only while that specific video is actively streaming — unlike
@@ -77,10 +85,18 @@ async function checkLive() {
   const isLive = !!(videoDetails && videoDetails.isLive && videoDetails.videoId);
   return {
     status: r.status,
+    finalUrl: r.url,
+    htmlLength: html.length,
+    consentWall: consentWall,
+    pageTitle: titleMatch ? titleMatch[1] : null,
     isLive: isLive,
     videoId: isLive ? videoDetails.videoId : null,
     foundPlayerResponse: !!raw,
-    parseError: parseError
+    parseError: parseError,
+    videoDetailsFound: !!videoDetails,
+    rawIsLive: videoDetails ? !!videoDetails.isLive : null,
+    rawIsLiveContent: videoDetails ? !!videoDetails.isLiveContent : null,
+    rawVideoId: videoDetails ? videoDetails.videoId || null : null
   };
 }
 
@@ -88,7 +104,12 @@ module.exports = async function handler(req, res) {
   const q = req.query || {};
   const debug = q.debug === '1' || q.debug === 'true';
 
-  let result = { status: 0, isLive: false, videoId: null, error: null, foundPlayerResponse: false, parseError: null };
+  let result = {
+    status: 0, isLive: false, videoId: null, error: null,
+    finalUrl: null, htmlLength: 0, consentWall: false, pageTitle: null,
+    foundPlayerResponse: false, parseError: null, videoDetailsFound: false,
+    rawIsLive: null, rawIsLiveContent: null, rawVideoId: null
+  };
   try {
     result = Object.assign(result, await checkLive());
   } catch (e) {
@@ -102,9 +123,17 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       channelId: CHANNEL_ID,
       upstreamStatus: result.status,
+      finalUrl: result.finalUrl,
+      htmlLength: result.htmlLength,
+      consentWall: result.consentWall,
+      pageTitle: result.pageTitle,
       error: result.error,
       foundPlayerResponse: result.foundPlayerResponse,
       parseError: result.parseError,
+      videoDetailsFound: result.videoDetailsFound,
+      rawIsLive: result.rawIsLive,
+      rawIsLiveContent: result.rawIsLiveContent,
+      rawVideoId: result.rawVideoId,
       live: result.isLive,
       videoId: result.videoId
     });
