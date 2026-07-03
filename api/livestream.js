@@ -87,41 +87,15 @@ function parsePlayerResponse(html) {
   }
 }
 
-// Probe 1: YouTube Data API. Definitive when a key is configured — returns
-// { checked: true, isLive, videoId } on a conclusive answer, or
-// { checked: false } to fall through to the scraping probes.
-async function checkViaApi(apiKey, dbg) {
-  try {
-    const rss = await fetchWithTimeout(FEED_URL, 7000);
-    dbg.rssStatus = rss.status;
-    if (!rss.ok) return { checked: false };
-    const xml = await rss.text();
-    const ids = [];
-    const re = /<yt:videoId>([\w-]+)<\/yt:videoId>/g;
-    let m;
-    while ((m = re.exec(xml)) && ids.length < 15) ids.push(m[1]);
-    dbg.rssIds = ids.length;
-    if (!ids.length) return { checked: false };
-
-    const url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id=' + ids.join(',') + '&key=' + apiKey;
-    const r = await fetchWithTimeout(url, 7000);
-    dbg.apiStatus = r.status;
-    if (!r.ok) return { checked: false };
-    const data = await r.json();
-    const items = data.items || [];
-    dbg.apiItems = items.length;
-    const liveItem = items.find(function (v) { return v.snippet && v.snippet.liveBroadcastContent === 'live'; });
-    return { checked: true, isLive: !!liveItem, videoId: liveItem ? liveItem.id : null };
-  } catch (e) {
-    dbg.apiError = (e && e.name === 'AbortError') ? 'timeout' : String((e && e.message) || e);
-    return { checked: false };
-  }
-}
-
-// Probe 2: the live_stream embed page. Its player response describes only
-// the channel's current/upcoming broadcast (no sidebar noise). isLive is
-// true only while actually streaming — an upcoming scheduled stream has
-// playabilityStatus LIVE_STREAM_OFFLINE and isLive false.
+// Probe 1: the live_stream embed page. Embeds are served to anonymous
+// contexts everywhere, so they're far less likely to be login-walled than
+// watch pages. The page describes only this channel's current/upcoming
+// broadcast — there's no sidebar noise — but its exact shape varies: some
+// variants inline ytInitialPlayerResponse, others only carry an escaped
+// "video_id" in the player config and fetch the player response at runtime.
+// So: collect a candidate id from any of those shapes, and treat the page's
+// LIVE_STREAM_OFFLINE marker (present for scheduled-but-not-started streams
+// and offline channels) as the not-live-yet signal.
 async function checkViaEmbed(dbg) {
   try {
     const r = await fetchWithTimeout(EMBED_URL, 7000);
@@ -130,12 +104,71 @@ async function checkViaEmbed(dbg) {
     const pr = parsePlayerResponse(html);
     dbg.embedFoundPlayerResponse = !!pr.found;
     dbg.embedPlayability = pr.playabilityStatus || null;
+
     const vd = pr.videoDetails;
-    if (vd && vd.isLive && vd.videoId) return { isLive: true, videoId: vd.videoId };
-    return { isLive: false };
+    let candidateId = (vd && vd.videoId) || null;
+    if (!candidateId) {
+      const m = html.match(/\\?"video_?[iI]d\\?"\s*:\s*\\?"([\w-]{6,20})\\?"/);
+      candidateId = m ? m[1] : null;
+    }
+    const offlineMarker = html.indexOf('LIVE_STREAM_OFFLINE') !== -1;
+    dbg.embedCandidateId = candidateId;
+    dbg.embedOfflineMarker = offlineMarker;
+
+    if (vd && vd.isLive && vd.videoId) return { isLive: true, videoId: vd.videoId, candidateId: candidateId };
+    // No parseable player response, but a video id and no "offline" marker:
+    // the embed is pointing at a broadcast that isn't scheduled-for-later,
+    // i.e. live now.
+    if (candidateId && !pr.videoDetails && !offlineMarker && pr.playabilityStatus !== 'LIVE_STREAM_OFFLINE') {
+      return { isLive: true, videoId: candidateId, candidateId: candidateId };
+    }
+    return { isLive: false, candidateId: candidateId };
   } catch (e) {
     dbg.embedError = (e && e.name === 'AbortError') ? 'timeout' : String((e && e.message) || e);
-    return { isLive: false };
+    return { isLive: false, candidateId: null };
+  }
+}
+
+// Probe 2: YouTube Data API (when a key is configured). Checks the videos
+// listed in the channel's RSS feed plus the embed page's candidate id, via
+// one videos.list call (1 quota unit). A "live" answer is always final. A
+// "not live" answer is only final when the candidate id was part of the
+// checked set — the RSS feed can lag a just-started stream by a few
+// minutes, so RSS-only silence must not overrule the scraping probes.
+async function checkViaApi(apiKey, candidateId, dbg) {
+  try {
+    const ids = [];
+    if (candidateId) ids.push(candidateId);
+    const rss = await fetchWithTimeout(FEED_URL, 7000);
+    dbg.rssStatus = rss.status;
+    if (rss.ok) {
+      const xml = await rss.text();
+      const re = /<yt:videoId>([\w-]+)<\/yt:videoId>/g;
+      let m;
+      while ((m = re.exec(xml)) && ids.length < 15) {
+        if (ids.indexOf(m[1]) === -1) ids.push(m[1]);
+      }
+    }
+    dbg.apiIdsChecked = ids.length;
+    if (!ids.length) return { checked: false, coversCandidate: false };
+
+    const url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id=' + ids.join(',') + '&key=' + apiKey;
+    const r = await fetchWithTimeout(url, 7000);
+    dbg.apiStatus = r.status;
+    if (!r.ok) return { checked: false, coversCandidate: false };
+    const data = await r.json();
+    const items = data.items || [];
+    dbg.apiItems = items.length;
+    const liveItem = items.find(function (v) { return v.snippet && v.snippet.liveBroadcastContent === 'live'; });
+    return {
+      checked: true,
+      coversCandidate: !!candidateId,
+      isLive: !!liveItem,
+      videoId: liveItem ? liveItem.id : null
+    };
+  } catch (e) {
+    dbg.apiError = (e && e.name === 'AbortError') ? 'timeout' : String((e && e.message) || e);
+    return { checked: false, coversCandidate: false };
   }
 }
 
@@ -180,18 +213,27 @@ module.exports = async function handler(req, res) {
   const dbg = {};
   let isLive = false, videoId = null, signal = null;
 
+  // Embed probe runs first: cheap, rarely login-walled, and it supplies a
+  // candidate video id for the API to verify.
+  const viaEmbed = await checkViaEmbed(dbg);
+
   const apiKey = process.env.YOUTUBE_API_KEY;
   dbg.apiKeyConfigured = !!apiKey;
   if (apiKey) {
-    const viaApi = await checkViaApi(apiKey, dbg);
-    if (viaApi.checked) {
-      isLive = viaApi.isLive; videoId = viaApi.videoId; signal = 'api';
+    const viaApi = await checkViaApi(apiKey, viaEmbed.candidateId, dbg);
+    if (viaApi.checked && viaApi.isLive) {
+      isLive = true; videoId = viaApi.videoId; signal = 'api';
+    } else if (viaApi.checked && viaApi.coversCandidate) {
+      // The API explicitly checked the embed's candidate and it isn't live —
+      // final "not live", overriding the scraping heuristics.
+      signal = 'api';
     }
+    // API said "not live" from RSS ids alone (or the call failed): not
+    // conclusive — the feed lags just-started streams — keep probing.
   }
 
-  if (signal === null) {
-    const viaEmbed = await checkViaEmbed(dbg);
-    if (viaEmbed.isLive) { isLive = true; videoId = viaEmbed.videoId; signal = 'embed'; }
+  if (signal === null && viaEmbed.isLive) {
+    isLive = true; videoId = viaEmbed.videoId; signal = 'embed';
   }
 
   if (signal === null) {
