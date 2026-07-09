@@ -72,7 +72,6 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .hero{position:relative;background:var(--black) url('Hero%20Image') center/cover no-repeat;color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:min(760px,90vh);padding:clamp(56px,9vw,96px) 0 56px}
 .hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
 .hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
-.hero-inner .eyebrow{color:var(--blue)}
 .hero h1{font-size:clamp(48px,9vw,96px)}
 .hero-sub{font-size:clamp(16px,2vw,19px);color:rgba(255,255,255,.78);max-width:480px;font-weight:400;text-transform:none}
 .live-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--white);background:var(--live);padding:6px 14px;border-radius:999px}
@@ -599,7 +598,13 @@ document.getElementById('year').textContent = new Date().getFullYear();
       thumb.style.backgroundImage="url('https://i.ytimg.com/vi/"+v.id+"/hqdefault.jpg')";
       thumb.innerHTML=playSVG();
       thumb.addEventListener('click',function(){
-        thumb.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+v.id+'?autoplay=1&rel=0" title="'+v.title.replace(/"/g,'&quot;')+'" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+        var iframe=document.createElement('iframe');
+        iframe.src='https://www.youtube-nocookie.com/embed/'+v.id+'?autoplay=1&rel=0';
+        iframe.title=v.title;
+        iframe.allow='autoplay; encrypted-media; picture-in-picture';
+        iframe.allowFullscreen=true;
+        thumb.innerHTML='';
+        thumb.appendChild(iframe);
         thumb.style.cursor='default';
       });
       var body=document.createElement('div'); body.className='sermon-body';

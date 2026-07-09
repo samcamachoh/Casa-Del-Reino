@@ -69,11 +69,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 /* hero */
 .hero{position:relative;background:var(--black) url('Hero%20Image') center/cover no-repeat;color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:min(760px,90vh);padding:clamp(56px,9vw,96px) 0 56px}
 .hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
-.hero.is-live::before{background:linear-gradient(180deg,rgba(11,11,12,.35) 0%,rgba(11,11,12,.55) 55%,rgba(11,11,12,.85) 100%)}
-.hero-media{position:absolute;inset:0;z-index:0;overflow:hidden}
-.hero-media iframe{position:absolute;top:50%;left:50%;width:100%;height:100%;min-width:177.78vh;min-height:56.25vw;transform:translate(-50%,-50%);border:0;pointer-events:none}
 .hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
-.hero-inner .eyebrow{color:var(--blue)}
 .hero h1{font-size:clamp(48px,9vw,96px)}
 .hero-sub{font-size:clamp(16px,2vw,19px);color:rgba(255,255,255,.78);max-width:480px;font-weight:400;text-transform:none}
 .live-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--white);background:var(--live);padding:6px 14px;border-radius:999px}
@@ -206,6 +202,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 </style>
 </head>
 <body>
+
+<div id="live-bar" class="live-bar" role="status" aria-live="polite">
+  <span class="live-dot"></span>
+  <span data-lang-es>Estamos en vivo ahora mismo</span><span data-lang-en>We're live right now</span>
+</div>
 
 <header class="site-header">
   <div class="container header-inner">
@@ -356,6 +357,28 @@ document.getElementById('year').textContent = new Date().getFullYear();
   }else{
     items.forEach(function(el){el.classList.add('is-visible');});
   }
+})();
+
+/* ---- Live indicator (bar only) ----
+   This page has no hero to attach a badge/button to, but the top bar
+   should still appear/disappear in step with the homepage while a
+   broadcast is live. */
+(function(){
+  var bar=document.getElementById('live-bar');
+  if(!bar) return;
+  var isLive=false;
+  function poll(){
+    var ctrl=new AbortController(); var to=setTimeout(function(){ctrl.abort();},6000);
+    fetch('/api/livestream',{signal:ctrl.signal,cache:'no-store'})
+      .then(function(r){clearTimeout(to); if(!r.ok) throw 0; return r.json();})
+      .then(function(d){
+        var live=!!(d&&d.live&&d.videoId);
+        if(live!==isLive){ isLive=live; bar.classList.toggle('is-visible',live); }
+      })
+      .catch(function(){clearTimeout(to);});
+  }
+  poll();
+  setInterval(poll,45000);
 })();
 </script>
 </body>
