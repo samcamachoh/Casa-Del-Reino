@@ -36,6 +36,10 @@ const LIVE_URL = 'https://www.youtube.com/channel/' + CHANNEL_ID + '/live';
 const EMBED_URL = 'https://www.youtube.com/embed/live_stream?channel=' + CHANNEL_ID;
 const FEED_URL = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + CHANNEL_ID;
 
+function redactKey(text, apiKey) {
+  return apiKey ? text.split(apiKey).join('[redacted]') : text;
+}
+
 function fetchWithTimeout(url, ms) {
   const ctrl = new AbortController();
   const t = setTimeout(function () { ctrl.abort(); }, ms);
@@ -160,7 +164,8 @@ async function checkViaApi(apiKey, candidateId, dbg) {
     dbg.apiIdsChecked = ids.length;
     if (!ids.length) return { checked: false, coversCandidate: false };
 
-    const url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id=' + ids.join(',') + '&key=' + apiKey;
+    const url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id='
+      + encodeURIComponent(ids.join(',')) + '&key=' + encodeURIComponent(apiKey);
     const r = await fetchWithTimeout(url, 7000);
     dbg.apiStatus = r.status;
     if (!r.ok) return { checked: false, coversCandidate: false };
@@ -175,7 +180,13 @@ async function checkViaApi(apiKey, candidateId, dbg) {
       videoId: liveItem ? liveItem.id : null
     };
   } catch (e) {
-    dbg.apiError = (e && e.name === 'AbortError') ? 'timeout' : String((e && e.message) || e);
+    // Never let the raw error surface the key: some fetch failures (e.g. a
+    // malformed URL) put the full request URL — key included — in
+    // e.message, and this ends up in the public, unauthenticated
+    // ?debug=1 response.
+    dbg.apiError = (e && e.name === 'AbortError')
+      ? 'timeout'
+      : redactKey(String((e && e.message) || e), apiKey);
     return { checked: false, coversCandidate: false };
   }
 }
