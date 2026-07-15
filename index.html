@@ -85,12 +85,17 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
 .hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
 @keyframes heroIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes heroLineLeft{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:translateX(0)}}
+@keyframes heroLineRight{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:translateX(0)}}
 .hero .live-tag{animation:heroIn .6s var(--ease) both}
 .hero .btn-row{animation:heroIn .8s var(--ease) .25s both}
-.hero h1{font-size:clamp(28px,8.2vw,96px);line-height:1.25;overflow-wrap:break-word;min-width:0;max-width:100%;animation:heroIn .8s var(--ease) .1s both}
+.hero h1{font-size:clamp(28px,8.2vw,96px);line-height:1.25;overflow-wrap:break-word;min-width:0;max-width:100%}
 .hero h1 .hl-bold{font-weight:900}
 .hero h1 .hl-accent{color:var(--blue)}
 .hero h1 .hl-block{background:var(--blue);color:var(--white);padding:0 .12em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.hero-line-left{display:inline-block;animation:heroLineLeft .8s var(--ease) .1s both}
+.hero-line-mid{display:inline-block;animation:heroIn .8s var(--ease) .3s both}
+.hero-line-right{display:inline-block;animation:heroLineRight .8s var(--ease) .5s both}
 .live-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--white);background:var(--live);padding:6px 14px;border-radius:999px}
 .live-dot{width:7px;height:7px;border-radius:999px;background:var(--white);animation:livepulse 1.4s ease-in-out infinite;flex:none}
 @keyframes livepulse{0%,100%{opacity:1}50%{opacity:.3}}
@@ -220,7 +225,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 }
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
-  .live-dot,.nav-give,.hero .live-tag,.hero h1,.hero .btn-row,.nav.is-open{animation:none}
+  .live-dot,.nav-give,.hero .live-tag,.hero .btn-row,.hero-line-left,.hero-line-mid,.hero-line-right,.nav.is-open{animation:none}
   html{scroll-behavior:auto}
 }
 </style>
@@ -259,7 +264,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
       <span class="live-dot"></span>
       <span data-lang-es>En vivo ahora</span><span data-lang-en>Live now</span>
     </span>
-    <h1><span data-lang-es>Un lugar de <span class="hl-bold">Amor</span>, <span class="hl-accent">Familia</span> y <span class="hl-block">Transformación</span>.</span><span data-lang-en>A place of <span class="hl-bold">Love</span>, <span class="hl-accent">Family</span>, and <span class="hl-block">Transformation</span>.</span></h1>
+    <h1><span data-lang-es><span class="hero-line-left">Un lugar de <span class="hl-bold">Amor</span>,</span> <span class="hero-line-mid"><span class="hl-accent">Familia</span> y</span> <span class="hl-block hero-line-right">Transformación</span>.</span><span data-lang-en><span class="hero-line-left">A place of <span class="hl-bold">Love</span>,</span> <span class="hero-line-mid"><span class="hl-accent">Family</span>, and</span> <span class="hl-block hero-line-right">Transformation</span>.</span></h1>
     <div class="btn-row">
       <a href="#" id="hero-live-btn" class="btn btn-live" target="_blank" rel="noopener" hidden>
         <span data-lang-es>Únete al servicio en vivo</span><span data-lang-en>Join the live service</span>
