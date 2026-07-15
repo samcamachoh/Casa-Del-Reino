@@ -420,15 +420,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   </div>
 </section>
 
-<section class="section section-blue">
-  <div class="container" style="display:grid;gap:22px;text-align:center;justify-items:center;">
-    <h2 class="reveal"><span data-lang-es>Te esperamos esta semana</span><span data-lang-en>We'll see you this week</span></h2>
-    <a href="https://www.google.com/maps/search/?api=1&query=1050+Aeronautical+Drive+Kissimmee+FL+34744" target="_blank" rel="noopener" class="btn btn-outline-light reveal">
-      <span data-lang-es>Cómo llegar</span><span data-lang-en>Get directions</span>
-    </a>
-  </div>
-</section>
-
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
@@ -503,6 +494,24 @@ document.getElementById('year').textContent = new Date().getFullYear();
     items.forEach(function(el){io.observe(el);});
   }else{
     items.forEach(function(el){el.classList.add('is-visible');});
+  }
+
+  function stripHash(){
+    history.replaceState(null,'',window.location.pathname+window.location.search);
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    var id=a.getAttribute('href').slice(1);
+    if(!id) return;
+    var target=document.getElementById(id);
+    if(!target) return;
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      target.scrollIntoView({behavior:'smooth',block:'start'});
+      stripHash();
+    });
+  });
+  if(location.hash && document.getElementById(location.hash.slice(1))){
+    setTimeout(stripHash,600);
   }
 })();
 
