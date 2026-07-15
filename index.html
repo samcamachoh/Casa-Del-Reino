@@ -217,12 +217,18 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   .menu-btn{display:flex}
   .nav.is-open{position:fixed;top:0;left:0;right:0;bottom:0;height:100dvh;z-index:90;background:var(--black);flex-direction:column;align-items:flex-start;justify-content:center;padding:100px var(--pad) 40px;gap:36px;overflow-y:auto;animation:navDropIn .3s var(--ease)}
   @keyframes navDropIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes navItemIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
   .nav.is-open .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:0;width:100%}
-  .nav.is-open .nav-links li{width:100%;border-bottom:1px solid rgba(255,255,255,.15);padding:18px 0}
+  .nav.is-open .nav-links li{width:100%;border-bottom:1px solid rgba(255,255,255,.15);padding:18px 0;opacity:0;animation:navItemIn .5s var(--ease) forwards}
   .nav.is-open .nav-links li:first-child{padding-top:0}
   .nav.is-open .nav-links li:last-child{border-bottom:none}
-  .nav.is-open .nav-links a{font-family:var(--font-display);font-size:clamp(30px,9vw,42px);font-weight:800;letter-spacing:.01em;padding-bottom:0;display:block;text-align:left}
-  .nav.is-open .nav-bottom{display:flex;align-items:center;gap:20px;order:3}
+  .nav.is-open .nav-links li:nth-child(1){animation-delay:.08s}
+  .nav.is-open .nav-links li:nth-child(2){animation-delay:.15s}
+  .nav.is-open .nav-links li:nth-child(3){animation-delay:.22s}
+  .nav.is-open .nav-links li:nth-child(4){animation-delay:.29s}
+  .nav.is-open .nav-links a{font-family:var(--font-display);font-size:clamp(30px,9vw,42px);font-weight:800;letter-spacing:.01em;padding-bottom:0;display:block;text-align:left;transition:transform .25s var(--ease),color .25s var(--ease)}
+  .nav.is-open .nav-links a:active{transform:translateX(10px);color:var(--blue)}
+  .nav.is-open .nav-bottom{display:flex;align-items:center;gap:20px;order:3;opacity:0;animation:navItemIn .5s var(--ease) forwards;animation-delay:.36s}
   .nav.is-open .lang-toggle{display:flex;width:max-content;font-size:15px}
   .nav.is-open .lang-toggle button{padding:9px 18px}
   .nav.is-open .nav-give{display:inline-flex;width:max-content;font-size:16px;padding:16px 36px}
@@ -237,7 +243,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 }
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
-  .live-dot,.nav-give,.hero .live-tag,.hero .btn-row,.hero-line-left,.hero-line-mid,.hero-line-right,.nav.is-open{animation:none}
+  .live-dot,.nav-give,.hero .live-tag,.hero .btn-row,.hero-line-left,.hero-line-mid,.hero-line-right,.nav.is-open,.nav.is-open .nav-links li,.nav.is-open .nav-bottom{animation:none;opacity:1}
   html{scroll-behavior:auto}
 }
 </style>
