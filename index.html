@@ -72,8 +72,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .hero{position:relative;background:var(--black) url('Hero%20Image') center/cover no-repeat;color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:min(760px,90vh);padding:clamp(56px,9vw,96px) 0 56px}
 .hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
 .hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
-.hero h1{font-size:clamp(48px,9vw,96px)}
-.hero-sub{font-size:clamp(16px,2vw,19px);color:rgba(255,255,255,.78);max-width:480px;font-weight:400;text-transform:none}
+.hero h1{font-size:clamp(28px,8.2vw,96px);overflow-wrap:break-word;min-width:0;max-width:100%}
 .live-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--white);background:var(--live);padding:6px 14px;border-radius:999px}
 .live-dot{width:7px;height:7px;border-radius:999px;background:var(--white);animation:livepulse 1.4s ease-in-out infinite;flex:none}
 @keyframes livepulse{0%,100%{opacity:1}50%{opacity:.3}}
@@ -219,9 +218,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
       <span class="live-dot"></span>
       <span data-lang-es>En vivo ahora</span><span data-lang-en>Live now</span>
     </span>
-    <h1>Casa Del Reino</h1>
-    <p class="hero-sub" data-lang-es>Un lugar de Amor, Familia y Transformación.</p>
-    <p class="hero-sub" data-lang-en>A place of Love, Family, and Transformation.</p>
+    <h1><span data-lang-es>Un lugar de Amor, Familia y Transformación.</span><span data-lang-en>A place of Love, Family, and Transformation.</span></h1>
     <div class="btn-row">
       <a href="#" id="hero-live-btn" class="btn btn-live" target="_blank" rel="noopener" hidden>
         <span data-lang-es>Únete al servicio en vivo</span><span data-lang-en>Join the live service</span>
