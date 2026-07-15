@@ -44,20 +44,27 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .header-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
 .logo{font-family:var(--font-display);font-weight:900;font-size:21px;text-transform:uppercase;letter-spacing:.02em;color:var(--white);display:flex;align-items:center;gap:12px}
 .logo .mark{width:12px;height:12px;background:var(--blue);display:inline-block}
-.logo-img{height:40px;width:auto;display:block}
+.logo-img{height:40px;width:auto;display:block;transition:transform .3s var(--ease)}
+.logo:hover .logo-img{transform:scale(1.06)}
 .nav{display:flex;align-items:center;gap:36px}
 .nav-links{display:flex;gap:30px;list-style:none;margin:0;padding:0}
-.nav-links a{font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--white);position:relative;padding-bottom:4px}
+.nav-links a{font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--white);position:relative;padding-bottom:4px;transition:color .2s var(--ease)}
 .nav-links a::after{content:'';position:absolute;left:0;right:100%;bottom:0;height:2px;background:var(--blue);transition:right .25s var(--ease)}
+.nav-links a:hover{color:var(--blue)}
 .nav-links a:hover::after{right:0}
 .lang-toggle{display:flex;border:1px solid rgba(255,255,255,.5);border-radius:999px;overflow:hidden;font-family:var(--font-mono);font-size:12px;font-weight:600}
-.lang-toggle button{background:transparent;border:none;padding:7px 14px;cursor:pointer;color:var(--white);font:inherit;letter-spacing:.04em}
+.lang-toggle button{background:transparent;border:none;padding:7px 14px;cursor:pointer;color:var(--white);font:inherit;letter-spacing:.04em;transition:background .2s var(--ease),color .2s var(--ease)}
 .lang-toggle button.is-active{background:var(--white);color:var(--black)}
 .menu-btn{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:6px}
-.menu-btn span{width:22px;height:2px;background:var(--white)}
+.menu-btn span{width:22px;height:2px;background:var(--white);transition:transform .25s var(--ease),opacity .25s var(--ease)}
+.nav.is-open ~ .menu-btn span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav.is-open ~ .menu-btn span:nth-child(2){opacity:0}
+.nav.is-open ~ .menu-btn span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
 /* buttons */
 .btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:15px 26px;border-radius:2px;border:1px solid transparent;cursor:pointer;transition:all .2s var(--ease)}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.97)}
 .btn-primary{background:var(--blue);color:var(--white);border-color:var(--blue)}
 .btn-primary:hover{background:var(--blue-deep);border-color:var(--blue-deep)}
 .btn-live{background:var(--live);color:var(--white);border-color:var(--live)}
@@ -68,11 +75,19 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .btn-outline-dark:hover{background:var(--black);color:var(--white)}
 .btn-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
 
+/* Dar/Give nav button — kept extra prominent with a standing glow and gentle pulse */
+.nav-give{position:relative;font-weight:700;padding:13px 30px;box-shadow:0 6px 18px -4px rgba(178,58,120,.55);animation:givePulse 2.8s ease-in-out infinite}
+.nav-give:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 10px 26px -4px rgba(178,58,120,.7)}
+@keyframes givePulse{0%,100%{box-shadow:0 6px 18px -4px rgba(178,58,120,.55)}50%{box-shadow:0 6px 26px -2px rgba(178,58,120,.9)}}
+
 /* hero */
 .hero{position:relative;background:var(--black) url('Hero%20Image') center/cover no-repeat;color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:min(760px,90vh);padding:clamp(56px,9vw,96px) 0 56px}
 .hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
 .hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
-.hero h1{font-size:clamp(28px,8.2vw,96px);line-height:1.25;overflow-wrap:break-word;min-width:0;max-width:100%}
+@keyframes heroIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.hero .live-tag{animation:heroIn .6s var(--ease) both}
+.hero .btn-row{animation:heroIn .8s var(--ease) .25s both}
+.hero h1{font-size:clamp(28px,8.2vw,96px);line-height:1.25;overflow-wrap:break-word;min-width:0;max-width:100%;animation:heroIn .8s var(--ease) .1s both}
 .hero h1 .hl-bold{font-weight:900}
 .hero h1 .hl-accent{color:var(--blue)}
 .hero h1 .hl-block{background:var(--blue);color:var(--white);padding:0 .12em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
@@ -106,15 +121,26 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
 .section-dark .grid-3{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.15)}
 .value-card{background:var(--white);padding:40px 32px;display:grid;gap:16px}
+.value-card:hover{background:var(--paper)}
+.value-card.reveal{transition:opacity .7s var(--ease),transform .5s var(--ease),background-color .25s var(--ease)}
 .section-dark .value-card{background:var(--black)}
+.section-dark .value-card:hover{background:rgba(255,255,255,.04)}
 .value-card .num{font-family:var(--font-mono);font-size:12px;color:var(--blue);letter-spacing:.1em}
 .value-card h3{font-size:26px}
 .value-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:15px;color:var(--gray)}
 .section-dark .value-card p{color:rgba(255,255,255,.68)}
+.value-card.reveal:nth-child(2){transition-delay:.1s}
+.value-card.reveal:nth-child(3){transition-delay:.2s}
 
 .ministry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
-.ministry-card{border:1px solid var(--line);padding:32px 28px;display:grid;gap:14px;transition:border-color .2s var(--ease),transform .2s var(--ease)}
-.ministry-card:hover{border-color:var(--blue);transform:translateY(-3px)}
+.ministry-card{border:1px solid var(--line);padding:32px 28px;display:grid;gap:14px}
+.ministry-card:hover{border-color:var(--blue);transform:translateY(-3px);box-shadow:0 14px 28px -12px rgba(0,0,0,.35)}
+.ministry-card.reveal{transition:opacity .7s var(--ease),transform .5s var(--ease),border-color .25s var(--ease),box-shadow .25s var(--ease)}
+.ministry-card.reveal:nth-child(2){transition-delay:.08s}
+.ministry-card.reveal:nth-child(3){transition-delay:.16s}
+.ministry-card.reveal:nth-child(4){transition-delay:.24s}
+.ministry-card.reveal:nth-child(5){transition-delay:.32s}
+.ministry-card.reveal:nth-child(6){transition-delay:.4s}
 .ministry-card h3{font-size:24px}
 .ministry-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:14.5px;color:var(--gray)}
 .ministry-card .tag{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
@@ -138,14 +164,14 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .footer-col p,.footer-col a{display:block;font-family:var(--font-body);font-weight:400;text-transform:none;font-size:14.5px;color:rgba(255,255,255,.75);margin-bottom:10px}
 .footer-col a:hover{color:var(--blue)}
 .footer-social{display:flex;gap:14px;margin-top:6px}
-.footer-social a{width:36px;height:36px;border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;margin-bottom:0}
-.footer-social a:hover{border-color:var(--blue);background:var(--blue)}
+.footer-social a{width:36px;height:36px;border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;margin-bottom:0;transition:border-color .2s var(--ease),background .2s var(--ease),transform .2s var(--ease)}
+.footer-social a:hover{border-color:var(--blue);background:var(--blue);transform:translateY(-2px)}
 .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-family:var(--font-mono);font-size:12px;color:rgba(255,255,255,.4);flex-wrap:wrap;gap:12px}
 
 /* sermons */
 .sermon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
-.sermon-card{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--white);overflow:hidden;transition:border-color .2s var(--ease),transform .2s var(--ease)}
-.sermon-card:not(.is-skeleton):hover{border-color:var(--blue);transform:translateY(-3px)}
+.sermon-card{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--white);overflow:hidden;transition:border-color .2s var(--ease),transform .2s var(--ease),box-shadow .2s var(--ease)}
+.sermon-card:not(.is-skeleton):hover{border-color:var(--blue);transform:translateY(-3px);box-shadow:0 14px 28px -12px rgba(0,0,0,.18)}
 .sermon-thumb{position:relative;aspect-ratio:16/9;background:#0b0b0c center/cover no-repeat;cursor:pointer;display:block;border:0;width:100%;padding:0}
 .sermon-thumb .play{position:absolute;inset:0;margin:auto;width:56px;height:56px;border-radius:999px;background:rgba(178,58,120,.92);display:flex;align-items:center;justify-content:center;transition:transform .2s var(--ease),background .2s var(--ease)}
 .sermon-thumb .play svg{width:20px;height:20px;margin-left:3px;fill:#fff}
@@ -175,7 +201,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   .container{padding-left:28px;padding-right:28px}
   .nav-links,.lang-toggle,.nav-give{display:none}
   .menu-btn{display:flex}
-  .nav.is-open{position:absolute;top:100%;left:0;right:0;background:var(--black);border-bottom:1px solid rgba(255,255,255,.12);flex-direction:column;align-items:stretch;padding:24px var(--pad);gap:20px}
+  .nav.is-open{position:absolute;top:100%;left:0;right:0;background:var(--black);border-bottom:1px solid rgba(255,255,255,.12);flex-direction:column;align-items:stretch;padding:24px var(--pad);gap:20px;animation:navDropIn .25s var(--ease)}
+  @keyframes navDropIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
   .nav.is-open .nav-links{display:flex;flex-direction:column;gap:20px}
   .nav.is-open .lang-toggle{display:flex;width:max-content}
   .nav.is-open .nav-give{display:inline-flex;width:max-content}
@@ -190,7 +217,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 }
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
-  .live-dot{animation:none}
+  .live-dot,.nav-give,.hero .live-tag,.hero h1,.hero .btn-row,.nav.is-open{animation:none}
   html{scroll-behavior:auto}
 }
 </style>
@@ -256,20 +283,20 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
       <p data-lang-es>Casa Del Reino nació con una visión sencilla: construir una casa donde las familias puedan encontrar amor real, una comunidad genuina, y un camino claro de transformación a través de Jesús. No importa de dónde vengas o qué temporada estés viviendo — aquí hay un lugar para ti.</p>
       <p data-lang-en>Casa Del Reino was built around a simple vision: a house where families can find real love, genuine community, and a clear path of transformation through Jesus. No matter where you're coming from or what season you're in, there's a place for you here.</p>
     </div>
-    <div class="grid-3 reveal">
-      <div class="value-card">
+    <div class="grid-3">
+      <div class="value-card reveal">
         <span class="num">01</span>
         <h3>Amor</h3>
         <p data-lang-es>Antes que cualquier programa o evento, creemos en el poder de un amor que recibe a las personas tal como son.</p>
         <p data-lang-en>Before any program or event, we believe in the power of a love that receives people exactly as they are.</p>
       </div>
-      <div class="value-card">
+      <div class="value-card reveal">
         <span class="num">02</span>
         <h3>Familia</h3>
         <p data-lang-es>Somos una familia multigeneracional — niños, jóvenes, padres y abuelos creciendo juntos en fe.</p>
         <p data-lang-en>We are a multigenerational family — kids, youth, parents, and grandparents growing together in faith.</p>
       </div>
-      <div class="value-card">
+      <div class="value-card reveal">
         <span class="num">03</span>
         <h3 data-lang-es>Transformación</h3>
         <h3 data-lang-en>Transformation</h3>
@@ -317,38 +344,38 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
       <p data-lang-es>Cada ministerio es una puerta para conectar, crecer y servir. Encuentra el espacio donde tú y tu familia pueden echar raíces.</p>
       <p data-lang-en>Every ministry is a door to connect, grow, and serve. Find the space where you and your family can put down roots.</p>
     </div>
-    <div class="ministry-grid reveal">
-      <div class="ministry-card">
+    <div class="ministry-grid">
+      <div class="ministry-card reveal">
         <span class="tag" data-lang-es>Domingos · durante el servicio</span><span class="tag" data-lang-en>Sundays · during service</span>
         <h3 data-lang-es>Niños</h3><h3 data-lang-en>Kids</h3>
         <p data-lang-es>Un espacio seguro y divertido donde los más pequeños aprenden de Dios a su manera, a través de juegos, historias y música.</p>
         <p data-lang-en>A safe, fun space where kids learn about God in ways made for them — through games, stories, and music.</p>
       </div>
-      <div class="ministry-card">
+      <div class="ministry-card reveal">
         <span class="tag" data-lang-es>Reuniones semanales</span><span class="tag" data-lang-en>Weekly gatherings</span>
         <h3 data-lang-es>Jóvenes</h3><h3 data-lang-en>Youth</h3>
         <p data-lang-es>Adolescentes y jóvenes creciendo en identidad, propósito y comunidad — un espacio para hacer preguntas reales y encontrar respuestas.</p>
         <p data-lang-en>Teens and young people growing in identity, purpose, and community — a space for real questions and real answers.</p>
       </div>
-      <div class="ministry-card">
+      <div class="ministry-card reveal">
         <span class="tag" data-lang-es>Equipo de producción</span><span class="tag" data-lang-en>Production team</span>
         <h3 data-lang-es>Alabanza</h3><h3 data-lang-en>Worship</h3>
         <p data-lang-es>El equipo de música, sonido y producción que lidera cada celebración — sirviendo con excelencia detrás y delante del escenario.</p>
         <p data-lang-en>The music, sound, and production team leading every celebration — serving with excellence on and off the stage.</p>
       </div>
-      <div class="ministry-card">
+      <div class="ministry-card reveal">
         <span class="tag" data-lang-es>Grupos y eventos</span><span class="tag" data-lang-en>Groups &amp; events</span>
         <h3 data-lang-es>Mujeres</h3><h3 data-lang-en>Women</h3>
         <p data-lang-es>Un espacio para que las mujeres se conecten, oren y crezcan juntas en cada temporada de la vida.</p>
         <p data-lang-en>A space for women to connect, pray, and grow together in every season of life.</p>
       </div>
-      <div class="ministry-card">
+      <div class="ministry-card reveal">
         <span class="tag" data-lang-es>Grupos y eventos</span><span class="tag" data-lang-en>Groups &amp; events</span>
         <h3 data-lang-es>Hombres</h3><h3 data-lang-en>Men</h3>
         <p data-lang-es>Hombres construyendo carácter, propósito y hermandad real, dentro y fuera de las paredes de la iglesia.</p>
         <p data-lang-en>Men building character, purpose, and real brotherhood — inside and outside the church walls.</p>
       </div>
-      <div class="ministry-card">
+      <div class="ministry-card reveal">
         <span class="tag" data-lang-es>Cada semana</span><span class="tag" data-lang-en>Every week</span>
         <h3 data-lang-es>Oración</h3><h3 data-lang-en>Prayer</h3>
         <p data-lang-es>El corazón detrás de todo lo que hacemos en esta casa — un equipo dedicado a cubrir en oración a la iglesia y la comunidad.</p>
