@@ -602,15 +602,15 @@ document.getElementById('year').textContent = new Date().getFullYear();
 })();
 
 /* ---- Recent sermons from YouTube ----
-   Pulls the 3 newest videos from the channel's public feed at page load,
-   so it auto-updates as new sermons are posted (no manual edits needed).
-   YouTube's feed isn't CORS-enabled for browsers, so we read it through a
-   public CORS proxy, trying a couple in case one is down. If all fail, a
-   tasteful fallback points visitors to the channel. */
+   Pulls the 3 newest videos from a specific playlist's public feed at page
+   load, so it auto-updates as new sermons are added to it (no manual edits
+   needed). YouTube's feed isn't CORS-enabled for browsers, so we read it
+   through a public CORS proxy, trying a couple in case one is down. If all
+   fail, a tasteful fallback points visitors to the channel. */
 (function(){
-  var CHANNEL_ID='UCnmH19dzWxrnHigDRzhE0ZQ';
+  var PLAYLIST_ID='PLARohoB7nsl4';
   var CHANNEL_URL='https://www.youtube.com/@casadelreinomaincampus';
-  var FEED='https://www.youtube.com/feeds/videos.xml?channel_id='+CHANNEL_ID;
+  var FEED='https://www.youtube.com/feeds/videos.xml?playlist_id='+PLAYLIST_ID;
   var PROXIES=[
     function(u){return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u);},
     function(u){return 'https://corsproxy.io/?url='+encodeURIComponent(u);},

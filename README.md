@@ -21,12 +21,12 @@ api/livestream.js    Vercel serverless function: reports whether the channel is
 3. Requires Vercel's default Node runtime (Node 18+) — already the default.
 
 ## How the sermons section works
-- On load, the page calls `/api/sermons` (your own backend). That function fetches the channel's public feed server-side and returns the 3 newest videos as JSON. No CORS issue, no third-party dependency in the normal path.
+- On load, the page calls `/api/sermons` (your own backend). That function fetches a specific playlist's public feed server-side and returns the 3 newest videos in it as JSON. No CORS issue, no third-party dependency in the normal path.
 - If YouTube refuses the direct request from Vercel's IP, the function automatically retries through a couple of proxies server-side, so it still returns data.
 - The feed is cached at Vercel's edge for 10 min (`stale-while-revalidate`), so a newly posted sermon appears quickly without hammering YouTube.
 - Click any thumbnail to play inline (privacy-friendly youtube-nocookie embed). Titles + dates follow the ES/EN toggle.
 - If `/api/sermons` is unreachable (e.g. the function wasn't deployed), the page falls back to public proxies, then to a "watch on YouTube" message — so it never looks broken.
-- **Live/upcoming broadcasts are excluded.** The channel's RSS feed lists every public video, including one that's currently live or scheduled — those aren't finished sermons yet. If `YOUTUBE_API_KEY` is set (see below), the function checks each video's `liveBroadcastContent` via the YouTube Data API and drops any `live`/`upcoming` entry before returning the newest 3. Without a key, RSS alone can't tell them apart, so the feed is returned unfiltered — setting the key (already recommended for the live indicator) fixes this too.
+- **Live/upcoming broadcasts are excluded.** The playlist's RSS feed lists every video in it, including one that's currently live or scheduled — those aren't finished sermons yet. If `YOUTUBE_API_KEY` is set (see below), the function checks each video's `liveBroadcastContent` via the YouTube Data API and drops any `live`/`upcoming` entry before returning the newest 3. Without a key, RSS alone can't tell them apart, so the feed is returned unfiltered — setting the key (already recommended for the live indicator) fixes this too.
 
 ## Troubleshooting the sermons feed
 If the section shows "couldn't load" or no videos:
@@ -39,7 +39,7 @@ If the section shows "couldn't load" or no videos:
    - `entriesParsed` + `sample` — how many videos parsed and the newest few
    - `liveFilterApplied` / `entriesAfterLiveFilter` — whether the live/upcoming filter ran (needs `YOUTUBE_API_KEY`) and how many entries survived it
    This tells you immediately whether it's a deploy issue, a YouTube-blocking issue, or a parsing issue.
-3. Channel ID is set in `CHANNEL_ID` (currently `UCnmH19dzWxrnHigDRzhE0ZQ`) in both `api/sermons.js` and the inline script in `index.html`.
+3. Playlist ID is set in `PLAYLIST_ID` (currently `PLARohoB7nsl4`) in both `api/sermons.js` and the inline script in `index.html`.
 
 ## How the live indicator works
 - Every 45s (and once on page load), the page calls `/api/livestream`. That function checks server-side whether a broadcast is currently active (see the probes below).

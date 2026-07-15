@@ -1,8 +1,9 @@
-// Vercel serverless function: returns the church's 3 newest YouTube videos
-// as JSON. Runs server-side (no browser CORS limits). Vercel auto-detects any
-// file in /api as a function — no config needed. Requires Node 18+ (default).
+// Vercel serverless function: returns the 3 newest YouTube videos from a
+// specific playlist, as JSON. Runs server-side (no browser CORS limits).
+// Vercel auto-detects any file in /api as a function — no config needed.
+// Requires Node 18+ (default).
 //
-// The channel's RSS feed lists every public video, including a broadcast
+// The playlist's RSS feed lists every video in it, including a broadcast
 // that's currently live or scheduled ("upcoming") — those aren't finished
 // sermons yet, so they're filtered out below (see filterOutLive). That check
 // needs the YouTube Data API (same YOUTUBE_API_KEY used by api/livestream.js);
@@ -14,8 +15,8 @@
 // entries parsed, whether the live filter ran, and a sample). This makes
 // failures easy to pinpoint.
 
-const CHANNEL_ID = 'UCnmH19dzWxrnHigDRzhE0ZQ';
-const FEED = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + CHANNEL_ID;
+const PLAYLIST_ID = 'PLARohoB7nsl4';
+const FEED = 'https://www.youtube.com/feeds/videos.xml?playlist_id=' + PLAYLIST_ID;
 
 // Tried in order. Direct first (clean, no third party). The proxies are only a
 // backup in case YouTube refuses Vercel's datacenter IP — they return the XML
@@ -123,7 +124,7 @@ module.exports = async function handler(req, res) {
       source: feed.source,
       upstreamStatus: feed.status,
       error: feed.error || null,
-      channelId: CHANNEL_ID,
+      playlistId: PLAYLIST_ID,
       entriesParsed: all.length,
       liveFilterApplied: liveFilter.applied,
       entriesAfterLiveFilter: liveFilter.items.length,
