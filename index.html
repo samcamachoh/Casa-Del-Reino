@@ -42,7 +42,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 /* header */
 .site-header{position:sticky;top:0;z-index:100;background:rgba(11,11,12,.85);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.12)}
 .header-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
-.logo{font-family:var(--font-display);font-weight:900;font-size:21px;text-transform:uppercase;letter-spacing:.02em;color:var(--white);display:flex;align-items:center;gap:12px}
+.logo{position:relative;z-index:95;font-family:var(--font-display);font-weight:900;font-size:21px;text-transform:uppercase;letter-spacing:.02em;color:var(--white);display:flex;align-items:center;gap:12px}
 .logo .mark{width:12px;height:12px;background:var(--blue);display:inline-block}
 .logo-img{height:40px;width:auto;display:block;transition:transform .3s var(--ease)}
 .logo:hover .logo-img{transform:scale(1.06)}
@@ -55,7 +55,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .lang-toggle{display:flex;border:1px solid rgba(255,255,255,.5);border-radius:999px;overflow:hidden;font-family:var(--font-mono);font-size:12px;font-weight:600}
 .lang-toggle button{background:transparent;border:none;padding:7px 14px;cursor:pointer;color:var(--white);font:inherit;letter-spacing:.04em;transition:background .2s var(--ease),color .2s var(--ease)}
 .lang-toggle button.is-active{background:var(--white);color:var(--black)}
-.menu-btn{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:6px}
+.menu-btn{position:relative;z-index:95;display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:6px}
 .menu-btn span{width:22px;height:2px;background:var(--white);transition:transform .25s var(--ease),opacity .25s var(--ease)}
 .nav.is-open ~ .menu-btn span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 .nav.is-open ~ .menu-btn span:nth-child(2){opacity:0}
@@ -196,16 +196,19 @@ a.sermon-title:hover{color:var(--blue)}
 a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 
 @media (max-width:900px){
+  body.nav-locked{overflow:hidden}
   .hero{background-image:url('Mobile%20Hero.png');background-size:cover;background-position:top center}
   .hero-inner{gap:34px}
   .container{padding-left:28px;padding-right:28px}
   .nav-links,.lang-toggle,.nav-give{display:none}
   .menu-btn{display:flex}
-  .nav.is-open{position:absolute;top:100%;left:0;right:0;background:var(--black);border-bottom:1px solid rgba(255,255,255,.12);flex-direction:column;align-items:stretch;padding:24px var(--pad);gap:20px;animation:navDropIn .25s var(--ease)}
-  @keyframes navDropIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
-  .nav.is-open .nav-links{display:flex;flex-direction:column;gap:20px}
-  .nav.is-open .lang-toggle{display:flex;width:max-content}
-  .nav.is-open .nav-give{display:inline-flex;width:max-content}
+  .nav.is-open{position:fixed;top:0;left:0;right:0;bottom:0;height:100dvh;z-index:90;background:var(--black);flex-direction:column;align-items:center;justify-content:center;padding:100px var(--pad) 40px;gap:36px;overflow-y:auto;animation:navDropIn .3s var(--ease)}
+  @keyframes navDropIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+  .nav.is-open .nav-links{display:flex;flex-direction:column;align-items:center;gap:30px}
+  .nav.is-open .nav-links a{font-family:var(--font-display);font-size:clamp(30px,9vw,42px);font-weight:800;letter-spacing:.01em;padding-bottom:0}
+  .nav.is-open .lang-toggle{display:flex;width:max-content;font-size:15px}
+  .nav.is-open .lang-toggle button{padding:9px 18px}
+  .nav.is-open .nav-give{display:inline-flex;width:max-content;font-size:16px;padding:16px 36px}
   .grid-3,.ministry-grid{grid-template-columns:1fr}
   .sermon-grid{grid-template-columns:1fr}
   .visit-grid{grid-template-columns:1fr}
@@ -505,9 +508,15 @@ document.getElementById('year').textContent = new Date().getFullYear();
   });
 
   var menuBtn=document.querySelector('.menu-btn'), nav=document.querySelector('.nav');
-  menuBtn.addEventListener('click',function(){nav.classList.toggle('is-open');});
+  menuBtn.addEventListener('click',function(){
+    nav.classList.toggle('is-open');
+    document.body.classList.toggle('nav-locked', nav.classList.contains('is-open'));
+  });
   document.querySelectorAll('.nav-links a, .nav-give').forEach(function(a){
-    a.addEventListener('click',function(){nav.classList.remove('is-open');});
+    a.addEventListener('click',function(){
+      nav.classList.remove('is-open');
+      document.body.classList.remove('nav-locked');
+    });
   });
 
   var items=document.querySelectorAll('.reveal');
