@@ -2,9 +2,17 @@
 // as JSON. Runs server-side (no browser CORS limits). Vercel auto-detects any
 // file in /api as a function — no config needed. Requires Node 18+ (default).
 //
+// The channel's RSS feed lists every public video, including a broadcast
+// that's currently live or scheduled ("upcoming") — those aren't finished
+// sermons yet, so they're filtered out below (see filterOutLive). That check
+// needs the YouTube Data API (same YOUTUBE_API_KEY used by api/livestream.js);
+// without a key, RSS alone can't tell a live/upcoming entry from a finished
+// video, so the feed is returned unfiltered.
+//
 // Diagnostics: open /api/sermons?debug=1 in a browser to see exactly what the
 // server got from YouTube (which source worked, upstream status, how many
-// entries parsed, and a sample). This makes failures easy to pinpoint.
+// entries parsed, whether the live filter ran, and a sample). This makes
+// failures easy to pinpoint.
 
 const CHANNEL_ID = 'UCnmH19dzWxrnHigDRzhE0ZQ';
 const FEED = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + CHANNEL_ID;
@@ -53,6 +61,34 @@ function fetchWithTimeout(url, ms) {
   }).finally(function () { clearTimeout(t); });
 }
 
+// Drops any video that's currently live or scheduled ("upcoming") using the
+// YouTube Data API (1 quota unit for up to 50 ids in a single videos.list
+// call). liveBroadcastContent is only "live"/"upcoming" while a broadcast is
+// active or scheduled — a finished stream reverts to "none" like any regular
+// upload, so past sermons that started life as livestreams are unaffected.
+async function filterOutLive(items, apiKey) {
+  if (!apiKey || !items.length) return { items: items, applied: false };
+  try {
+    const ids = items.map(function (i) { return i.id; });
+    const url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id='
+      + encodeURIComponent(ids.join(',')) + '&key=' + encodeURIComponent(apiKey);
+    const r = await fetchWithTimeout(url, 7000);
+    if (!r.ok) return { items: items, applied: false };
+    const data = await r.json();
+    const statusById = {};
+    for (const v of (data.items || [])) {
+      statusById[v.id] = v.snippet && v.snippet.liveBroadcastContent;
+    }
+    const filtered = items.filter(function (i) {
+      const status = statusById[i.id];
+      return status !== 'live' && status !== 'upcoming';
+    });
+    return { items: filtered, applied: true };
+  } catch (e) {
+    return { items: items, applied: false };
+  }
+}
+
 // Walk the sources until one returns XML that actually contains entries.
 async function getFeed() {
   let lastStatus = 0, lastErr = '';
@@ -77,7 +113,8 @@ module.exports = async function handler(req, res) {
 
   const feed = await getFeed();
   const all = feed.xml ? parseFeed(feed.xml) : [];
-  const items = all.slice(0, 6);
+  const liveFilter = await filterOutLive(all, process.env.YOUTUBE_API_KEY);
+  const items = liveFilter.items.slice(0, 6);
 
   if (debug) {
     res.setHeader('Cache-Control', 'no-store');
@@ -88,6 +125,8 @@ module.exports = async function handler(req, res) {
       error: feed.error || null,
       channelId: CHANNEL_ID,
       entriesParsed: all.length,
+      liveFilterApplied: liveFilter.applied,
+      entriesAfterLiveFilter: liveFilter.items.length,
       sample: items
     });
   }

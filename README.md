@@ -26,6 +26,7 @@ api/livestream.js    Vercel serverless function: reports whether the channel is
 - The feed is cached at Vercel's edge for 10 min (`stale-while-revalidate`), so a newly posted sermon appears quickly without hammering YouTube.
 - Click any thumbnail to play inline (privacy-friendly youtube-nocookie embed). Titles + dates follow the ES/EN toggle.
 - If `/api/sermons` is unreachable (e.g. the function wasn't deployed), the page falls back to public proxies, then to a "watch on YouTube" message — so it never looks broken.
+- **Live/upcoming broadcasts are excluded.** The channel's RSS feed lists every public video, including one that's currently live or scheduled — those aren't finished sermons yet. If `YOUTUBE_API_KEY` is set (see below), the function checks each video's `liveBroadcastContent` via the YouTube Data API and drops any `live`/`upcoming` entry before returning the newest 6. Without a key, RSS alone can't tell them apart, so the feed is returned unfiltered — setting the key (already recommended for the live indicator) fixes this too.
 
 ## Troubleshooting the sermons feed
 If the section shows "couldn't load" or no videos:
@@ -36,6 +37,7 @@ If the section shows "couldn't load" or no videos:
    - `source` — which source worked (`direct`, `allorigins`, `corsproxy`) or `null` if all failed
    - `upstreamStatus` / `error` — what YouTube/proxies returned
    - `entriesParsed` + `sample` — how many videos parsed and the newest few
+   - `liveFilterApplied` / `entriesAfterLiveFilter` — whether the live/upcoming filter ran (needs `YOUTUBE_API_KEY`) and how many entries survived it
    This tells you immediately whether it's a deploy issue, a YouTube-blocking issue, or a parsing issue.
 3. Channel ID is set in `CHANNEL_ID` (currently `UCnmH19dzWxrnHigDRzhE0ZQ`) in both `api/sermons.js` and the inline script in `index.html`.
 
