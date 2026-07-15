@@ -73,6 +73,9 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
 .hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
 .hero h1{font-size:clamp(28px,8.2vw,96px);overflow-wrap:break-word;min-width:0;max-width:100%}
+.hero h1 .hl-bold{font-weight:900}
+.hero h1 .hl-accent{color:var(--blue)}
+.hero h1 .hl-block{background:var(--blue);color:var(--white);padding:0 .12em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 .live-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--white);background:var(--live);padding:6px 14px;border-radius:999px}
 .live-dot{width:7px;height:7px;border-radius:999px;background:var(--white);animation:livepulse 1.4s ease-in-out infinite;flex:none}
 @keyframes livepulse{0%,100%{opacity:1}50%{opacity:.3}}
@@ -218,7 +221,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
       <span class="live-dot"></span>
       <span data-lang-es>En vivo ahora</span><span data-lang-en>Live now</span>
     </span>
-    <h1><span data-lang-es>Un lugar de Amor, Familia y Transformación.</span><span data-lang-en>A place of Love, Family, and Transformation.</span></h1>
+    <h1><span data-lang-es>Un lugar de <span class="hl-bold">Amor</span>, <span class="hl-accent">Familia</span> y <span class="hl-block">Transformación</span>.</span><span data-lang-en>A place of <span class="hl-bold">Love</span>, <span class="hl-accent">Family</span>, and <span class="hl-block">Transformation</span>.</span></h1>
     <div class="btn-row">
       <a href="#" id="hero-live-btn" class="btn btn-live" target="_blank" rel="noopener" hidden>
         <span data-lang-es>Únete al servicio en vivo</span><span data-lang-en>Join the live service</span>
