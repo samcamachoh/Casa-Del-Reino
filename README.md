@@ -8,7 +8,7 @@ index.html          The homepage (HTML, CSS, JS, logos all inline)
 about.html           The "About Us" page — apostles + campus photo, linked from
                      the "Conoce más sobre nosotros" button in the homepage's
                      Nosotros section
-api/sermons.js       Vercel serverless function: returns the 6 newest YouTube
+api/sermons.js       Vercel serverless function: returns the 3 newest YouTube
                      videos as JSON (server-side, so no CORS / no third-party proxy)
 api/livestream.js    Vercel serverless function: reports whether the channel is
                      currently live, and the video id to embed if so
@@ -21,12 +21,12 @@ api/livestream.js    Vercel serverless function: reports whether the channel is
 3. Requires Vercel's default Node runtime (Node 18+) — already the default.
 
 ## How the sermons section works
-- On load, the page calls `/api/sermons` (your own backend). That function fetches the channel's public feed server-side and returns the 6 newest videos as JSON. No CORS issue, no third-party dependency in the normal path.
+- On load, the page calls `/api/sermons` (your own backend). That function fetches the channel's public feed server-side and returns the 3 newest videos as JSON. No CORS issue, no third-party dependency in the normal path.
 - If YouTube refuses the direct request from Vercel's IP, the function automatically retries through a couple of proxies server-side, so it still returns data.
 - The feed is cached at Vercel's edge for 10 min (`stale-while-revalidate`), so a newly posted sermon appears quickly without hammering YouTube.
 - Click any thumbnail to play inline (privacy-friendly youtube-nocookie embed). Titles + dates follow the ES/EN toggle.
 - If `/api/sermons` is unreachable (e.g. the function wasn't deployed), the page falls back to public proxies, then to a "watch on YouTube" message — so it never looks broken.
-- **Live/upcoming broadcasts are excluded.** The channel's RSS feed lists every public video, including one that's currently live or scheduled — those aren't finished sermons yet. If `YOUTUBE_API_KEY` is set (see below), the function checks each video's `liveBroadcastContent` via the YouTube Data API and drops any `live`/`upcoming` entry before returning the newest 6. Without a key, RSS alone can't tell them apart, so the feed is returned unfiltered — setting the key (already recommended for the live indicator) fixes this too.
+- **Live/upcoming broadcasts are excluded.** The channel's RSS feed lists every public video, including one that's currently live or scheduled — those aren't finished sermons yet. If `YOUTUBE_API_KEY` is set (see below), the function checks each video's `liveBroadcastContent` via the YouTube Data API and drops any `live`/`upcoming` entry before returning the newest 3. Without a key, RSS alone can't tell them apart, so the feed is returned unfiltered — setting the key (already recommended for the live indicator) fixes this too.
 
 ## Troubleshooting the sermons feed
 If the section shows "couldn't load" or no videos:

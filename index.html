@@ -339,9 +339,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
       <div class="sermon-card is-skeleton"><div class="sermon-thumb"></div><div class="sermon-body"><span class="sk-line"></span><span class="sk-line short"></span></div></div>
       <div class="sermon-card is-skeleton"><div class="sermon-thumb"></div><div class="sermon-body"><span class="sk-line"></span><span class="sk-line short"></span></div></div>
       <div class="sermon-card is-skeleton"><div class="sermon-thumb"></div><div class="sermon-body"><span class="sk-line"></span><span class="sk-line short"></span></div></div>
-      <div class="sermon-card is-skeleton"><div class="sermon-thumb"></div><div class="sermon-body"><span class="sk-line"></span><span class="sk-line short"></span></div></div>
-      <div class="sermon-card is-skeleton"><div class="sermon-thumb"></div><div class="sermon-body"><span class="sk-line"></span><span class="sk-line short"></span></div></div>
-      <div class="sermon-card is-skeleton"><div class="sermon-thumb"></div><div class="sermon-body"><span class="sk-line"></span><span class="sk-line short"></span></div></div>
     </div>
     <div class="btn-row reveal" style="margin-top:48px;">
       <a href="https://www.youtube.com/@casadelreinomaincampus" target="_blank" rel="noopener" class="btn btn-outline-dark">
@@ -605,7 +602,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 })();
 
 /* ---- Recent sermons from YouTube ----
-   Pulls the 6 newest videos from the channel's public feed at page load,
+   Pulls the 3 newest videos from the channel's public feed at page load,
    so it auto-updates as new sermons are posted (no manual edits needed).
    YouTube's feed isn't CORS-enabled for browsers, so we read it through a
    public CORS proxy, trying a couple in case one is down. If all fail, a
@@ -686,7 +683,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
   function parse(xmlText){
     var doc=new DOMParser().parseFromString(xmlText,'text/xml');
     if(doc.querySelector('parsererror')) return [];
-    var entries=Array.prototype.slice.call(doc.getElementsByTagName('entry'),0,6);
+    var entries=Array.prototype.slice.call(doc.getElementsByTagName('entry'),0,3);
     return entries.map(function(e){
       var id='', link=e.getElementsByTagName('link')[0];
       if(link){ try{ id=new URL(link.getAttribute('href')).searchParams.get('v')||''; }catch(_){} }
@@ -713,7 +710,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
       clearTimeout(to); if(!r.ok) throw 0; return r.json();
     }).then(function(d){
       if(!d||!d.items||!d.items.length) throw 0;
-      return d.items.slice(0,6);
+      return d.items.slice(0,3);
     });
   }
   // Prefer our own Vercel function (no CORS, no third party). Fall back to
