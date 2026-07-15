@@ -42,22 +42,29 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 /* header */
 .site-header{position:sticky;top:0;z-index:100;background:rgba(11,11,12,.85);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.12)}
 .header-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
-.logo{font-family:var(--font-display);font-weight:900;font-size:21px;text-transform:uppercase;letter-spacing:.02em;color:var(--white);display:flex;align-items:center;gap:12px}
+.logo{position:relative;z-index:95;font-family:var(--font-display);font-weight:900;font-size:21px;text-transform:uppercase;letter-spacing:.02em;color:var(--white);display:flex;align-items:center;gap:12px}
 .logo .mark{width:12px;height:12px;background:var(--blue);display:inline-block}
-.logo-img{height:40px;width:auto;display:block}
+.logo-img{height:40px;width:auto;display:block;transition:transform .3s var(--ease)}
+.logo:hover .logo-img{transform:scale(1.06)}
 .nav{display:flex;align-items:center;gap:36px}
 .nav-links{display:flex;gap:30px;list-style:none;margin:0;padding:0}
-.nav-links a{font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--white);position:relative;padding-bottom:4px}
+.nav-links a{font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--white);position:relative;padding-bottom:4px;transition:color .2s var(--ease)}
 .nav-links a::after{content:'';position:absolute;left:0;right:100%;bottom:0;height:2px;background:var(--blue);transition:right .25s var(--ease)}
+.nav-links a:hover{color:var(--blue)}
 .nav-links a:hover::after{right:0}
 .lang-toggle{display:flex;border:1px solid rgba(255,255,255,.5);border-radius:999px;overflow:hidden;font-family:var(--font-mono);font-size:12px;font-weight:600}
-.lang-toggle button{background:transparent;border:none;padding:7px 14px;cursor:pointer;color:var(--white);font:inherit;letter-spacing:.04em}
+.lang-toggle button{background:transparent;border:none;padding:7px 14px;cursor:pointer;color:var(--white);font:inherit;letter-spacing:.04em;transition:background .2s var(--ease),color .2s var(--ease)}
 .lang-toggle button.is-active{background:var(--white);color:var(--black)}
-.menu-btn{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:6px}
-.menu-btn span{width:22px;height:2px;background:var(--white)}
+.menu-btn{position:relative;z-index:95;display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:6px}
+.menu-btn span{width:22px;height:2px;background:var(--white);transition:transform .25s var(--ease),opacity .25s var(--ease)}
+.nav.is-open ~ .menu-btn span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav.is-open ~ .menu-btn span:nth-child(2){opacity:0}
+.nav.is-open ~ .menu-btn span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
 /* buttons */
 .btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:15px 26px;border-radius:2px;border:1px solid transparent;cursor:pointer;transition:all .2s var(--ease)}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.97)}
 .btn-primary{background:var(--blue);color:var(--white);border-color:var(--blue)}
 .btn-primary:hover{background:var(--blue-deep);border-color:var(--blue-deep)}
 .btn-outline-light{background:transparent;color:var(--white);border-color:rgba(255,255,255,.4)}
@@ -65,6 +72,11 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .btn-outline-dark{background:transparent;color:var(--black);border-color:var(--black)}
 .btn-outline-dark:hover{background:var(--black);color:var(--white)}
 .btn-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+
+/* Dar/Give nav button — kept extra prominent with a standing glow and gentle pulse */
+.nav-give{position:relative;font-weight:700;padding:13px 30px;box-shadow:0 6px 18px -4px rgba(178,58,120,.55);animation:givePulse 2.8s ease-in-out infinite}
+.nav-give:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 10px 26px -4px rgba(178,58,120,.7)}
+@keyframes givePulse{0%,100%{box-shadow:0 6px 18px -4px rgba(178,58,120,.55)}50%{box-shadow:0 6px 26px -2px rgba(178,58,120,.9)}}
 
 /* hero */
 .hero{position:relative;background:var(--black) url('Hero%20Image') center/cover no-repeat;color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:min(760px,90vh);padding:clamp(56px,9vw,96px) 0 56px}
@@ -163,12 +175,17 @@ a.sermon-title:hover{color:var(--blue)}
 a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 
 @media (max-width:900px){
+  body.nav-locked{overflow:hidden}
   .container{padding-left:28px;padding-right:28px}
-  .nav-links,.lang-toggle{display:none}
+  .nav-links,.lang-toggle,.nav-give{display:none}
   .menu-btn{display:flex}
-  .nav.is-open{position:absolute;top:100%;left:0;right:0;background:var(--black);border-bottom:1px solid rgba(255,255,255,.12);flex-direction:column;align-items:stretch;padding:24px var(--pad);gap:20px}
-  .nav.is-open .nav-links{display:flex;flex-direction:column;gap:20px}
-  .nav.is-open .lang-toggle{display:flex;width:max-content}
+  .nav.is-open{position:fixed;top:0;left:0;right:0;bottom:0;height:100dvh;z-index:90;background:var(--black);flex-direction:column;align-items:center;justify-content:center;padding:100px var(--pad) 40px;gap:36px;overflow-y:auto;animation:navDropIn .3s var(--ease)}
+  @keyframes navDropIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+  .nav.is-open .nav-links{display:flex;flex-direction:column;align-items:center;gap:30px}
+  .nav.is-open .nav-links a{font-family:var(--font-display);font-size:clamp(30px,9vw,42px);font-weight:800;letter-spacing:.01em;padding-bottom:0}
+  .nav.is-open .lang-toggle{display:flex;width:max-content;font-size:15px}
+  .nav.is-open .lang-toggle button{padding:9px 18px}
+  .nav.is-open .nav-give{display:inline-flex;width:max-content;font-size:16px;padding:16px 36px}
   .grid-3,.ministry-grid{grid-template-columns:1fr}
   .sermon-grid{grid-template-columns:1fr}
   .visit-grid{grid-template-columns:1fr}
@@ -180,7 +197,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 }
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
-  .live-dot{animation:none}
+  .live-dot,.nav-give,.nav.is-open{animation:none}
   html{scroll-behavior:auto}
 }
 
@@ -212,16 +229,17 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   <div class="container header-inner">
     <a href="index.html" class="logo" aria-label="Casa Del Reino — Inicio"><img class="logo-img" alt="" src="data:image/png;base64,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">Casa Del Reino</a>
     <nav class="nav">
+      <div class="lang-toggle">
+        <button data-lang="es" class="is-active">ES</button>
+        <button data-lang="en">EN</button>
+      </div>
       <ul class="nav-links">
         <li><a href="index.html#welcome"><span data-lang-es>Nosotros</span><span data-lang-en>About</span></a></li>
         <li><a href="index.html#sermons"><span data-lang-es>Sermones</span><span data-lang-en>Sermons</span></a></li>
         <li><a href="index.html#ministries"><span data-lang-es>Ministerios</span><span data-lang-en>Ministries</span></a></li>
         <li><a href="index.html#visit"><span data-lang-es>Visítanos</span><span data-lang-en>Visit</span></a></li>
       </ul>
-      <div class="lang-toggle">
-        <button data-lang="es" class="is-active">ES</button>
-        <button data-lang="en">EN</button>
-      </div>
+      <a href="index.html#giving" class="btn btn-primary nav-give"><span data-lang-es>Dar</span><span data-lang-en>Give</span></a>
     </nav>
     <button class="menu-btn" aria-label="Abrir menú / Open menu"><span></span><span></span><span></span></button>
   </div>
@@ -381,9 +399,15 @@ document.getElementById('year').textContent = new Date().getFullYear();
   });
 
   var menuBtn=document.querySelector('.menu-btn'), nav=document.querySelector('.nav');
-  menuBtn.addEventListener('click',function(){nav.classList.toggle('is-open');});
-  document.querySelectorAll('.nav-links a').forEach(function(a){
-    a.addEventListener('click',function(){nav.classList.remove('is-open');});
+  menuBtn.addEventListener('click',function(){
+    nav.classList.toggle('is-open');
+    document.body.classList.toggle('nav-locked', nav.classList.contains('is-open'));
+  });
+  document.querySelectorAll('.nav-links a, .nav-give').forEach(function(a){
+    a.addEventListener('click',function(){
+      nav.classList.remove('is-open');
+      document.body.classList.remove('nav-locked');
+    });
   });
 
   var items=document.querySelectorAll('.reveal');
