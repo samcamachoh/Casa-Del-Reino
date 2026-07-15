@@ -495,6 +495,24 @@ document.getElementById('year').textContent = new Date().getFullYear();
   }else{
     items.forEach(function(el){el.classList.add('is-visible');});
   }
+
+  function stripHash(){
+    history.replaceState(null,'',window.location.pathname+window.location.search);
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    var id=a.getAttribute('href').slice(1);
+    if(!id) return;
+    var target=document.getElementById(id);
+    if(!target) return;
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      target.scrollIntoView({behavior:'smooth',block:'start'});
+      stripHash();
+    });
+  });
+  if(location.hash && document.getElementById(location.hash.slice(1))){
+    setTimeout(stripHash,600);
+  }
 })();
 
 /* ---- Live indicator ----
