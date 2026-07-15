@@ -97,6 +97,10 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .section-head h2{font-size:clamp(34px,5vw,54px)}
 .section-head p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:17px;color:var(--gray);letter-spacing:0}
 .section-dark .section-head p{color:rgba(255,255,255,.7)}
+.section-blue .eyebrow{color:var(--white)}
+.section-blue .eyebrow::before{background:var(--white)}
+.section-blue .section-head p{color:rgba(255,255,255,.85);font-style:italic}
+.giving-embed{background:var(--white);border-radius:2px;padding:clamp(24px,4vw,40px);max-width:600px;margin:0 auto}
 
 /* grids / cards */
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
@@ -205,6 +209,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
         <li><a href="#welcome"><span data-lang-es>Nosotros</span><span data-lang-en>About</span></a></li>
         <li><a href="#sermons"><span data-lang-es>Sermones</span><span data-lang-en>Sermons</span></a></li>
         <li><a href="#ministries"><span data-lang-es>Ministerios</span><span data-lang-en>Ministries</span></a></li>
+        <li><a href="#giving"><span data-lang-es>Dar</span><span data-lang-en>Give</span></a></li>
         <li><a href="#visit"><span data-lang-es>Visítanos</span><span data-lang-en>Visit</span></a></li>
       </ul>
       <div class="lang-toggle">
@@ -348,6 +353,21 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
         <p data-lang-es>El corazón detrás de todo lo que hacemos en esta casa — un equipo dedicado a cubrir en oración a la iglesia y la comunidad.</p>
         <p data-lang-en>The heartbeat behind everything we do in this house — a team dedicated to covering the church and community in prayer.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-blue" id="giving">
+  <div class="container">
+    <div class="section-head reveal" style="margin:0 auto 48px;text-align:center;justify-items:center">
+      <span class="eyebrow"><span data-lang-es>Dar</span><span data-lang-en>Give</span></span>
+      <h2><span data-lang-es>Da con generosidad</span><span data-lang-en>Give generously</span></h2>
+      <p data-lang-es>"Cada uno debe dar según lo que haya decidido en su corazón, no de mala gana ni por obligación, porque Dios ama al que da con alegría." — 2 Corintios 9:7</p>
+      <p data-lang-en>"Each one must give as he has decided in his heart, not reluctantly or under compulsion, for God loves a cheerful giver." — 2 Corinthians 9:7</p>
+    </div>
+    <div class="giving-embed reveal">
+      <div id="pushpay-embedded-giving-fallback"></div>
+      <script>!function(){window.pushpayEmbeddedConfig={handle:"casadelreino",wgc:"eyJhc2tncCI6dHJ1ZX06S3J6cmN5QmF0N2VnMm9veElaeTVMMktYNGZF"};var e=document.createElement("script");function d(){if(!window.pushpayEmbeddedFallbackDone){window.pushpayEmbeddedFallbackDone=!0;var e=document.createElement("img");e.src="https://pushpay.com/Content/Beacons/eb.gif?error=EmbeddedWidgetLoadFailed",e.style.cssText="height:1px;width:1px;position:absolute;top:0;left:0;z-index:-1",document.body.appendChild(e)}}e.type="text/javascript",e.async=!0,e.src="https://embedded.pushpay.com?version=1.0.0",setTimeout(d,3e3),e.onerror=d,e.onload=function(){window.pushpayEmbeddedFallbackDone=!0},document.getElementsByTagName("head")[0].appendChild(e)}();</script>
     </div>
   </div>
 </section>
