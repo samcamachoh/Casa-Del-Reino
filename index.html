@@ -158,6 +158,16 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .ministry-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:14.5px;color:var(--gray)}
 .ministry-card .tag{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
 
+/* events */
+.event-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.15)}
+.event-card{background:var(--black);padding:44px 28px;display:grid;gap:12px;justify-items:center;text-align:center}
+.event-card.reveal{transition:opacity .7s var(--ease),transform .5s var(--ease),background-color .25s var(--ease)}
+.event-card:hover{background:rgba(255,255,255,.04)}
+.event-card .tag{font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+.event-card h3{font-size:clamp(30px,4vw,42px)}
+.event-card.reveal:nth-child(2){transition-delay:.1s}
+.event-card.reveal:nth-child(3){transition-delay:.2s}
+
 /* visit */
 .visit-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
 .detail-row{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:20px 0;border-bottom:1px solid var(--line)}
@@ -226,13 +236,14 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   .nav.is-open .nav-links li:nth-child(2){animation-delay:.15s}
   .nav.is-open .nav-links li:nth-child(3){animation-delay:.22s}
   .nav.is-open .nav-links li:nth-child(4){animation-delay:.29s}
+  .nav.is-open .nav-links li:nth-child(5){animation-delay:.36s}
   .nav.is-open .nav-links a{font-family:var(--font-display);font-size:clamp(30px,9vw,42px);font-weight:800;letter-spacing:.01em;padding-bottom:0;display:block;text-align:left;transition:transform .25s var(--ease),color .25s var(--ease)}
   .nav.is-open .nav-links a:active{transform:translateX(10px);color:var(--blue)}
-  .nav.is-open .nav-bottom{display:flex;align-items:center;justify-content:center;gap:20px;order:3;opacity:0;animation:navItemIn .5s var(--ease) forwards;animation-delay:.36s;width:100%}
+  .nav.is-open .nav-bottom{display:flex;align-items:center;justify-content:center;gap:20px;order:3;opacity:0;animation:navItemIn .5s var(--ease) forwards;animation-delay:.43s;width:100%}
   .nav.is-open .lang-toggle{display:flex;width:max-content;font-size:15px}
   .nav.is-open .lang-toggle button{padding:9px 18px}
   .nav.is-open .nav-give{display:inline-flex;justify-content:center;width:max-content;font-size:16px;padding:16px 56px}
-  .grid-3,.ministry-grid{grid-template-columns:1fr}
+  .grid-3,.ministry-grid,.event-grid{grid-template-columns:1fr}
   .sermon-grid{grid-template-columns:1fr}
   .visit-grid{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr;gap:36px;text-align:center}
@@ -261,6 +272,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
     <nav class="nav">
       <ul class="nav-links">
         <li><a href="about.html"><span data-lang-es>Nosotros</span><span data-lang-en>About</span></a></li>
+        <li><a href="#events"><span data-lang-es>Eventos</span><span data-lang-en>Events</span></a></li>
         <li><a href="#sermons"><span data-lang-es>Sermones</span><span data-lang-en>Sermons</span></a></li>
         <li><a href="#ministries"><span data-lang-es>Ministerios</span><span data-lang-en>Ministries</span></a></li>
         <li><a href="#visit"><span data-lang-es>Visítanos</span><span data-lang-en>Visit</span></a></li>
@@ -302,6 +314,31 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   <span data-lang-es>Celebración Domingos · 10:00 AM y 1:00 PM &nbsp;—&nbsp; Fundamentos de Fe Jueves · 7:30 PM</span>
   <span data-lang-en>Celebration Sundays · 10:00 AM &amp; 1:00 PM &nbsp;—&nbsp; Fundamentos de Fe Thursdays · 7:30 PM</span>
 </div>
+
+<section class="section section-dark" id="events">
+  <div class="container">
+    <div class="section-head reveal" style="margin:0 auto 48px;text-align:center;justify-items:center">
+      <span class="eyebrow"><span data-lang-es>Evento especial</span><span data-lang-en>Special event</span></span>
+      <h2><span data-lang-es>10.º Aniversario</span><span data-lang-en>10th Anniversary</span></h2>
+      <p data-lang-es>Celebra con nosotros una década de fe, familia y transformación. Marca tu calendario para este fin de semana especial.</p>
+      <p data-lang-en>Join us as we celebrate a decade of faith, family, and transformation. Mark your calendar for this special weekend.</p>
+    </div>
+    <div class="event-grid">
+      <div class="event-card reveal">
+        <span class="tag"><span data-lang-es>Viernes</span><span data-lang-en>Friday</span></span>
+        <h3>Sept 11</h3>
+      </div>
+      <div class="event-card reveal">
+        <span class="tag"><span data-lang-es>Sábado</span><span data-lang-en>Saturday</span></span>
+        <h3>Sept 12</h3>
+      </div>
+      <div class="event-card reveal">
+        <span class="tag"><span data-lang-es>Domingo</span><span data-lang-en>Sunday</span></span>
+        <h3>Sept 13</h3>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section class="section" id="welcome">
   <div class="container">
