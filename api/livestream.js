@@ -173,9 +173,17 @@ async function checkViaApi(apiKey, candidateId, dbg) {
     const items = data.items || [];
     dbg.apiItems = items.length;
     const liveItem = items.find(function (v) { return v.snippet && v.snippet.liveBroadcastContent === 'live'; });
+    // "Covers candidate" must mean the API actually returned an item for the
+    // candidate id — not merely that we asked about it. A brand-new live
+    // video can lag YouTube's Data API index for a bit, so videos.list can
+    // silently omit it from `items` even though it's genuinely live right
+    // now. Treating a request-only match as coverage would let that gap
+    // report a false "final not live" and skip the fallback probes below —
+    // exactly the case where the embed/live-page scrape is still needed.
+    const coversCandidate = !!candidateId && items.some(function (v) { return v.id === candidateId; });
     return {
       checked: true,
-      coversCandidate: !!candidateId,
+      coversCandidate: coversCandidate,
       isLive: !!liveItem,
       videoId: liveItem ? liveItem.id : null
     };
