@@ -159,14 +159,20 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .ministry-card .tag{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
 
 /* events */
-.event-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.15)}
-.event-card{background:var(--black);padding:44px 28px;display:grid;gap:12px;justify-items:center;text-align:center}
-.event-card.reveal{transition:opacity .7s var(--ease),transform .5s var(--ease),background-color .25s var(--ease)}
-.event-card:hover{background:rgba(255,255,255,.04)}
-.event-card .tag{font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
-.event-card h3{font-size:clamp(30px,4vw,42px)}
-.event-card.reveal:nth-child(2){transition-delay:.1s}
-.event-card.reveal:nth-child(3){transition-delay:.2s}
+.events-list{display:grid;gap:1px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.15)}
+.event-item{background:var(--black);display:grid;grid-template-columns:120px 1fr;gap:28px;padding:32px 28px;align-items:center}
+.event-item.reveal{transition:opacity .7s var(--ease),transform .5s var(--ease),background-color .25s var(--ease)}
+.event-item:hover{background:rgba(255,255,255,.04)}
+.event-item-date{display:grid;justify-items:center;gap:2px}
+.event-item-date .month{font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+.event-item-date .day{font-family:var(--font-display);font-size:clamp(32px,4vw,44px);font-weight:800;color:var(--white);line-height:1}
+.event-item-body{display:grid;gap:8px}
+.event-item-body .tag{font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
+.event-item-body h3{font-size:clamp(24px,3vw,32px)}
+.event-item-body p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:15px;color:rgba(255,255,255,.68)}
+.event-item.reveal:nth-child(2){transition-delay:.1s}
+.event-item.reveal:nth-child(3){transition-delay:.2s}
+.event-item.reveal:nth-child(4){transition-delay:.3s}
 
 /* visit */
 .visit-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
@@ -243,7 +249,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   .nav.is-open .lang-toggle{display:flex;width:max-content;font-size:15px}
   .nav.is-open .lang-toggle button{padding:9px 18px}
   .nav.is-open .nav-give{display:inline-flex;justify-content:center;width:max-content;font-size:16px;padding:16px 56px}
-  .grid-3,.ministry-grid,.event-grid{grid-template-columns:1fr}
+  .grid-3,.ministry-grid{grid-template-columns:1fr}
+  .event-item{grid-template-columns:1fr;justify-items:center;text-align:center}
   .sermon-grid{grid-template-columns:1fr}
   .visit-grid{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr;gap:36px;text-align:center}
@@ -318,23 +325,29 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section section-dark" id="events">
   <div class="container">
     <div class="section-head reveal" style="margin:0 auto 48px;text-align:center;justify-items:center">
-      <span class="eyebrow"><span data-lang-es>Evento especial</span><span data-lang-en>Special event</span></span>
-      <h2><span data-lang-es>10.º Aniversario</span><span data-lang-en>10th Anniversary</span></h2>
-      <p data-lang-es>Celebra con nosotros una década de fe, familia y transformación. Marca tu calendario para este fin de semana especial.</p>
-      <p data-lang-en>Join us as we celebrate a decade of faith, family, and transformation. Mark your calendar for this special weekend.</p>
+      <span class="eyebrow"><span data-lang-es>Próximos eventos</span><span data-lang-en>Upcoming events</span></span>
+      <h2><span data-lang-es>Eventos</span><span data-lang-en>Events</span></h2>
+      <p data-lang-es>Mantente al tanto de lo que viene en Casa Del Reino.</p>
+      <p data-lang-en>Stay in the loop on what's coming up at Casa Del Reino.</p>
     </div>
-    <div class="event-grid">
-      <div class="event-card reveal">
-        <span class="tag"><span data-lang-es>Viernes</span><span data-lang-en>Friday</span></span>
-        <h3>Sept 11</h3>
+    <div class="events-list">
+      <div class="event-item reveal">
+        <div class="event-item-date"><span class="month">Jul</span><span class="day">31</span></div>
+        <div class="event-item-body">
+          <span class="tag"><span data-lang-es>Viernes · 7:30 PM · Campus principal</span><span data-lang-en>Friday · 7:30 PM · Main campus</span></span>
+          <h3>Kingdom Men</h3>
+          <p data-lang-es>Una noche para los hombres de la casa — adoración, palabra y hermandad.</p>
+          <p data-lang-en>A night for the men of the house — worship, the Word, and brotherhood.</p>
+        </div>
       </div>
-      <div class="event-card reveal">
-        <span class="tag"><span data-lang-es>Sábado</span><span data-lang-en>Saturday</span></span>
-        <h3>Sept 12</h3>
-      </div>
-      <div class="event-card reveal">
-        <span class="tag"><span data-lang-es>Domingo</span><span data-lang-en>Sunday</span></span>
-        <h3>Sept 13</h3>
+      <div class="event-item reveal">
+        <div class="event-item-date"><span class="month">Sep</span><span class="day">11–13</span></div>
+        <div class="event-item-body">
+          <span class="tag"><span data-lang-es>Fin de semana especial</span><span data-lang-en>Special weekend</span></span>
+          <h3><span data-lang-es>10.º Aniversario</span><span data-lang-en>10th Anniversary</span></h3>
+          <p data-lang-es>Celebra con nosotros una década de fe, familia y transformación. Marca tu calendario para este fin de semana especial.</p>
+          <p data-lang-en>Join us as we celebrate a decade of faith, family, and transformation. Mark your calendar for this special weekend.</p>
+        </div>
       </div>
     </div>
   </div>
