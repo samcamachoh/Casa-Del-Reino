@@ -173,6 +173,10 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .event-item.reveal:nth-child(2){transition-delay:.1s}
 .event-item.reveal:nth-child(3){transition-delay:.2s}
 .event-item.reveal:nth-child(4){transition-delay:.3s}
+.event-item[hidden]{display:none}
+.events-list[hidden]{display:none}
+.events-empty{font-family:var(--font-body);color:var(--gray);font-size:15px;text-align:center;margin:0}
+.events-empty[hidden]{display:none}
 
 /* visit */
 .visit-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
@@ -330,8 +334,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
       <p data-lang-es>Mantente al tanto de lo que viene en Casa Del Reino.</p>
       <p data-lang-en>Stay in the loop on what's coming up at Casa Del Reino.</p>
     </div>
-    <div class="events-list">
-      <div class="event-item reveal">
+    <!-- Every .event-item needs data-event-end="YYYY-MM-DD" (the event's last
+         day). Once that day is over in Florida time, the script at the bottom
+         of this file hides the item automatically. -->
+    <div class="events-list" id="events-list">
+      <div class="event-item reveal" data-event-end="2026-07-31">
         <div class="event-item-date"><span class="month">Jul</span><span class="day">31</span></div>
         <div class="event-item-body">
           <span class="tag"><span data-lang-es>Viernes · 7:30 PM · Campus principal</span><span data-lang-en>Friday · 7:30 PM · Main campus</span></span>
@@ -340,7 +347,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
           <p data-lang-en>A night for the men of the house — worship, the Word, and brotherhood.</p>
         </div>
       </div>
-      <div class="event-item reveal">
+      <div class="event-item reveal" data-event-end="2026-09-13">
         <div class="event-item-date"><span class="month">Sep</span><span class="day">11–13</span></div>
         <div class="event-item-body">
           <span class="tag"><span data-lang-es>Fin de semana especial</span><span data-lang-en>Special weekend</span></span>
@@ -350,6 +357,10 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
         </div>
       </div>
     </div>
+    <p class="events-empty reveal" id="events-empty" hidden>
+      <span data-lang-es>No hay eventos programados por ahora. Vuelve pronto — o síguenos en Instagram para enterarte primero.</span>
+      <span data-lang-en>No events on the calendar right now. Check back soon — or follow us on Instagram to hear about them first.</span>
+    </p>
   </div>
 </section>
 
@@ -564,6 +575,51 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ---- Events auto-expire ----
+   Every .event-item carries data-event-end="YYYY-MM-DD" — the event's last day.
+   Anything whose last day has already passed gets hidden, so the section only
+   ever shows what's actually coming up; nobody has to remember to delete an
+   event after it happens. An event stays listed through the entire day it
+   happens and drops off the next morning. "Today" is measured in Florida time
+   so the listing follows the church's calendar no matter where the visitor is,
+   and it re-checks hourly so a tab left open overnight tidies itself up. If
+   nothing upcoming is left, a short note replaces the empty list. */
+(function(){
+  var list=document.getElementById('events-list');
+  var empty=document.getElementById('events-empty');
+  if(!list) return;
+  var items=list.querySelectorAll('.event-item');
+  var ISO=/^\d{4}-\d{2}-\d{2}$/;
+
+  // today's date at the campus (Kissimmee, FL) as YYYY-MM-DD
+  function today(){
+    var d=new Date();
+    try{
+      var s=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',
+        year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
+      if(ISO.test(s)) return s;
+    }catch(e){}
+    var p=function(n){return (n<10?'0':'')+n;};   // fall back to device time
+    return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+  }
+
+  function prune(){
+    var now=today(), upcoming=0;
+    items.forEach(function(el){
+      var end=el.getAttribute('data-event-end')||'';
+      // missing or malformed date? leave it up rather than hide a real event
+      var past=ISO.test(end) && end<now;
+      el.hidden=past;
+      if(!past) upcoming++;
+    });
+    list.hidden=(upcoming===0);
+    if(empty) empty.hidden=(upcoming>0);
+  }
+
+  prune();
+  setInterval(prune,60*60*1000);
+})();
 
 (function(){
   var KEY='cdr-lang';

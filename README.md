@@ -20,6 +20,15 @@ api/livestream.js    Vercel serverless function: reports whether the channel is
 2. Vercel automatically detects everything in `api/` and deploys each file as a function (`/api/sermons`, `/api/livestream`). Nothing to configure.
 3. Requires Vercel's default Node runtime (Node 18+) — already the default.
 
+## How the events section works
+Past events remove themselves — no need to go clean up the page after an event happens.
+
+- Each event in `index.html` is one `<div class="event-item" data-event-end="YYYY-MM-DD">` inside `#events-list`. `data-event-end` is the event's **last day** (same date as the event for a one-day event; the closing date for a multi-day one, e.g. `2026-09-13` for the Sep 11–13 weekend).
+- On load, the page hides any event whose last day is already past, so the list only shows what's still coming up. An event stays visible through the entire day it happens and drops off the next morning.
+- "Today" is measured in Florida time (`America/New_York`), so the list matches the church's own calendar regardless of where the visitor is. It also re-checks once an hour, so a tab left open overnight cleans itself up.
+- When nothing upcoming is left, the list is replaced by a short ES/EN "no events right now" note instead of showing an empty box.
+- **When adding an event, always include `data-event-end`.** If it's missing or malformed, the event stays visible forever (deliberate — better a stale event than a real one silently disappearing). The `month`/`day` text is what visitors see and is separate from `data-event-end`, so update both.
+
 ## How the sermons section works
 - On load, the page calls `/api/sermons` (your own backend). That function fetches a specific playlist's public feed server-side and returns the 3 newest videos in it as JSON. No CORS issue, no third-party dependency in the normal path.
 - If YouTube refuses the direct request from Vercel's IP, the function automatically retries through a couple of proxies server-side, so it still returns data.
