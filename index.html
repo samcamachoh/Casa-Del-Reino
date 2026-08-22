@@ -75,8 +75,6 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .btn:active{transform:translateY(0) scale(.97)}
 .btn-primary{background:var(--blue);color:var(--white);border-color:var(--blue)}
 .btn-primary:hover{background:var(--blue-deep);border-color:var(--blue-deep)}
-.btn-live{background:var(--live);color:var(--white);border-color:var(--live)}
-.btn-live:hover{background:#b81631;border-color:#b81631}
 .btn-outline-light{background:transparent;color:var(--white);border-color:rgba(255,255,255,.4)}
 .btn-outline-light:hover{border-color:var(--white);background:rgba(255,255,255,.08)}
 .btn-outline-dark{background:transparent;color:var(--black);border-color:var(--black)}
@@ -305,9 +303,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
     </span>
     <h1><span data-lang-es><span class="hero-line-left">Un lugar de <span class="hl-bold">Amor</span>,</span> <span class="hero-line-mid"><span class="hl-accent">Familia</span> y</span> <span class="hl-block hero-line-right">Transformación</span>.</span><span data-lang-en><span class="hero-line-left">A place of <span class="hl-bold">Love</span>,</span> <span class="hero-line-mid"><span class="hl-accent">Family</span>, and</span> <span class="hl-block hero-line-right">Transformation</span>.</span></h1>
     <div class="btn-row">
-      <a href="#" id="hero-live-btn" class="btn btn-live" target="_blank" rel="noopener" hidden>
-        <span data-lang-es>Ver la transmisión ahora</span><span data-lang-en>Watch the Stream Now</span>
-      </a>
       <a href="#visit" class="btn btn-primary">
         <span data-lang-es>Visítanos este domingo</span><span data-lang-en>Plan your visit</span>
       </a>
@@ -615,32 +610,27 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
 /* ---- Live indicator ----
    Polls our own backend (which checks YouTube server-side) to see if the
-   channel is currently live. While live: shows the red bar at the top, a
-   pulsing "Live now" badge in the hero, and a "Join the live service"
-   button linking to the stream on YouTube. As soon as a poll reports the
+   channel is currently live. While live: shows the red bar at the top and a
+   pulsing "Live now" badge in the hero. As soon as a poll reports the
    stream has ended, everything reverts to the default hero automatically —
    no reload needed. */
 (function(){
   var bar=document.getElementById('live-bar');
   var tag=document.getElementById('hero-live-tag');
-  var btn=document.getElementById('hero-live-btn');
-  if(!bar||!tag||!btn) return;
+  if(!bar||!tag) return;
 
   var isLive=false;
 
-  function goLive(videoId){
+  function goLive(){
     isLive=true;
     bar.classList.add('is-visible');
     tag.hidden=false;
-    btn.hidden=false;
-    btn.href='https://www.youtube.com/watch?v='+videoId;
   }
 
   function goOffline(){
     isLive=false;
     bar.classList.remove('is-visible');
     tag.hidden=true;
-    btn.hidden=true;
   }
 
   function poll(){
@@ -648,7 +638,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
     fetch('/api/livestream',{signal:ctrl.signal,cache:'no-store'})
       .then(function(r){clearTimeout(to); if(!r.ok) throw 0; return r.json();})
       .then(function(d){
-        if(d&&d.live&&d.videoId){ if(!isLive) goLive(d.videoId); }
+        if(d&&d.live&&d.videoId){ if(!isLive) goLive(); }
         else if(isLive){ goOffline(); }
       })
       .catch(function(){clearTimeout(to);});

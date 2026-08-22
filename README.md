@@ -43,7 +43,7 @@ If the section shows "couldn't load" or no videos:
 
 ## How the live indicator works
 - Every 45s (and once on page load), the page calls `/api/livestream`. That function checks server-side whether a broadcast is currently active (see the probes below).
-- **While live:** a red bar appears at the top ("We're live right now"), and the hero shows a pulsing "Live now" badge plus a "Join the live service" button linking straight to the stream on YouTube. The hero background photo stays as-is (no embedded video).
+- **While live:** a red bar appears at the top ("We're live right now"), and the hero shows a pulsing "Live now" badge. There is no link to the stream in the hero — visitors reach broadcasts through the sermons section / the channel. The hero background photo stays as-is (no embedded video).
 - **When the stream ends:** the very next poll (≤45s later) detects it and everything reverts to the default hero automatically — no page reload needed.
 - Channel ID is set in `CHANNEL_ID` in `api/livestream.js` (same channel as the sermons feed).
 - YouTube login-walls its watch pages for datacenter IPs like Vercel's (`playabilityStatus: LOGIN_REQUIRED`, "sign in to confirm you're not a bot" — observed in production during a real broadcast), so the function checks up to three sources, most reliable first:
