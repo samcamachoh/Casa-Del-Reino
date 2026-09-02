@@ -64,7 +64,9 @@ If the section shows "couldn't load" or no videos:
 5. Usage is ~1 quota unit per poll (edge-cached 30s) ≈ 3k units/day, well inside the 10k/day free quota. Verify with `/api/livestream?debug=1` — it should report `apiKeyConfigured: true` and, while live, `signal: "api"`.
 
 ## Hero invitation video
-The hero **is** the invitation video: full-bleed under the nav, autoplaying muted on a loop, with a sound button in the corner that turns the audio on. The old headline ("Un lugar de Amor, Familia y Transformación") and the background photo were removed to give the video the whole hero; the two calls to action stay in a compact row beneath it.
+The hero **is** the invitation video and nothing else: full-bleed under the nav, autoplaying muted on a loop, with a sound button in the corner that turns the audio on. The headline, the background photo and both calls to action were all removed to give the video the whole hero.
+
+The row beneath the video still exists in the markup, but it now holds only `#hero-live-tag` and `#hero-live-btn`, which are hidden unless a broadcast is live. It is `display:none` by default and reveals itself via `:has()` when either of them is shown, so it reserves no empty space the rest of the time.
 
 **Muted autoplay is not a choice, it's the only option.** No browser will autoplay a video with sound. So the video starts muted and looping, and one tap on the sound button unmutes it. That tap also restarts the clip from the beginning — catching a 35-second invitation halfway through is worse than watching it from the top — turns off looping, and hands over native controls.
 
@@ -85,7 +87,7 @@ They're wired up through two attributes on the hero `<video>` in `index.html`:
 **Bandwidth:** because the video autoplays, `preload="auto"` is set and the 25 MB is downloaded by everyone who lands on the homepage, not just people who choose to watch. That's the cost of autoplay. If it becomes a problem, the options are to re-encode smaller (a `-crf 23` pass came out at 10.7 MB with no visible difference), to autoplay a short low-bitrate loop and swap in the full file on the sound tap, or to go back to `preload="metadata"` with click-to-play.
 
 ### Sizing
-The card is full-window width with a 16:9 shape, capped at `calc(100vh - 190px)` so the video and the buttons under it both stay above the fold. On screens wider than that cap allows, the video letterboxes against the hero's own background colour rather than cropping — nothing is ever cut off.
+The card is full-window width with a 16:9 shape, capped at `calc(100vh - 150px)`. The cap leaves roughly 70px of the next section visible below the fold as a scroll cue; it was 190px while the hero still carried buttons. On screens wider than the cap allows, the video letterboxes against the hero's own background colour rather than cropping — nothing is ever cut off, and since the bars are the same colour as the hero they aren't visible.
 
 **Under 640px the card crops to 4:3 instead of letterboxing at 16:9**, which takes the video from ~219px tall to ~293px on a 390px-wide phone. The crop window is offset to `47.5%` rather than centred: sampling the whole clip frame by frame, all of the speaker's movement falls within source px 240-1584 of the 1920-wide frame, centred on 912. A 4:3 window at 47.5% keeps every gesture with roughly 48px of margin on each side. If you swap in different footage, re-check that offset — with a subject framed elsewhere it will be wrong.
 
@@ -117,6 +119,11 @@ ffmpeg -i input.mp4 -c copy -movflags +faststart hero-invite.mp4
 That one is a lossless rewrap — no re-encoding, a couple of seconds.
 
 Keep replacements under ~30 MB. If a longer video pushes past that, either re-encode harder (`-crf 26`) or move hosting to Vercel Blob — in that case `data-src` takes the full blob URL and the file leaves the repo, with no other change needed.
+
+## Section heading alignment
+Every section heading (`.section-head`) is left-aligned, with one deliberate exception: the blue Giving section carries `.is-centered`. Centring was previously applied through inline `style` attributes on two sections, which made the page alternate between left and centred headings as you scrolled. It is now a class, used once.
+
+Card typography is on a single scale across the three card types — body copy 15px, mono meta labels 12px at `.1em`, titles 26px. The ministry cards had drifted to 14.5px / 11px / 24px.
 
 ## About Us page photos
 `about.html` shows a shared photo of both apostles (`Apostoles.jpg`, already uploaded) and reserves space for a campus photo that hasn't been uploaded yet — until it is, the page shows an empty placeholder box in its place (same pattern as the homepage hero, which reads the `Hero Image` file):

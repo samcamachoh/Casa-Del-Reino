@@ -94,11 +94,13 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
    cannot be shown — that keeps the still images off the wire in the normal case. */
 .hero{position:relative;background:var(--black);color:var(--white);overflow:hidden;display:block;padding:0}
 .hero.is-fallback{background:var(--black) url('Hero%20Image') center/cover no-repeat;display:flex;align-items:center;min-height:62vh;padding:clamp(56px,9vw,96px) 0 56px}
-.hero-actions{position:relative;z-index:2;display:grid;justify-items:center;gap:16px;padding-top:22px;padding-bottom:26px;width:100%}
+.hero-actions{position:relative;z-index:2;display:none;justify-items:center;gap:16px;padding-top:22px;padding-bottom:26px;width:100%}
+/* Only occupies space when something inside it is actually showing — i.e. during a live broadcast. */
+.hero-actions:has(.live-tag:not([hidden])),.hero-actions:has(a:not([hidden])){display:grid}
 .hero.is-fallback .hero-actions{padding-top:0;padding-bottom:0}
-.hero-video-card{position:relative;width:100%;margin:0 auto;aspect-ratio:16/9;max-height:calc(100vh - 190px);background:var(--black);overflow:hidden;animation:heroIn .8s var(--ease) .15s both}
+.hero-video-card{position:relative;width:100%;margin:0 auto;aspect-ratio:16/9;max-height:calc(100vh - 150px);background:var(--black);overflow:hidden;animation:heroIn .8s var(--ease) .15s both}
 .hero-video-card video{display:block;width:100%;height:100%;object-fit:contain;background:var(--black)}
-.hero-video-card.is-portrait{aspect-ratio:9/16;max-width:calc((100vh - 190px) * 9 / 16)}
+.hero-video-card.is-portrait{aspect-ratio:9/16;max-width:calc((100vh - 150px) * 9 / 16)}
 .hero-video-play{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;width:100%;background:rgba(11,11,12,.28);border:0;color:var(--white);cursor:pointer;transition:background .25s var(--ease)}
 .hero-video-play:hover{background:rgba(11,11,12,.14)}
 .hero-video-play .play-mark{display:flex;align-items:center;justify-content:center;width:clamp(66px,7.5vw,104px);aspect-ratio:1;border-radius:999px;background:var(--blue);box-shadow:0 10px 30px -6px rgba(44,108,201,.8);transition:transform .25s var(--ease),background .25s var(--ease)}
@@ -129,6 +131,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .section-dark{background:var(--black);color:var(--white)}
 .section-blue{background:var(--blue);color:var(--white)}
 .section-head{display:grid;gap:18px;max-width:640px;margin-bottom:56px}
+.section-head.is-centered{margin-left:auto;margin-right:auto;text-align:center;justify-items:center}
 .section-head h2{font-size:clamp(34px,5vw,54px)}
 .section-head p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:17px;color:var(--gray);letter-spacing:0}
 .section-dark .section-head p{color:rgba(255,255,255,.7)}
@@ -161,9 +164,9 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .ministry-card.reveal:nth-child(4){transition-delay:.24s}
 .ministry-card.reveal:nth-child(5){transition-delay:.32s}
 .ministry-card.reveal:nth-child(6){transition-delay:.4s}
-.ministry-card h3{font-size:24px}
-.ministry-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:14.5px;color:var(--gray)}
-.ministry-card .tag{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.ministry-card h3{font-size:26px}
+.ministry-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:15px;color:var(--gray)}
+.ministry-card .tag{font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
 
 /* events */
 .events-list{display:grid;gap:1px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.15)}
@@ -335,15 +338,12 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
       <a href="#" id="hero-live-btn" class="btn btn-live" target="_blank" rel="noopener" hidden>
         <span data-lang-es>Ver la transmisión ahora</span><span data-lang-en>Watch the Stream Now</span>
       </a>
-      <a href="#visit" class="btn btn-primary">
-        <span data-lang-es>Visítanos este domingo</span><span data-lang-en>Plan your visit</span>
-      </a>
     </div>
   </div>
 </section>
 <section class="section section-dark" id="events">
   <div class="container">
-    <div class="section-head reveal" style="margin:0 auto 48px;text-align:center;justify-items:center">
+    <div class="section-head reveal">
       <span class="eyebrow"><span data-lang-es>Próximos eventos</span><span data-lang-en>Upcoming events</span></span>
       <h2><span data-lang-es>Eventos</span><span data-lang-en>Events</span></h2>
       <p data-lang-es>Mantente al tanto de lo que viene en Casa Del Reino.</p>
@@ -474,7 +474,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 
 <section class="section section-blue" id="giving">
   <div class="container">
-    <div class="section-head reveal" style="margin:0 auto 48px;text-align:center;justify-items:center">
+    <div class="section-head reveal is-centered">
       <span class="eyebrow"><span data-lang-es>Dar</span><span data-lang-en>Give</span></span>
       <h2><span data-lang-es>Da con generosidad</span><span data-lang-en>Give generously</span></h2>
       <p data-lang-es>"Cada uno debe dar según lo que haya decidido en su corazón, no de mala gana ni por obligación, porque Dios ama al que da con alegría." — 2 Corintios 9:7</p>
