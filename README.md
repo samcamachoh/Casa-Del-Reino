@@ -12,6 +12,8 @@ api/sermons.js       Vercel serverless function: returns the 3 newest YouTube
                      videos as JSON (server-side, so no CORS / no third-party proxy)
 api/livestream.js    Vercel serverless function: reports whether the channel is
                      currently live, and the video id to embed if so
+hero.mp4             Muted looping background video for the homepage hero
+                     (optional — the hero falls back to the still image)
 ```
 
 ## Deploy on Vercel
@@ -43,7 +45,7 @@ If the section shows "couldn't load" or no videos:
 
 ## How the live indicator works
 - Every 45s (and once on page load), the page calls `/api/livestream`. That function checks server-side whether a broadcast is currently active (see the probes below).
-- **While live:** a red bar appears at the top ("We're live right now"), and the hero shows a pulsing "Live now" badge plus a "Join the live service" button linking straight to the stream on YouTube. The hero background photo stays as-is (no embedded video).
+- **While live:** a red bar appears at the top ("We're live right now"), and the hero shows a pulsing "Live now" badge plus a "Join the live service" button linking straight to the stream on YouTube. The hero background (video or still) stays as-is — the stream itself is not embedded in the hero.
 - **When the stream ends:** the very next poll (≤45s later) detects it and everything reverts to the default hero automatically — no page reload needed.
 - Channel ID is set in `CHANNEL_ID` in `api/livestream.js` (same channel as the sermons feed).
 - YouTube login-walls its watch pages for datacenter IPs like Vercel's (`playabilityStatus: LOGIN_REQUIRED`, "sign in to confirm you're not a bot" — observed in production during a real broadcast), so the function checks up to three sources, most reliable first:
@@ -60,6 +62,23 @@ If the section shows "couldn't load" or no videos:
 3. "APIs & Services" → "Credentials" → "Create credentials" → **API key**. (Optionally restrict it to the YouTube Data API.)
 4. In Vercel: Project → Settings → Environment Variables → add `YOUTUBE_API_KEY` with the key value → redeploy.
 5. Usage is ~1 quota unit per poll (edge-cached 30s) ≈ 3k units/day, well inside the 10k/day free quota. Verify with `/api/livestream?debug=1` — it should report `apiKeyConfigured: true` and, while live, `signal: "api"`.
+
+## Hero background video
+The hero plays a muted, looping background video from **`hero.mp4`** in the repo root, sitting behind the dark gradient and the headline.
+
+- The existing hero stills stay in place underneath the video (`Hero Image` on desktop, `Mobile Hero.png` under 900px), so they act as the poster frame and the fallback.
+- The video only fades in once it is actually playing. If `hero.mp4` is missing, the codec isn't supported, or the browser blocks autoplay, the hero simply stays on the still image — it never looks broken.
+- Visitors with "reduce motion" turned on never get the video at all; they see the still.
+
+**Adding or replacing the video:** drop a `hero.mp4` in the repo root and push. Compress it first — the hero loads on every visit, so aim for **under ~10 MB**. From the original export:
+
+```
+ffmpeg -i "source.mp4" -an -t 20 \
+  -vf "scale=1920:-2" -c:v libx264 -profile:v high -pix_fmt yuv420p \
+  -crf 28 -preset slow -movflags +faststart hero.mp4
+```
+
+`-an` strips the audio (a background hero video is always muted, so the audio track is dead weight), `-t 20` trims to a 20-second loop, and `-movflags +faststart` lets it start playing before the whole file downloads. GitHub rejects files over 100 MB, and anything much past ~10 MB will make the homepage feel slow on phones.
 
 ## About Us page photos
 `about.html` shows a shared photo of both apostles (`Apostoles.jpg`, already uploaded) and reserves space for a campus photo that hasn't been uploaded yet — until it is, the page shows an empty placeholder box in its place (same pattern as the homepage hero, which reads the `Hero Image` file):

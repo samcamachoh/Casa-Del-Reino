@@ -90,6 +90,8 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 
 /* hero */
 .hero{position:relative;background:var(--black) url('Hero%20Image') center/cover no-repeat;color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:100vh;padding:clamp(56px,9vw,96px) 0 56px}
+.hero-video{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;pointer-events:none;opacity:0;transition:opacity .9s var(--ease)}
+.hero-video.is-ready{opacity:1}
 .hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
 .hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
 @keyframes heroIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -262,6 +264,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
   .live-dot,.nav-give,.hero .live-tag,.hero .btn-row,.hero-line-left,.hero-line-mid,.hero-line-right,.nav.is-open,.nav.is-open .nav-links li,.nav.is-open .nav-bottom{animation:none;opacity:1}
+  .hero-video{display:none}
   html{scroll-behavior:auto}
 }
 </style>
@@ -298,6 +301,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 
 <a id="top"></a>
 <section class="hero">
+  <video class="hero-video" id="hero-video" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1">
+    <source src="hero.mp4" type="video/mp4">
+  </video>
   <div class="container hero-inner">
     <span class="live-tag" id="hero-live-tag" hidden>
       <span class="live-dot"></span>
@@ -611,6 +617,33 @@ document.getElementById('year').textContent = new Date().getFullYear();
   if(location.hash && document.getElementById(location.hash.slice(1))){
     setTimeout(stripHash,600);
   }
+})();
+
+/* ---- Hero background video ----
+   The hero's still image (desktop: "Hero Image", mobile: "Mobile Hero.png")
+   is painted by CSS underneath the video, so it acts as the poster and the
+   fallback. The video only fades in once it is actually playing — if
+   hero.mp4 is missing, the codec is unsupported, or the browser refuses to
+   autoplay, the hero just stays on the image and nothing looks broken. */
+(function(){
+  var v=document.getElementById('hero-video');
+  if(!v) return;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(reduce){ v.parentNode.removeChild(v); return; }
+
+  function show(){ v.classList.add('is-ready'); }
+  function fallback(){ v.classList.remove('is-ready'); }
+
+  v.addEventListener('playing',show);
+  // A failed <source> fires error on the source element, so listen in capture.
+  v.addEventListener('error',fallback,true);
+
+  // Autoplay can already be running by the time this script executes, in which
+  // case 'playing' has fired and won't fire again — check the state directly.
+  if(!v.paused && v.readyState>=2) show();
+
+  var p=v.play&&v.play();
+  if(p&&typeof p.then==='function') p.then(show,fallback);
 })();
 
 /* ---- Live indicator ----
