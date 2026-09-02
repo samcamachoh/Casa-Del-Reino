@@ -12,8 +12,8 @@ api/sermons.js       Vercel serverless function: returns the 3 newest YouTube
                      videos as JSON (server-side, so no CORS / no third-party proxy)
 api/livestream.js    Vercel serverless function: reports whether the channel is
                      currently live, and the video id to embed if so
-(hero video)         Hosted on Vercel Blob, not in the repo — the URL lives in
-                     the hero <video>'s data-src in index.html
+hero-invite.mp4      The invitation video played in the homepage hero
+video-poster.jpg     Poster frame shown on the hero video before it plays
 ```
 
 ## Deploy on Vercel
@@ -68,43 +68,47 @@ The hero shows the invitation video as a click-to-play card under the headline a
 
 No autoplay, deliberately — every browser mutes a video that autoplays, and a muted invitation is a pointless invitation. The click is what buys the audio.
 
-**The video is hosted on Vercel Blob**, not in this repo. The URL lives in one place, the `data-src` attribute on the hero `<video>` in `index.html`:
+Two files in the repo root, both served straight off Vercel's CDN:
+
+- **`hero-invite.mp4`** — 25 MB, 35s, H.264 High 1920x1080, AAC stereo.
+- **`video-poster.jpg`** — 36 KB still pulled from the 3-second mark, shown before playback starts.
+
+They're wired up through two attributes on the hero `<video>` in `index.html`:
 
 ```html
 <video id="hero-video" playsinline preload="metadata"
-       data-src="https://<store-id>.public.blob.vercel-storage.com/hero-invite.mp4"
-       data-poster="Video Poster.jpg"></video>
+       data-src="hero-invite.mp4" data-poster="video-poster.jpg"></video>
 ```
 
-Leave `data-src` empty and the entire card removes itself on load, so the hero falls back to exactly what it looks like with no video. Same if the URL 404s or the file won't decode — the card is dropped rather than left as a dead black box. `data-poster` is optional; without it the card is simply black behind the play button.
+`preload="metadata"` means a page visit costs only the file header — the 25 MB is downloaded by people who actually press play, not by everyone who lands on the homepage.
 
-### Uploading to Vercel Blob
-1. Vercel dashboard → **Storage** → create a **Blob** store and connect it to this project.
-2. Upload the file from the store's browser, or from the CLI: `npx vercel blob put hero-invite.mp4`
-3. Copy the public URL it gives you and paste it into `data-src` above.
-
-### Still compress it, even at full length
-Full length does **not** mean the original export. A ~330 MB file is roughly 100× more data than the page needs, every visitor on cell data pays for it, and blob data transfer is metered on every Vercel plan — a few hundred plays of a file that size will chew through a month's allowance. Re-encode at full length (note there is no `-t` here):
+### Replacing the video
+Drop in a new file, point `data-src` at it, and pull a fresh poster:
 
 ```
-ffmpeg -i "ap luis invite.mp4" \
-  -vf "scale='min(1920,iw)':-2,fps=30" \
-  -c:v libx264 -profile:v high -pix_fmt yuv420p -crf 26 -preset slow \
-  -c:a aac -b:a 128k -movflags +faststart hero-invite.mp4
+ffmpeg -ss 00:00:03 -i hero-invite.mp4 -frames:v 1 -vf "scale=1360:-2" -q:v 4 video-poster.jpg
 ```
 
-This keeps every second and the audio, caps the resolution at 1080p, and typically lands 5–15× smaller. `-movflags +faststart` is the important one: it moves the index to the front of the file so playback starts immediately instead of after the whole thing downloads. Raise `-crf` toward 30 for a smaller file, lower it toward 22 for more detail.
+Two things any replacement must satisfy:
 
-For the poster frame, pull a still out of the video at a good moment:
+1. **H.264 video + AAC audio in an MP4.** Not `.mov`, not HEVC, not ProRes — those either won't play outside Safari or won't play at all. Check with `ffprobe -v error -show_entries stream=codec_name -of default=nw=1 file.mp4`.
+2. **`moov` atom at the front** (`-movflags +faststart`). Without it the browser downloads the entire file before showing a single frame. QuickTime and most editors put it at the end by default, so assume you need it:
 
 ```
-ffmpeg -ss 00:00:03 -i hero-invite.mp4 -frames:v 1 -q:v 3 "Video Poster.jpg"
+ffmpeg -i input.mp4 -c copy -movflags +faststart hero-invite.mp4
 ```
 
-Commit that one to the repo root (it's small) and point `data-poster` at it.
+That one is a lossless rewrap — no re-encoding, a couple of seconds.
+
+Keep replacements under ~30 MB. If a longer video pushes past that, either re-encode harder (`-crf 26`) or move hosting to Vercel Blob — in that case `data-src` takes the full blob URL and the file leaves the repo, with no other change needed.
+
+### Fallback behaviour
+Leave `data-src` empty and the entire card removes itself on load, so the hero falls back to exactly what it looks like with no video. The same happens if the file 404s or the codec is unsupported — the card is dropped rather than left as a dead black box. A plain network error is deliberately *not* treated this way: the card stays so the visitor can tap again.
 
 ### Aspect ratio
-The card is a 16:9 frame and letterboxes rather than crops, so nothing gets cut off. If the source is vertical, the card detects that from the video metadata and switches itself to a portrait frame sized against the viewport height, so the play button stays above the fold either way.
+The card is a 16:9 frame and letterboxes rather than crops, so nothing gets cut off. A vertical source is detected from the video metadata and switches the card to a portrait frame sized against the viewport height, so the play button stays above the fold either way.
+
+When a video is present the hero also tightens its padding and drops the headline's maximum size from 96px to 74px — that's what keeps the play button above the fold on a laptop.
 
 ## About Us page photos
 `about.html` shows a shared photo of both apostles (`Apostoles.jpg`, already uploaded) and reserves space for a campus photo that hasn't been uploaded yet — until it is, the page shows an empty placeholder box in its place (same pattern as the homepage hero, which reads the `Hero Image` file):
