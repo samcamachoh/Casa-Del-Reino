@@ -12,8 +12,8 @@ api/sermons.js       Vercel serverless function: returns the 3 newest YouTube
                      videos as JSON (server-side, so no CORS / no third-party proxy)
 api/livestream.js    Vercel serverless function: reports whether the channel is
                      currently live, and the video id to embed if so
-hero.mp4             Muted looping background video for the homepage hero
-                     (optional — the hero falls back to the still image)
+(hero video)         Hosted on Vercel Blob, not in the repo — the URL lives in
+                     the hero <video>'s data-src in index.html
 ```
 
 ## Deploy on Vercel
@@ -63,22 +63,48 @@ If the section shows "couldn't load" or no videos:
 4. In Vercel: Project → Settings → Environment Variables → add `YOUTUBE_API_KEY` with the key value → redeploy.
 5. Usage is ~1 quota unit per poll (edge-cached 30s) ≈ 3k units/day, well inside the 10k/day free quota. Verify with `/api/livestream?debug=1` — it should report `apiKeyConfigured: true` and, while live, `signal: "api"`.
 
-## Hero background video
-The hero plays a muted, looping background video from **`hero.mp4`** in the repo root, sitting behind the dark gradient and the headline.
+## Hero invitation video
+The hero shows the invitation video as a click-to-play card under the headline and buttons: poster frame, a blue play button, and native controls once it starts. It plays **full length, with sound**.
 
-- The existing hero stills stay in place underneath the video (`Hero Image` on desktop, `Mobile Hero.png` under 900px), so they act as the poster frame and the fallback.
-- The video only fades in once it is actually playing. If `hero.mp4` is missing, the codec isn't supported, or the browser blocks autoplay, the hero simply stays on the still image — it never looks broken.
-- Visitors with "reduce motion" turned on never get the video at all; they see the still.
+No autoplay, deliberately — every browser mutes a video that autoplays, and a muted invitation is a pointless invitation. The click is what buys the audio.
 
-**Adding or replacing the video:** drop a `hero.mp4` in the repo root and push. Compress it first — the hero loads on every visit, so aim for **under ~10 MB**. From the original export:
+**The video is hosted on Vercel Blob**, not in this repo. The URL lives in one place, the `data-src` attribute on the hero `<video>` in `index.html`:
 
-```
-ffmpeg -i "source.mp4" -an -t 20 \
-  -vf "scale=1920:-2" -c:v libx264 -profile:v high -pix_fmt yuv420p \
-  -crf 28 -preset slow -movflags +faststart hero.mp4
+```html
+<video id="hero-video" playsinline preload="metadata"
+       data-src="https://<store-id>.public.blob.vercel-storage.com/hero-invite.mp4"
+       data-poster="Video Poster.jpg"></video>
 ```
 
-`-an` strips the audio (a background hero video is always muted, so the audio track is dead weight), `-t 20` trims to a 20-second loop, and `-movflags +faststart` lets it start playing before the whole file downloads. GitHub rejects files over 100 MB, and anything much past ~10 MB will make the homepage feel slow on phones.
+Leave `data-src` empty and the entire card removes itself on load, so the hero falls back to exactly what it looks like with no video. Same if the URL 404s or the file won't decode — the card is dropped rather than left as a dead black box. `data-poster` is optional; without it the card is simply black behind the play button.
+
+### Uploading to Vercel Blob
+1. Vercel dashboard → **Storage** → create a **Blob** store and connect it to this project.
+2. Upload the file from the store's browser, or from the CLI: `npx vercel blob put hero-invite.mp4`
+3. Copy the public URL it gives you and paste it into `data-src` above.
+
+### Still compress it, even at full length
+Full length does **not** mean the original export. A ~330 MB file is roughly 100× more data than the page needs, every visitor on cell data pays for it, and blob data transfer is metered on every Vercel plan — a few hundred plays of a file that size will chew through a month's allowance. Re-encode at full length (note there is no `-t` here):
+
+```
+ffmpeg -i "ap luis invite.mp4" \
+  -vf "scale='min(1920,iw)':-2,fps=30" \
+  -c:v libx264 -profile:v high -pix_fmt yuv420p -crf 26 -preset slow \
+  -c:a aac -b:a 128k -movflags +faststart hero-invite.mp4
+```
+
+This keeps every second and the audio, caps the resolution at 1080p, and typically lands 5–15× smaller. `-movflags +faststart` is the important one: it moves the index to the front of the file so playback starts immediately instead of after the whole thing downloads. Raise `-crf` toward 30 for a smaller file, lower it toward 22 for more detail.
+
+For the poster frame, pull a still out of the video at a good moment:
+
+```
+ffmpeg -ss 00:00:03 -i hero-invite.mp4 -frames:v 1 -q:v 3 "Video Poster.jpg"
+```
+
+Commit that one to the repo root (it's small) and point `data-poster` at it.
+
+### Aspect ratio
+The card is a 16:9 frame and letterboxes rather than crops, so nothing gets cut off. If the source is vertical, the card detects that from the video metadata and switches itself to a portrait frame sized against the viewport height, so the play button stays above the fold either way.
 
 ## About Us page photos
 `about.html` shows a shared photo of both apostles (`Apostoles.jpg`, already uploaded) and reserves space for a campus photo that hasn't been uploaded yet — until it is, the page shows an empty placeholder box in its place (same pattern as the homepage hero, which reads the `Hero Image` file):
