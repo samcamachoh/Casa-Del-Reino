@@ -90,6 +90,19 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 
 /* hero */
 .hero{position:relative;background:var(--black) url('Hero%20Image') center/cover no-repeat;color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:100vh;padding:clamp(56px,9vw,96px) 0 56px}
+.hero.has-video{padding:clamp(36px,5.5vw,60px) 0 48px}
+.hero.has-video .hero-inner{gap:18px}
+.hero.has-video h1{font-size:clamp(26px,6.4vw,74px)}
+.hero-video-card{position:relative;width:100%;max-width:680px;margin-top:2px;aspect-ratio:16/9;background:#000;border:1px solid rgba(255,255,255,.18);box-shadow:0 30px 70px -30px rgba(0,0,0,.9);overflow:hidden;animation:heroIn .8s var(--ease) .4s both}
+.hero-video-card video{display:block;width:100%;height:100%;object-fit:contain;background:#000}
+.hero-video-card.is-portrait{max-width:min(320px,30vh);aspect-ratio:9/16}
+.hero-video-play{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;width:100%;background:rgba(11,11,12,.28);border:0;color:var(--white);cursor:pointer;transition:background .25s var(--ease)}
+.hero-video-play:hover{background:rgba(11,11,12,.14)}
+.hero-video-play .play-mark{display:flex;align-items:center;justify-content:center;width:clamp(64px,9vw,86px);aspect-ratio:1;border-radius:999px;background:var(--blue);box-shadow:0 10px 30px -6px rgba(44,108,201,.8);transition:transform .25s var(--ease),background .25s var(--ease)}
+.hero-video-play:hover .play-mark{transform:scale(1.08);background:var(--blue-deep)}
+.hero-video-play .play-mark svg{width:38%;height:auto;margin-left:12%;fill:var(--white)}
+.hero-video-play .play-label{font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-shadow:0 2px 10px rgba(0,0,0,.9)}
+.hero-video-card.is-playing .hero-video-play{display:none}
 .hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
 .hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
 @keyframes heroIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -262,6 +275,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
   .live-dot,.nav-give,.hero .live-tag,.hero .btn-row,.hero-line-left,.hero-line-mid,.hero-line-right,.nav.is-open,.nav.is-open .nav-links li,.nav.is-open .nav-bottom{animation:none;opacity:1}
+  .hero-video-card{animation:none;opacity:1}
   html{scroll-behavior:auto}
 }
 </style>
@@ -314,6 +328,16 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
       <a href="#ministries" class="btn btn-outline-light">
         <span data-lang-es>Ver ministerios</span><span data-lang-en>See ministries</span>
       </a>
+    </div>
+    <!-- Invitation video. Paste the Vercel Blob URL into data-src below and the
+         card appears; leave it empty and the whole card is removed, so the hero
+         falls back to exactly what it looks like without a video. -->
+    <div class="hero-video-card" id="hero-video-card" hidden>
+      <video id="hero-video" playsinline preload="metadata" data-src="hero-invite.mp4" data-poster="video-poster.jpg"></video>
+      <button class="hero-video-play" type="button" id="hero-video-play">
+        <span class="play-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+        <span class="play-label" data-lang-es>Ver la invitación</span><span class="play-label" data-lang-en>Watch the invitation</span>
+      </button>
     </div>
   </div>
 </section>
@@ -611,6 +635,66 @@ document.getElementById('year').textContent = new Date().getFullYear();
   if(location.hash && document.getElementById(location.hash.slice(1))){
     setTimeout(stripHash,600);
   }
+})();
+
+/* ---- Hero invitation video ----
+   Click-to-play, full length, with sound. The source lives in the video's
+   data-src attribute (a Vercel Blob URL) rather than a src, so an unset URL
+   is a clean no-op: the card removes itself and the hero looks exactly as it
+   does without a video. Same if the file 404s or the codec is unsupported.
+   preload="metadata" fetches only the file header, not the video, so the
+   real dimensions are known before anyone clicks but nobody pays for the
+   download unless they press play.
+   No autoplay here on purpose: browsers mute any video that autoplays, and
+   a muted invitation is a pointless invitation. */
+(function(){
+  var card=document.getElementById('hero-video-card');
+  var v=document.getElementById('hero-video');
+  var btn=document.getElementById('hero-video-play');
+  if(!card||!v||!btn) return;
+
+  var src=(v.getAttribute('data-src')||'').trim();
+  if(!src){ card.parentNode.removeChild(card); return; }
+
+  var poster=(v.getAttribute('data-poster')||'').trim();
+  if(poster) v.setAttribute('poster',poster);
+  v.src=src;
+  card.hidden=false;
+  var hero=card.closest?card.closest('.hero'):null;
+  if(hero) hero.classList.add('has-video');
+
+  // Drop the card when the file can never play here (bad URL, unsupported
+  // codec, corrupt stream) rather than leave a dead black box in the hero.
+  // A plain network error is left alone on purpose — that one is worth a
+  // retry, and quietly deleting the hero's main call to action because a
+  // phone blipped off wifi is worse than a poster the visitor can re-tap.
+  v.addEventListener('error',function(){
+    var code=v.error&&v.error.code;
+    if(code===3||code===4){ if(card.parentNode) card.parentNode.removeChild(card); }
+  });
+
+  // The card is a 16:9 frame by default; a vertical source gets a portrait
+  // frame instead so it isn't reduced to a sliver between two black bars.
+  v.addEventListener('loadedmetadata',function(){
+    if(v.videoWidth&&v.videoHeight&&v.videoHeight>v.videoWidth) card.classList.add('is-portrait');
+  });
+
+  btn.addEventListener('click',function(){
+    card.classList.add('is-playing');
+    v.controls=true;
+    var p=v.play();
+    if(p&&typeof p.catch==='function'){
+      // Autoplay policy can still refuse; hand the visitor the native controls.
+      p.catch(function(){ v.controls=true; });
+    }
+  });
+
+  // Back to the poster and the play button once it finishes.
+  v.addEventListener('ended',function(){
+    card.classList.remove('is-playing');
+    v.controls=false;
+    v.currentTime=0;
+  });
 })();
 
 /* ---- Live indicator ----
