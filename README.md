@@ -85,7 +85,9 @@ They're wired up through two attributes on the hero `<video>` in `index.html`:
 ### Sizing
 The card is full-window width with a 16:9 shape, capped at `calc(100vh - 190px)` so the video and the buttons under it both stay above the fold. On screens wider than that cap allows, the video letterboxes against the hero's own background colour rather than cropping — nothing is ever cut off.
 
-A vertical source is detected from the video metadata and given a portrait frame sized against the viewport height instead.
+**Under 640px the card crops to 4:3 instead of letterboxing at 16:9**, which takes the video from ~219px tall to ~293px on a 390px-wide phone. The crop window is offset to `47.5%` rather than centred: sampling the whole clip frame by frame, all of the speaker's movement falls within source px 240-1584 of the 1920-wide frame, centred on 912. A 4:3 window at 47.5% keeps every gesture with roughly 48px of margin on each side. If you swap in different footage, re-check that offset — with a subject framed elsewhere it will be wrong.
+
+A vertical source is detected from the video metadata and given a portrait frame sized against the viewport height instead, and is exempt from the mobile crop.
 
 ### Fallback behaviour
 If `data-src` is empty, the file 404s, or the codec is unsupported, the card is removed and the hero gets an `is-fallback` class that restores the **old photo hero** — `Hero Image` on desktop, `Mobile Hero.png` under 900px, with the gradient scrim and the buttons over it. Those images are referenced only under `.is-fallback`, so they are never fetched while the video is working.
