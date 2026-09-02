@@ -64,14 +64,14 @@ If the section shows "couldn't load" or no videos:
 5. Usage is ~1 quota unit per poll (edge-cached 30s) ≈ 3k units/day, well inside the 10k/day free quota. Verify with `/api/livestream?debug=1` — it should report `apiKeyConfigured: true` and, while live, `signal: "api"`.
 
 ## Hero invitation video
-The hero shows the invitation video as a click-to-play card under the headline and buttons: poster frame, a blue play button, and native controls once it starts. It plays **full length, with sound**.
+The hero **is** the invitation video: full-bleed under the nav, click-to-play, full length with sound. Poster frame, play button, native controls once it starts. The old headline ("Un lugar de Amor, Familia y Transformación") and the background photo were removed to give the video the whole hero; the two calls to action stay in a compact row beneath it.
 
 No autoplay, deliberately — every browser mutes a video that autoplays, and a muted invitation is a pointless invitation. The click is what buys the audio.
 
 Two files in the repo root, both served straight off Vercel's CDN:
 
 - **`hero-invite.mp4`** — 25 MB, 35s, H.264 High 1920x1080, AAC stereo.
-- **`video-poster.jpg`** — 36 KB still pulled from the 3-second mark, shown before playback starts.
+- **`video-poster.jpg`** — 34 KB still pulled from the 3-second mark, shown before playback starts.
 
 They're wired up through two attributes on the hero `<video>` in `index.html`:
 
@@ -81,6 +81,18 @@ They're wired up through two attributes on the hero `<video>` in `index.html`:
 ```
 
 `preload="metadata"` means a page visit costs only the file header — the 25 MB is downloaded by people who actually press play, not by everyone who lands on the homepage.
+
+### Sizing
+The card is full-window width with a 16:9 shape, capped at `calc(100vh - 190px)` so the video and the buttons under it both stay above the fold. On screens wider than that cap allows, the video letterboxes against the hero's own background colour rather than cropping — nothing is ever cut off.
+
+A vertical source is detected from the video metadata and given a portrait frame sized against the viewport height instead.
+
+### Fallback behaviour
+If `data-src` is empty, the file 404s, or the codec is unsupported, the card is removed and the hero gets an `is-fallback` class that restores the **old photo hero** — `Hero Image` on desktop, `Mobile Hero.png` under 900px, with the gradient scrim and the buttons over it. Those images are referenced only under `.is-fallback`, so they are never fetched while the video is working.
+
+A plain network error is deliberately *not* treated this way: the card stays so the visitor can tap again, rather than the hero silently emptying itself because a phone blipped off wifi.
+
+**`#hero-live-tag` and `#hero-live-btn` must stay in the hero markup.** The live-indicator script bails out entirely if either is missing, which would take the red "we're live right now" bar at the top of the site down with it. Both are hidden unless a broadcast is actually live.
 
 ### Replacing the video
 Drop in a new file, point `data-src` at it, and pull a fresh poster:
@@ -101,14 +113,6 @@ ffmpeg -i input.mp4 -c copy -movflags +faststart hero-invite.mp4
 That one is a lossless rewrap — no re-encoding, a couple of seconds.
 
 Keep replacements under ~30 MB. If a longer video pushes past that, either re-encode harder (`-crf 26`) or move hosting to Vercel Blob — in that case `data-src` takes the full blob URL and the file leaves the repo, with no other change needed.
-
-### Fallback behaviour
-Leave `data-src` empty and the entire card removes itself on load, so the hero falls back to exactly what it looks like with no video. The same happens if the file 404s or the codec is unsupported — the card is dropped rather than left as a dead black box. A plain network error is deliberately *not* treated this way: the card stays so the visitor can tap again.
-
-### Aspect ratio
-The card is a 16:9 frame and letterboxes rather than crops, so nothing gets cut off. A vertical source is detected from the video metadata and switches the card to a portrait frame sized against the viewport height, so the play button stays above the fold either way.
-
-When a video is present the hero also tightens its padding and drops the headline's maximum size from 96px to 74px — that's what keeps the play button above the fold on a laptop.
 
 ## About Us page photos
 `about.html` shows a shared photo of both apostles (`Apostoles.jpg`, already uploaded) and reserves space for a campus photo that hasn't been uploaded yet — until it is, the page shows an empty placeholder box in its place (same pattern as the homepage hero, which reads the `Hero Image` file):
