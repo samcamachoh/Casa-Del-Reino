@@ -64,9 +64,11 @@ If the section shows "couldn't load" or no videos:
 5. Usage is ~1 quota unit per poll (edge-cached 30s) ≈ 3k units/day, well inside the 10k/day free quota. Verify with `/api/livestream?debug=1` — it should report `apiKeyConfigured: true` and, while live, `signal: "api"`.
 
 ## Hero invitation video
-The hero **is** the invitation video: full-bleed under the nav, click-to-play, full length with sound. Poster frame, play button, native controls once it starts. The old headline ("Un lugar de Amor, Familia y Transformación") and the background photo were removed to give the video the whole hero; the two calls to action stay in a compact row beneath it.
+The hero **is** the invitation video: full-bleed under the nav, autoplaying muted on a loop, with a sound button in the corner that turns the audio on. The old headline ("Un lugar de Amor, Familia y Transformación") and the background photo were removed to give the video the whole hero; the two calls to action stay in a compact row beneath it.
 
-No autoplay, deliberately — every browser mutes a video that autoplays, and a muted invitation is a pointless invitation. The click is what buys the audio.
+**Muted autoplay is not a choice, it's the only option.** No browser will autoplay a video with sound. So the video starts muted and looping, and one tap on the sound button unmutes it. That tap also restarts the clip from the beginning — catching a 35-second invitation halfway through is worse than watching it from the top — turns off looping, and hands over native controls.
+
+If autoplay is refused — iOS Low Power Mode, data saver, or the visitor has "reduce motion" turned on — the centre play button is shown instead, and starts the video with sound straight away, since that click is a real user gesture.
 
 Two files in the repo root, both served straight off Vercel's CDN:
 
@@ -80,7 +82,7 @@ They're wired up through two attributes on the hero `<video>` in `index.html`:
        data-src="hero-invite.mp4" data-poster="video-poster.jpg"></video>
 ```
 
-`preload="metadata"` means a page visit costs only the file header — the 25 MB is downloaded by people who actually press play, not by everyone who lands on the homepage.
+**Bandwidth:** because the video autoplays, `preload="auto"` is set and the 25 MB is downloaded by everyone who lands on the homepage, not just people who choose to watch. That's the cost of autoplay. If it becomes a problem, the options are to re-encode smaller (a `-crf 23` pass came out at 10.7 MB with no visible difference), to autoplay a short low-bitrate loop and swap in the full file on the sound tap, or to go back to `preload="metadata"` with click-to-play.
 
 ### Sizing
 The card is full-window width with a 16:9 shape, capped at `calc(100vh - 190px)` so the video and the buttons under it both stay above the fold. On screens wider than that cap allows, the video letterboxes against the hero's own background colour rather than cropping — nothing is ever cut off.

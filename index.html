@@ -104,7 +104,10 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .hero-video-play .play-mark{display:flex;align-items:center;justify-content:center;width:clamp(66px,7.5vw,104px);aspect-ratio:1;border-radius:999px;background:var(--blue);box-shadow:0 10px 30px -6px rgba(44,108,201,.8);transition:transform .25s var(--ease),background .25s var(--ease)}
 .hero-video-play:hover .play-mark{transform:scale(1.08);background:var(--blue-deep)}
 .hero-video-play .play-mark svg{width:38%;height:auto;margin-left:12%;fill:var(--white)}
-.hero-video-play .play-label{font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-shadow:0 2px 10px rgba(0,0,0,.9)}
+.hero-video-sound{position:absolute;right:clamp(12px,2vw,24px);bottom:clamp(12px,2vw,24px);display:none;align-items:center;justify-content:center;width:clamp(46px,4.6vw,58px);aspect-ratio:1;border-radius:999px;background:rgba(11,11,12,.6);border:1px solid rgba(255,255,255,.34);color:var(--white);cursor:pointer;transition:background .25s var(--ease),border-color .25s var(--ease),transform .25s var(--ease)}
+.hero-video-card.is-muted .hero-video-sound{display:flex}
+.hero-video-sound:hover{background:var(--blue);border-color:var(--blue);transform:scale(1.07)}
+.hero-video-sound svg{width:48%;height:auto;fill:var(--white)}
 .hero-video-card.is-playing .hero-video-play{display:none}
 .hero.is-fallback::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
 @keyframes heroIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -315,10 +318,12 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
        a file and the card appears; leave it empty (or let the file fail) and the
        card is removed and the hero reverts to the still-photo layout instead. -->
   <div class="hero-video-card" id="hero-video-card" hidden>
-    <video id="hero-video" playsinline preload="metadata" data-src="hero-invite.mp4" data-poster="video-poster.jpg"></video>
+    <video id="hero-video" playsinline muted loop preload="auto" data-src="hero-invite.mp4" data-poster="video-poster.jpg"></video>
     <button class="hero-video-play" type="button" id="hero-video-play">
       <span class="play-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
-      <span class="play-label" data-lang-es>Ver la invitación</span><span class="play-label" data-lang-en>Watch the invitation</span>
+    </button>
+    <button class="hero-video-sound" type="button" id="hero-video-sound" aria-label="Activar sonido / Turn on sound">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
     </button>
   </div>
   <div class="container hero-actions">
@@ -332,9 +337,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
       </a>
       <a href="#visit" class="btn btn-primary">
         <span data-lang-es>Visítanos este domingo</span><span data-lang-en>Plan your visit</span>
-      </a>
-      <a href="#ministries" class="btn btn-outline-light">
-        <span data-lang-es>Ver ministerios</span><span data-lang-en>See ministries</span>
       </a>
     </div>
   </div>
@@ -631,20 +633,25 @@ document.getElementById('year').textContent = new Date().getFullYear();
 })();
 
 /* ---- Hero invitation video ----
-   Click-to-play, full length, with sound. The source lives in the video's
-   data-src attribute (a Vercel Blob URL) rather than a src, so an unset URL
-   is a clean no-op: the card removes itself and the hero looks exactly as it
-   does without a video. Same if the file 404s or the codec is unsupported.
-   preload="metadata" fetches only the file header, not the video, so the
-   real dimensions are known before anyone clicks but nobody pays for the
-   download unless they press play.
-   No autoplay here on purpose: browsers mute any video that autoplays, and
-   a muted invitation is a pointless invitation. */
+   Autoplays muted and looping, with a sound button that turns the audio on.
+   The split is forced by browsers, not chosen: nothing autoplays with sound
+   anywhere, so the only way to have both motion on arrival and an audible
+   invitation is to start muted and let one tap unmute it. That tap also
+   restarts the clip — catching a 35-second invitation halfway through is
+   worse than watching it again from the top — and swaps in native controls.
+
+   The source lives in data-src rather than src, so an unset value is a clean
+   no-op: the card removes itself and the hero falls back to the photo layout.
+   Same if the file 404s or the codec is unsupported.
+
+   If autoplay is refused (iOS Low Power Mode, data saver, reduced-motion),
+   the centre play button is shown instead and starts the video with sound. */
 (function(){
   var card=document.getElementById('hero-video-card');
   var v=document.getElementById('hero-video');
   var btn=document.getElementById('hero-video-play');
-  if(!card||!v||!btn) return;
+  var sound=document.getElementById('hero-video-sound');
+  if(!card||!v||!btn||!sound) return;
 
   var hero=card.parentNode;
   function dropCard(){
@@ -657,6 +664,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
   var poster=(v.getAttribute('data-poster')||'').trim();
   if(poster) v.setAttribute('poster',poster);
+  v.muted=true;               // belt and braces: autoplay needs this set, not just the attribute
   v.src=src;
   card.hidden=false;
 
@@ -676,21 +684,49 @@ document.getElementById('year').textContent = new Date().getFullYear();
     if(v.videoWidth&&v.videoHeight&&v.videoHeight>v.videoWidth) card.classList.add('is-portrait');
   });
 
-  btn.addEventListener('click',function(){
-    card.classList.add('is-playing');
-    v.controls=true;
+  function showPlayButton(){
+    card.classList.remove('is-playing','is-muted');
+  }
+
+  // Someone who asked for less motion should not be handed an autoplaying
+  // video; give them the play button and let them start it deliberately.
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  if(reduce){
+    showPlayButton();
+  }else{
+    card.classList.add('is-playing','is-muted');
     var p=v.play();
-    if(p&&typeof p.catch==='function'){
-      // Autoplay policy can still refuse; hand the visitor the native controls.
-      p.catch(function(){ v.controls=true; });
-    }
+    if(p&&typeof p.catch==='function') p.catch(showPlayButton);
+  }
+
+  // Sound on: restart from the top, unmute, stop looping, hand over controls.
+  sound.addEventListener('click',function(){
+    card.classList.remove('is-muted');
+    v.loop=false;
+    v.muted=false;
+    v.controls=true;
+    v.currentTime=0;
+    var p=v.play();
+    if(p&&typeof p.catch==='function') p.catch(function(){ v.controls=true; });
   });
 
-  // Back to the poster and the play button once it finishes.
+  // Fallback path: autoplay was refused, so this click is a real user gesture
+  // and can start the video with sound straight away.
+  btn.addEventListener('click',function(){
+    card.classList.add('is-playing');
+    v.loop=false;
+    v.muted=false;
+    v.controls=true;
+    var p=v.play();
+    if(p&&typeof p.catch==='function') p.catch(function(){ v.controls=true; });
+  });
+
+  // Only reachable once looping is off, i.e. after the audio was turned on.
   v.addEventListener('ended',function(){
-    card.classList.remove('is-playing');
     v.controls=false;
     v.currentTime=0;
+    showPlayButton();
   });
 })();
 
