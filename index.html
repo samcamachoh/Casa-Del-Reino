@@ -115,8 +115,6 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 @keyframes livepulse{0%,100%{opacity:1}50%{opacity:.3}}
 .live-bar{display:none;align-items:center;justify-content:center;gap:10px;background:var(--live);color:var(--white);text-align:center;padding:10px var(--pad);font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
 .live-bar.is-visible{display:flex}
-.schedule-strip{background:var(--blue);padding:16px var(--pad);text-align:center}
-.schedule-strip span{font-family:var(--font-mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--white);font-weight:600}
 
 /* sections */
 .section{padding:clamp(70px,9vw,120px) 0}
@@ -230,6 +228,15 @@ a.sermon-title:hover{color:var(--blue)}
 
 a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 
+@media (max-width:640px){
+  /* A 16:9 video full-bleed on a phone is only ~219px tall, which is too small
+     to carry the hero. Crop to 4:3 instead — measured across the clip, all of
+     the speaker's movement sits within source px 240-1584 of the 1920-wide
+     frame, centred on 912, so a 4:3 window positioned at 47.5% keeps every
+     gesture with ~48px to spare on each side while gaining a third more height. */
+  .hero-video-card:not(.is-portrait){aspect-ratio:4/3}
+  .hero-video-card:not(.is-portrait) video{object-fit:cover;object-position:47.5% 50%}
+}
 @media (max-width:900px){
   body.nav-locked{overflow:hidden}
   .hero.is-fallback{background-image:url('Mobile%20Hero.png');background-size:cover;background-position:top center}
@@ -332,11 +339,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
     </div>
   </div>
 </section>
-<div class="schedule-strip">
-  <span data-lang-es>Celebración Domingos · 10:00 AM y 1:00 PM &nbsp;—&nbsp; Fundamentos de Fe Jueves · 7:30 PM</span>
-  <span data-lang-en>Celebration Sundays · 10:00 AM &amp; 1:00 PM &nbsp;—&nbsp; Fundamentos de Fe Thursdays · 7:30 PM</span>
-</div>
-
 <section class="section section-dark" id="events">
   <div class="container">
     <div class="section-head reveal" style="margin:0 auto 48px;text-align:center;justify-items:center">
