@@ -1,0 +1,11 @@
+{
+  "rewrites": [
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/events", "destination": "/index.html" },
+    { "source": "/welcome", "destination": "/index.html" },
+    { "source": "/sermons", "destination": "/index.html" },
+    { "source": "/ministries", "destination": "/index.html" },
+    { "source": "/giving", "destination": "/index.html" },
+    { "source": "/visit", "destination": "/index.html" }
+  ]
+}
