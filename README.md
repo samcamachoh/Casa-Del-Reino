@@ -12,7 +12,9 @@ api/sermons.js       Vercel serverless function: returns the 3 newest YouTube
                      videos as JSON (server-side, so no CORS / no third-party proxy)
 api/livestream.js    Vercel serverless function: reports whether the channel is
                      currently live, and the video id to embed if so
-hero-invite.mp4      The invitation video played in the homepage hero
+hero-invite-optimized.mp4  The 720p invitation video served by the homepage
+hero-invite.mp4      Original source retained for future encoding
+logo.png            Shared header/footer logo, cached across both pages
 video-poster.jpg     Poster frame shown on the hero video before it plays
 ```
 
@@ -23,11 +25,11 @@ video-poster.jpg     Poster frame shown on the hero video before it plays
 3. Requires Vercel's default Node runtime (Node 18+) — already the default.
 
 ## How the sermons section works
-- On load, the page calls `/api/sermons` (your own backend). That function fetches a specific playlist's public feed server-side and returns the 3 newest videos in it as JSON. No CORS issue, no third-party dependency in the normal path.
+- When the sermons section is within 600px of the viewport, the page calls `/api/sermons` (your own backend). That function fetches a specific playlist's public feed server-side and returns the 3 newest videos in it as JSON. No CORS issue, no third-party dependency in the normal path.
 - If YouTube refuses the direct request from Vercel's IP, the function automatically retries through a couple of proxies server-side, so it still returns data.
 - The feed is cached at Vercel's edge for 10 min (`stale-while-revalidate`), so a newly posted sermon appears quickly without hammering YouTube.
 - Click any thumbnail to play inline (privacy-friendly youtube-nocookie embed). Titles + dates follow the ES/EN toggle.
-- If `/api/sermons` is unreachable (e.g. the function wasn't deployed), the page falls back to public proxies, then to a "watch on YouTube" message — so it never looks broken.
+- If `/api/sermons` is unreachable, the page shows a bilingual fallback with the existing YouTube channel link. Proxy retries remain server-side only. The client deadline is 32 seconds, covering the server's maximum four sequential 7-second requests; deadlines include reading response bodies.
 - **Live/upcoming broadcasts are excluded.** The playlist's RSS feed lists every video in it, including one that's currently live or scheduled — those aren't finished sermons yet. If `YOUTUBE_API_KEY` is set (see below), the function checks each video's `liveBroadcastContent` via the YouTube Data API and drops any `live`/`upcoming` entry before returning the newest 3. Without a key, RSS alone can't tell them apart, so the feed is returned unfiltered — setting the key (already recommended for the live indicator) fixes this too.
 
 ## Troubleshooting the sermons feed
@@ -41,10 +43,10 @@ If the section shows "couldn't load" or no videos:
    - `entriesParsed` + `sample` — how many videos parsed and the newest few
    - `liveFilterApplied` / `entriesAfterLiveFilter` — whether the live/upcoming filter ran (needs `YOUTUBE_API_KEY`) and how many entries survived it
    This tells you immediately whether it's a deploy issue, a YouTube-blocking issue, or a parsing issue.
-3. Playlist ID is set in `PLAYLIST_ID` (currently `PLARohoB7nsl4`) in both `api/sermons.js` and the inline script in `index.html`.
+3. Playlist ID is set in `PLAYLIST_ID` (currently `PLARohoB7nsl4`) in `api/sermons.js`.
 
 ## How the live indicator works
-- Every 45s (and once on page load), the page calls `/api/livestream`. That function checks server-side whether a broadcast is currently active (see the probes below).
+- Every 45s while the tab is visible (and once on page load), the page calls `/api/livestream`. That function checks server-side whether a broadcast is currently active (see the probes below).
 - **While live:** a red bar appears at the top ("We're live right now"), and the hero shows a pulsing "Live now" badge plus a "Join the live service" button linking straight to the stream on YouTube. The hero background (video or still) stays as-is — the stream itself is not embedded in the hero.
 - **When the stream ends:** the very next poll (≤45s later) detects it and everything reverts to the default hero automatically — no page reload needed.
 - Channel ID is set in `CHANNEL_ID` in `api/livestream.js` (same channel as the sermons feed).
@@ -70,19 +72,20 @@ The hero **is** the invitation video: full-bleed under the nav, autoplaying mute
 
 If autoplay is refused — iOS Low Power Mode, data saver, or the visitor has "reduce motion" turned on — the centre play button is shown instead, and starts the video with sound straight away, since that click is a real user gesture.
 
-Two files in the repo root, both served straight off Vercel's CDN:
+The homepage serves **`hero-invite-optimized.mp4`** — 3,540,839 bytes, 35s, H.264 1280×720 with AAC audio and the MP4 index at the front. The original 25,353,212-byte `hero-invite.mp4` remains in the repo as source material. `video-poster.jpg` displays immediately in a reserved video frame, avoiding a hero layout shift.
 
-- **`hero-invite.mp4`** — 25 MB, 35s, H.264 High 1920x1080, AAC stereo.
-- **`video-poster.jpg`** — 34 KB still pulled from the 3-second mark, shown before playback starts.
-
-They're wired up through two attributes on the hero `<video>` in `index.html`:
+The video starts with `preload="none"` and no `src`. JavaScript attaches the source when the hero is on screen. Reduced-motion, Save-Data, and slow 2G connections require a deliberate play tap and do not download the video on arrival. Muted playback pauses off screen and in hidden tabs; playback with sound remains under the visitor's control. A browser may retain/buffer a source after it has been attached.
 
 ```html
-<video id="hero-video" playsinline preload="metadata"
-       data-src="hero-invite.mp4" data-poster="video-poster.jpg"></video>
+<video id="hero-video" playsinline muted loop preload="none"
+       poster="/video-poster.jpg" data-src="/hero-invite-optimized.mp4"></video>
 ```
 
-**Bandwidth:** because the video autoplays, `preload="auto"` is set and the 25 MB is downloaded by everyone who lands on the homepage, not just people who choose to watch. That's the cost of autoplay. If it becomes a problem, the options are to re-encode smaller (a `-crf 23` pass came out at 10.7 MB with no visible difference), to autoplay a short low-bitrate loop and swap in the full file on the sound tap, or to go back to `preload="metadata"` with click-to-play.
+To reproduce the optimized video:
+
+```sh
+ffmpeg -i hero-invite.mp4 -vf scale=1280:-2 -c:v libx264 -preset fast -crf 25 -c:a aac -b:a 96k -movflags +faststart hero-invite-optimized.mp4
+```
 
 ### Sizing
 The card is full-window width with a 16:9 shape, capped at `calc(100vh - 190px)` so the video and the buttons under it both stay above the fold. On screens wider than that cap allows, the video letterboxes against the hero's own background colour rather than cropping — nothing is ever cut off.
@@ -119,11 +122,28 @@ That one is a lossless rewrap — no re-encoding, a couple of seconds.
 Keep replacements under ~30 MB. If a longer video pushes past that, either re-encode harder (`-crf 26`) or move hosting to Vercel Blob — in that case `data-src` takes the full blob URL and the file leaves the repo, with no other change needed.
 
 ## About Us page photos
-`about.html` shows a shared photo of both apostles (`Apostoles.jpg`, already uploaded) and reserves space for a campus photo that hasn't been uploaded yet — until it is, the page shows an empty placeholder box in its place (same pattern as the homepage hero, which reads the `Hero Image` file):
-- **`Campus.jpg`** — a wide photo of the campus. Upload it to the repo root with that exact filename.
+`about.html` shows the shared apostles photo (`Apostoles.jpg`). The campus photo has not been supplied, so the campus section displays the address and directions link instead of requesting the nonexistent `Campus.jpg`.
+
+## Motion, navigation, and loading
+- Content is visible by default, including without JavaScript. Only below-the-fold, non-nested sections receive a short 12px/400ms entrance; no long card staggering or continuous giving-button pulse.
+- Reduced motion disables transitions, animation, and smooth route scrolling.
+- Mobile navigation supports Escape, focus wrapping, expanded-state announcements, and resets when crossing the desktop breakpoint.
+- The giving widget loads within 400px of its section. A direct Pushpay link remains available independently of the embed.
+- Both pages update the document language with the language switcher and share `/logo.png` rather than duplicating base64 images.
 
 ## Notes / open items
-- Logo "10" mark in the header is a raster (PNG) embedded inline; swap in an SVG if you ever have the vector. Footer logo is already vector.
+- Header and footer use the shared raster `logo.png`; a vector original would improve scaling.
 - Ministries list and "what to expect" copy are sensible placeholders — confirm against the real ministries.
 - The apostles' bio on `about.html` is placeholder copy — replace with their real bio whenever you have it.
 - Contact uses `mailto:` (no backend form). Easy to add later.
+
+## Regression checks
+
+Requires Node 24+ and jsdom 30. Install test dependencies outside the static site directory:
+
+```sh
+npm install --prefix /tmp/cdr-tests jsdom@30.0.1
+NODE_PATH=/tmp/cdr-tests/node_modules node --test tests/regression.cjs
+```
+
+These checks use simulated DOM/media/network behavior; they do not replace real-browser playback or live-provider verification.
