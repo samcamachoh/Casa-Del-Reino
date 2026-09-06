@@ -40,10 +40,11 @@ function redactKey(text, apiKey) {
   return apiKey ? text.split(apiKey).join('[redacted]') : text;
 }
 
-function fetchWithTimeout(url, ms) {
+async function fetchWithTimeout(url, ms) {
   const ctrl = new AbortController();
   const t = setTimeout(function () { ctrl.abort(); }, ms);
-  return fetch(url, {
+  try {
+  const response = await fetch(url, {
     signal: ctrl.signal,
     redirect: 'follow',
     headers: {
@@ -51,7 +52,13 @@ function fetchWithTimeout(url, ms) {
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
       'Accept-Language': 'en-US,en;q=0.9'
     }
-  }).finally(function () { clearTimeout(t); });
+  });
+  // Keep the deadline active while the body downloads, not just until headers.
+  const body = await response.text();
+  return {ok: response.ok, status: response.status, url: response.url,
+    text: async function () { return body; },
+    json: async function () { return JSON.parse(body); }};
+  } finally { clearTimeout(t); }
 }
 
 // Extracts a balanced {...} JSON object that starts right after `marker`,
