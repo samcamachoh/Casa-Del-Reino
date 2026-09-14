@@ -89,35 +89,28 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 @keyframes givePulse{0%,100%{box-shadow:0 6px 18px -4px rgba(44,108,201,.55)}50%{box-shadow:0 6px 26px -2px rgba(44,108,201,.9)}}
 
 /* hero */
-/* The video is the hero: full-bleed under the nav, with the actions below it.
-   .is-fallback restores the old photo hero, and is only applied when the video
-   cannot be shown — that keeps the still images off the wire in the normal case. */
-.hero{position:relative;background:var(--black);color:var(--white);overflow:hidden;display:block;padding:0}
-.hero.is-fallback{background:var(--black) url('Hero%20Image') center/cover no-repeat;display:flex;align-items:center;min-height:62vh;padding:clamp(56px,9vw,96px) 0 56px}
-.hero-actions{position:relative;z-index:2;display:grid;justify-items:center;gap:16px;padding-top:22px;padding-bottom:26px;width:100%}
-.hero.is-fallback .hero-actions{padding-top:0;padding-bottom:0}
-.hero-video-card{position:relative;width:100%;margin:0 auto;aspect-ratio:16/9;max-height:calc(100vh - 190px);background:var(--black);overflow:hidden;animation:heroIn .8s var(--ease) .15s both}
-.hero-video-card video{display:block;width:100%;height:100%;object-fit:contain;background:var(--black)}
-.hero-video-card.is-portrait{aspect-ratio:9/16;max-width:calc((100vh - 190px) * 9 / 16)}
-.hero-video-play{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;width:100%;background:rgba(11,11,12,.28);border:0;color:var(--white);cursor:pointer;transition:background .25s var(--ease)}
-.hero-video-play:hover{background:rgba(11,11,12,.14)}
-.hero-video-play .play-mark{display:flex;align-items:center;justify-content:center;width:clamp(66px,7.5vw,104px);aspect-ratio:1;border-radius:999px;background:var(--blue);box-shadow:0 10px 30px -6px rgba(44,108,201,.8);transition:transform .25s var(--ease),background .25s var(--ease)}
-.hero-video-play:hover .play-mark{transform:scale(1.08);background:var(--blue-deep)}
-.hero-video-play .play-mark svg{width:38%;height:auto;margin-left:12%;fill:var(--white)}
-.hero-video-sound{position:absolute;right:clamp(12px,2vw,24px);bottom:clamp(12px,2vw,24px);display:none;align-items:center;justify-content:center;width:clamp(46px,4.6vw,58px);aspect-ratio:1;border-radius:999px;background:rgba(11,11,12,.6);border:1px solid rgba(255,255,255,.34);color:var(--white);cursor:pointer;transition:background .25s var(--ease),border-color .25s var(--ease),transform .25s var(--ease)}
-.hero-video-card.is-muted .hero-video-sound{display:flex}
-.hero-video-sound:hover{background:var(--blue);border-color:var(--blue);transform:scale(1.07)}
-.hero-video-sound svg{width:48%;height:auto;fill:var(--white)}
-.hero-video-card.is-playing .hero-video-play{display:none}
-.hero.is-fallback::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
+.hero{position:relative;background:var(--black) url('Hero%20Image') center/cover no-repeat;color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:100vh;padding:clamp(56px,9vw,96px) 0 56px}
+.hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
+.hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
 @keyframes heroIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes heroLineLeft{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:translateX(0)}}
+@keyframes heroLineRight{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:translateX(0)}}
 .hero .live-tag{animation:heroIn .6s var(--ease) both}
 .hero .btn-row{animation:heroIn .8s var(--ease) .25s both}
+.hero h1{font-size:clamp(28px,8.2vw,96px);line-height:1.25;overflow-wrap:break-word;min-width:0;max-width:100%}
+.hero h1 .hl-bold{font-weight:900}
+.hero h1 .hl-accent{color:var(--blue)}
+.hero h1 .hl-block{background:var(--blue);color:var(--white);padding:0 .12em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.hero-line-left{display:inline-block;animation:heroLineLeft .8s var(--ease) .1s both}
+.hero-line-mid{display:inline-block;animation:heroIn .8s var(--ease) .3s both}
+.hero-line-right{display:inline-block;animation:heroLineRight .8s var(--ease) .5s both}
 .live-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--white);background:var(--live);padding:6px 14px;border-radius:999px}
 .live-dot{width:7px;height:7px;border-radius:999px;background:var(--white);animation:livepulse 1.4s ease-in-out infinite;flex:none}
 @keyframes livepulse{0%,100%{opacity:1}50%{opacity:.3}}
 .live-bar{display:none;align-items:center;justify-content:center;gap:10px;background:var(--live);color:var(--white);text-align:center;padding:10px var(--pad);font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
 .live-bar.is-visible{display:flex}
+.schedule-strip{background:var(--blue);padding:16px var(--pad);text-align:center}
+.schedule-strip span{font-family:var(--font-mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--white);font-weight:600}
 
 /* sections */
 .section{padding:clamp(70px,9vw,120px) 0}
@@ -231,18 +224,10 @@ a.sermon-title:hover{color:var(--blue)}
 
 a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 
-@media (max-width:640px){
-  /* A 16:9 video full-bleed on a phone is only ~219px tall, which is too small
-     to carry the hero. Crop to 4:3 instead — measured across the clip, all of
-     the speaker's movement sits within source px 240-1584 of the 1920-wide
-     frame, centred on 912, so a 4:3 window positioned at 47.5% keeps every
-     gesture with ~48px to spare on each side while gaining a third more height. */
-  .hero-video-card:not(.is-portrait){aspect-ratio:4/3}
-  .hero-video-card:not(.is-portrait) video{object-fit:cover;object-position:47.5% 50%}
-}
 @media (max-width:900px){
   body.nav-locked{overflow:hidden}
-  .hero.is-fallback{background-image:url('Mobile%20Hero.png');background-size:cover;background-position:top center}
+  .hero{background-image:url('Mobile%20Hero.png');background-size:cover;background-position:top center}
+  .hero-inner{gap:34px}
   .container{padding-left:28px;padding-right:28px}
   .nav-links,.lang-toggle,.nav-give,.nav-bottom{display:none}
   .menu-btn{display:flex}
@@ -276,8 +261,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 }
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
-  .live-dot,.nav-give,.hero .live-tag,.hero .btn-row,.nav.is-open,.nav.is-open .nav-links li,.nav.is-open .nav-bottom{animation:none;opacity:1}
-  .hero-video-card{animation:none;opacity:1}
+  .live-dot,.nav-give,.hero .live-tag,.hero .btn-row,.hero-line-left,.hero-line-mid,.hero-line-right,.nav.is-open,.nav.is-open .nav-links li,.nav.is-open .nav-bottom{animation:none;opacity:1}
   html{scroll-behavior:auto}
 }
 </style>
@@ -291,21 +275,21 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 
 <header class="site-header">
   <div class="container header-inner">
-    <a href="/" class="logo" aria-label="Casa Del Reino — Inicio"><img class="logo-img" alt="" src="data:image/png;base64,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">Casa Del Reino</a>
+    <a href="#top" class="logo" aria-label="Casa Del Reino — Inicio"><img class="logo-img" alt="" src="data:image/png;base64,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">Casa Del Reino</a>
     <nav class="nav">
       <ul class="nav-links">
-        <li><a href="/about"><span data-lang-es>Nosotros</span><span data-lang-en>About</span></a></li>
-        <li><a href="/events"><span data-lang-es>Eventos</span><span data-lang-en>Events</span></a></li>
-        <li><a href="/sermons"><span data-lang-es>Sermones</span><span data-lang-en>Sermons</span></a></li>
-        <li><a href="/ministries"><span data-lang-es>Ministerios</span><span data-lang-en>Ministries</span></a></li>
-        <li><a href="/visit"><span data-lang-es>Visítanos</span><span data-lang-en>Visit</span></a></li>
+        <li><a href="about.html"><span data-lang-es>Nosotros</span><span data-lang-en>About</span></a></li>
+        <li><a href="#events"><span data-lang-es>Eventos</span><span data-lang-en>Events</span></a></li>
+        <li><a href="#sermons"><span data-lang-es>Sermones</span><span data-lang-en>Sermons</span></a></li>
+        <li><a href="#ministries"><span data-lang-es>Ministerios</span><span data-lang-en>Ministries</span></a></li>
+        <li><a href="#visit"><span data-lang-es>Visítanos</span><span data-lang-en>Visit</span></a></li>
       </ul>
       <div class="nav-bottom">
         <div class="lang-toggle">
           <button data-lang="es" class="is-active">ES</button>
           <button data-lang="en">EN</button>
         </div>
-        <a href="/giving" class="btn btn-primary nav-give"><span data-lang-es>Dar</span><span data-lang-en>Give</span></a>
+        <a href="#giving" class="btn btn-primary nav-give"><span data-lang-es>Dar</span><span data-lang-en>Give</span></a>
       </div>
     </nav>
     <button class="menu-btn" aria-label="Abrir menú / Open menu"><span></span><span></span><span></span></button>
@@ -314,33 +298,30 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 
 <a id="top"></a>
 <section class="hero">
-  <!-- The invitation video is the hero. data-src is the only wiring: point it at
-       a file and the card appears; leave it empty (or let the file fail) and the
-       card is removed and the hero reverts to the still-photo layout instead. -->
-  <div class="hero-video-card" id="hero-video-card" hidden>
-    <video id="hero-video" playsinline muted loop preload="auto" data-src="hero-invite.mp4" data-poster="video-poster.jpg"></video>
-    <button class="hero-video-play" type="button" id="hero-video-play">
-      <span class="play-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
-    </button>
-    <button class="hero-video-sound" type="button" id="hero-video-sound" aria-label="Activar sonido / Turn on sound">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
-    </button>
-  </div>
-  <div class="container hero-actions">
+  <div class="container hero-inner">
     <span class="live-tag" id="hero-live-tag" hidden>
       <span class="live-dot"></span>
       <span data-lang-es>En vivo ahora</span><span data-lang-en>Live now</span>
     </span>
+    <h1><span data-lang-es><span class="hero-line-left">Un lugar de <span class="hl-bold">Amor</span>,</span> <span class="hero-line-mid"><span class="hl-accent">Familia</span> y</span> <span class="hl-block hero-line-right">Transformación</span>.</span><span data-lang-en><span class="hero-line-left">A place of <span class="hl-bold">Love</span>,</span> <span class="hero-line-mid"><span class="hl-accent">Family</span>, and</span> <span class="hl-block hero-line-right">Transformation</span>.</span></h1>
     <div class="btn-row">
-      <a href="https://www.youtube.com/@casadelreinomaincampus" id="hero-live-btn" class="btn btn-live" target="_blank" rel="noopener" hidden>
+      <a href="#" id="hero-live-btn" class="btn btn-live" target="_blank" rel="noopener" hidden>
         <span data-lang-es>Ver la transmisión ahora</span><span data-lang-en>Watch the Stream Now</span>
       </a>
-      <a href="/visit" class="btn btn-primary">
+      <a href="#visit" class="btn btn-primary">
         <span data-lang-es>Visítanos este domingo</span><span data-lang-en>Plan your visit</span>
+      </a>
+      <a href="#ministries" class="btn btn-outline-light">
+        <span data-lang-es>Ver ministerios</span><span data-lang-en>See ministries</span>
       </a>
     </div>
   </div>
 </section>
+<div class="schedule-strip">
+  <span data-lang-es>Celebración Domingos · 10:00 AM y 1:00 PM &nbsp;—&nbsp; Fundamentos de Fe Jueves · 7:30 PM</span>
+  <span data-lang-en>Celebration Sundays · 10:00 AM &amp; 1:00 PM &nbsp;—&nbsp; Fundamentos de Fe Thursdays · 7:30 PM</span>
+</div>
+
 <section class="section section-dark" id="events">
   <div class="container">
     <div class="section-head reveal" style="margin:0 auto 48px;text-align:center;justify-items:center">
@@ -395,7 +376,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
       </div>
     </div>
     <div class="btn-row reveal" style="margin-top:48px;">
-      <a href="/about" class="btn btn-outline-dark">
+      <a href="about.html" class="btn btn-outline-dark">
         <span data-lang-es>Conoce más sobre nosotros</span><span data-lang-en>Learn more about us</span>
       </a>
     </div>
@@ -613,147 +594,23 @@ document.getElementById('year').textContent = new Date().getFullYear();
     items.forEach(function(el){el.classList.add('is-visible');});
   }
 
-  var sectionRoutes={
-    '/events':'events',
-    '/welcome':'welcome',
-    '/sermons':'sermons',
-    '/ministries':'ministries',
-    '/giving':'giving',
-    '/visit':'visit'
-  };
-  function normalizedPath(path){
-    if(path.length>1 && path.endsWith('/')) return path.slice(0,-1);
-    return path;
+  function stripHash(){
+    history.replaceState(null,'',window.location.pathname+window.location.search);
   }
-  function scrollToRoute(path,behavior){
-    var id=sectionRoutes[normalizedPath(path)];
-    var target=id&&document.getElementById(id);
-    if(!target) return false;
-    target.scrollIntoView({behavior:behavior||'auto',block:'start'});
-    return true;
-  }
-  document.querySelectorAll('a[href^="/"]').forEach(function(a){
-    var url=new URL(a.href,window.location.href);
-    if(!sectionRoutes[normalizedPath(url.pathname)]) return;
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    var id=a.getAttribute('href').slice(1);
+    if(!id) return;
+    var target=document.getElementById(id);
+    if(!target) return;
     a.addEventListener('click',function(e){
-      if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey) return;
       e.preventDefault();
-      history.pushState(null,'',url.pathname+url.search);
-      scrollToRoute(url.pathname,'smooth');
+      target.scrollIntoView({behavior:'smooth',block:'start'});
+      stripHash();
     });
   });
-  window.addEventListener('popstate',function(){
-    if(!scrollToRoute(window.location.pathname,'auto') && normalizedPath(window.location.pathname)==='/'){
-      window.scrollTo({top:0,behavior:'auto'});
-    }
-  });
-
   if(location.hash && document.getElementById(location.hash.slice(1))){
-    var legacyId=location.hash.slice(1);
-    var cleanPath=legacyId==='top'?'/':'/'+legacyId;
-    history.replaceState(null,'',cleanPath+window.location.search);
-    scrollToRoute(cleanPath,'auto');
-  }else{
-    scrollToRoute(window.location.pathname,'auto');
+    setTimeout(stripHash,600);
   }
-})();
-
-/* ---- Hero invitation video ----
-   Autoplays muted and looping, with a sound button that turns the audio on.
-   The split is forced by browsers, not chosen: nothing autoplays with sound
-   anywhere, so the only way to have both motion on arrival and an audible
-   invitation is to start muted and let one tap unmute it. That tap also
-   restarts the clip — catching a 35-second invitation halfway through is
-   worse than watching it again from the top — and swaps in native controls.
-
-   The source lives in data-src rather than src, so an unset value is a clean
-   no-op: the card removes itself and the hero falls back to the photo layout.
-   Same if the file 404s or the codec is unsupported.
-
-   If autoplay is refused (iOS Low Power Mode, data saver, reduced-motion),
-   the centre play button is shown instead and starts the video with sound. */
-(function(){
-  var card=document.getElementById('hero-video-card');
-  var v=document.getElementById('hero-video');
-  var btn=document.getElementById('hero-video-play');
-  var sound=document.getElementById('hero-video-sound');
-  if(!card||!v||!btn||!sound) return;
-
-  var hero=card.parentNode;
-  function dropCard(){
-    if(card.parentNode) card.parentNode.removeChild(card);
-    hero.classList.add('is-fallback');
-  }
-
-  var src=(v.getAttribute('data-src')||'').trim();
-  if(!src){ dropCard(); return; }
-
-  var poster=(v.getAttribute('data-poster')||'').trim();
-  if(poster) v.setAttribute('poster',poster);
-  v.muted=true;               // belt and braces: autoplay needs this set, not just the attribute
-  v.src=src;
-  card.hidden=false;
-
-  // Drop the card when the file can never play here (bad URL, unsupported
-  // codec, corrupt stream) rather than leave a dead black box in the hero.
-  // A plain network error is left alone on purpose — that one is worth a
-  // retry, and quietly deleting the hero's main call to action because a
-  // phone blipped off wifi is worse than a poster the visitor can re-tap.
-  v.addEventListener('error',function(){
-    var code=v.error&&v.error.code;
-    if(code===3||code===4) dropCard();
-  });
-
-  // The card is a 16:9 frame by default; a vertical source gets a portrait
-  // frame instead so it isn't reduced to a sliver between two black bars.
-  v.addEventListener('loadedmetadata',function(){
-    if(v.videoWidth&&v.videoHeight&&v.videoHeight>v.videoWidth) card.classList.add('is-portrait');
-  });
-
-  function showPlayButton(){
-    card.classList.remove('is-playing','is-muted');
-  }
-
-  // Someone who asked for less motion should not be handed an autoplaying
-  // video; give them the play button and let them start it deliberately.
-  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-
-  if(reduce){
-    showPlayButton();
-  }else{
-    card.classList.add('is-playing','is-muted');
-    var p=v.play();
-    if(p&&typeof p.catch==='function') p.catch(showPlayButton);
-  }
-
-  // Sound on: restart from the top, unmute, stop looping, hand over controls.
-  sound.addEventListener('click',function(){
-    card.classList.remove('is-muted');
-    v.loop=false;
-    v.muted=false;
-    v.controls=true;
-    v.currentTime=0;
-    var p=v.play();
-    if(p&&typeof p.catch==='function') p.catch(function(){ v.controls=true; });
-  });
-
-  // Fallback path: autoplay was refused, so this click is a real user gesture
-  // and can start the video with sound straight away.
-  btn.addEventListener('click',function(){
-    card.classList.add('is-playing');
-    v.loop=false;
-    v.muted=false;
-    v.controls=true;
-    var p=v.play();
-    if(p&&typeof p.catch==='function') p.catch(function(){ v.controls=true; });
-  });
-
-  // Only reachable once looping is off, i.e. after the audio was turned on.
-  v.addEventListener('ended',function(){
-    v.controls=false;
-    v.currentTime=0;
-    showPlayButton();
-  });
 })();
 
 /* ---- Live indicator ----

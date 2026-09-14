@@ -12,8 +12,6 @@ api/sermons.js       Vercel serverless function: returns the 3 newest YouTube
                      videos as JSON (server-side, so no CORS / no third-party proxy)
 api/livestream.js    Vercel serverless function: reports whether the channel is
                      currently live, and the video id to embed if so
-hero-invite.mp4      The invitation video played in the homepage hero
-video-poster.jpg     Poster frame shown on the hero video before it plays
 ```
 
 ## Deploy on Vercel
@@ -45,7 +43,7 @@ If the section shows "couldn't load" or no videos:
 
 ## How the live indicator works
 - Every 45s (and once on page load), the page calls `/api/livestream`. That function checks server-side whether a broadcast is currently active (see the probes below).
-- **While live:** a red bar appears at the top ("We're live right now"), and the hero shows a pulsing "Live now" badge plus a "Join the live service" button linking straight to the stream on YouTube. The hero background (video or still) stays as-is — the stream itself is not embedded in the hero.
+- **While live:** a red bar appears at the top ("We're live right now"), and the hero shows a pulsing "Live now" badge plus a "Join the live service" button linking straight to the stream on YouTube. The hero background photo stays as-is (no embedded video).
 - **When the stream ends:** the very next poll (≤45s later) detects it and everything reverts to the default hero automatically — no page reload needed.
 - Channel ID is set in `CHANNEL_ID` in `api/livestream.js` (same channel as the sermons feed).
 - YouTube login-walls its watch pages for datacenter IPs like Vercel's (`playabilityStatus: LOGIN_REQUIRED`, "sign in to confirm you're not a bot" — observed in production during a real broadcast), so the function checks up to three sources, most reliable first:
@@ -62,61 +60,6 @@ If the section shows "couldn't load" or no videos:
 3. "APIs & Services" → "Credentials" → "Create credentials" → **API key**. (Optionally restrict it to the YouTube Data API.)
 4. In Vercel: Project → Settings → Environment Variables → add `YOUTUBE_API_KEY` with the key value → redeploy.
 5. Usage is ~1 quota unit per poll (edge-cached 30s) ≈ 3k units/day, well inside the 10k/day free quota. Verify with `/api/livestream?debug=1` — it should report `apiKeyConfigured: true` and, while live, `signal: "api"`.
-
-## Hero invitation video
-The hero **is** the invitation video: full-bleed under the nav, autoplaying muted on a loop, with a sound button in the corner that turns the audio on. The old headline ("Un lugar de Amor, Familia y Transformación") and the background photo were removed to give the video the whole hero; the two calls to action stay in a compact row beneath it.
-
-**Muted autoplay is not a choice, it's the only option.** No browser will autoplay a video with sound. So the video starts muted and looping, and one tap on the sound button unmutes it. That tap also restarts the clip from the beginning — catching a 35-second invitation halfway through is worse than watching it from the top — turns off looping, and hands over native controls.
-
-If autoplay is refused — iOS Low Power Mode, data saver, or the visitor has "reduce motion" turned on — the centre play button is shown instead, and starts the video with sound straight away, since that click is a real user gesture.
-
-Two files in the repo root, both served straight off Vercel's CDN:
-
-- **`hero-invite.mp4`** — 25 MB, 35s, H.264 High 1920x1080, AAC stereo.
-- **`video-poster.jpg`** — 34 KB still pulled from the 3-second mark, shown before playback starts.
-
-They're wired up through two attributes on the hero `<video>` in `index.html`:
-
-```html
-<video id="hero-video" playsinline preload="metadata"
-       data-src="hero-invite.mp4" data-poster="video-poster.jpg"></video>
-```
-
-**Bandwidth:** because the video autoplays, `preload="auto"` is set and the 25 MB is downloaded by everyone who lands on the homepage, not just people who choose to watch. That's the cost of autoplay. If it becomes a problem, the options are to re-encode smaller (a `-crf 23` pass came out at 10.7 MB with no visible difference), to autoplay a short low-bitrate loop and swap in the full file on the sound tap, or to go back to `preload="metadata"` with click-to-play.
-
-### Sizing
-The card is full-window width with a 16:9 shape, capped at `calc(100vh - 190px)` so the video and the buttons under it both stay above the fold. On screens wider than that cap allows, the video letterboxes against the hero's own background colour rather than cropping — nothing is ever cut off.
-
-**Under 640px the card crops to 4:3 instead of letterboxing at 16:9**, which takes the video from ~219px tall to ~293px on a 390px-wide phone. The crop window is offset to `47.5%` rather than centred: sampling the whole clip frame by frame, all of the speaker's movement falls within source px 240-1584 of the 1920-wide frame, centred on 912. A 4:3 window at 47.5% keeps every gesture with roughly 48px of margin on each side. If you swap in different footage, re-check that offset — with a subject framed elsewhere it will be wrong.
-
-A vertical source is detected from the video metadata and given a portrait frame sized against the viewport height instead, and is exempt from the mobile crop.
-
-### Fallback behaviour
-If `data-src` is empty, the file 404s, or the codec is unsupported, the card is removed and the hero gets an `is-fallback` class that restores the **old photo hero** — `Hero Image` on desktop, `Mobile Hero.png` under 900px, with the gradient scrim and the buttons over it. Those images are referenced only under `.is-fallback`, so they are never fetched while the video is working.
-
-A plain network error is deliberately *not* treated this way: the card stays so the visitor can tap again, rather than the hero silently emptying itself because a phone blipped off wifi.
-
-**`#hero-live-tag` and `#hero-live-btn` must stay in the hero markup.** The live-indicator script bails out entirely if either is missing, which would take the red "we're live right now" bar at the top of the site down with it. Both are hidden unless a broadcast is actually live.
-
-### Replacing the video
-Drop in a new file, point `data-src` at it, and pull a fresh poster:
-
-```
-ffmpeg -ss 00:00:03 -i hero-invite.mp4 -frames:v 1 -vf "scale=1360:-2" -q:v 4 video-poster.jpg
-```
-
-Two things any replacement must satisfy:
-
-1. **H.264 video + AAC audio in an MP4.** Not `.mov`, not HEVC, not ProRes — those either won't play outside Safari or won't play at all. Check with `ffprobe -v error -show_entries stream=codec_name -of default=nw=1 file.mp4`.
-2. **`moov` atom at the front** (`-movflags +faststart`). Without it the browser downloads the entire file before showing a single frame. QuickTime and most editors put it at the end by default, so assume you need it:
-
-```
-ffmpeg -i input.mp4 -c copy -movflags +faststart hero-invite.mp4
-```
-
-That one is a lossless rewrap — no re-encoding, a couple of seconds.
-
-Keep replacements under ~30 MB. If a longer video pushes past that, either re-encode harder (`-crf 26`) or move hosting to Vercel Blob — in that case `data-src` takes the full blob URL and the file leaves the repo, with no other change needed.
 
 ## About Us page photos
 `about.html` shows a shared photo of both apostles (`Apostoles.jpg`, already uploaded) and reserves space for a campus photo that hasn't been uploaded yet — until it is, the page shows an empty placeholder box in its place (same pattern as the homepage hero, which reads the `Hero Image` file):
