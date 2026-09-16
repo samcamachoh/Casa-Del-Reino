@@ -43,3 +43,5 @@ jobs:
           git add index.html
           git commit -m "Hide events section"
           git push
+
+# One-time workflow; remove after successful patch.
