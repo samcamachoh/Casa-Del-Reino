@@ -4,7 +4,7 @@ Single-page static site plus two serverless functions: one for the sermons feed,
 
 ## Structure
 ```
-index.html          The homepage (HTML, CSS, JS, logos all inline)
+index.html          The homepage (HTML, CSS, JS inline; images loaded as files)
 about.html           The "About Us" page — apostles + campus photo, linked from
                      the "Conoce más sobre nosotros" button in the homepage's
                      Nosotros section
@@ -12,6 +12,7 @@ api/sermons.js       Vercel serverless function: returns the 3 newest YouTube
                      videos as JSON (server-side, so no CORS / no third-party proxy)
 api/livestream.js    Vercel serverless function: reports whether the channel is
                      currently live, and the video id to embed if so
+vercel.json          Clean section paths + long-lived cache headers for static media
 ```
 
 ## Deploy on Vercel
@@ -61,12 +62,18 @@ If the section shows "couldn't load" or no videos:
 4. In Vercel: Project → Settings → Environment Variables → add `YOUTUBE_API_KEY` with the key value → redeploy.
 5. Usage is ~1 quota unit per poll (edge-cached 30s) ≈ 3k units/day, well inside the 10k/day free quota. Verify with `/api/livestream?debug=1` — it should report `apiKeyConfigured: true` and, while live, `signal: "api"`.
 
-## About Us page photos
-`about.html` shows a shared photo of both apostles (`Apostoles.jpg`, already uploaded) and reserves space for a campus photo that hasn't been uploaded yet — until it is, the page shows an empty placeholder box in its place (same pattern as the homepage hero, which reads the `Hero Image` file):
-- **`Campus.jpg`** — a wide photo of the campus. Upload it to the repo root with that exact filename.
+## Image assets
+Optimized WebP + JPEG pairs (CSS `image-set` picks WebP when supported):
+- **Hero (desktop):** `hero.webp` / `hero.jpg`
+- **Hero (mobile ≤900px):** `mobile-hero.webp` / `mobile-hero.jpg`
+- **Apostles portrait:** `apostoles.webp` / `apostoles.jpg`
+- **Campus:** `campus.webp` / `campus.jpg`
+- **Logo:** `logo.png` (shared by header + footer; not inlined)
+
+To replace a photo, overwrite the matching `.jpg` and regenerate a `.webp` sibling (or drop a new JPEG of the same basename and convert). Keep the current filenames so the HTML does not need edits.
 
 ## Notes / open items
-- Logo "10" mark in the header is a raster (PNG) embedded inline; swap in an SVG if you ever have the vector. Footer logo is already vector.
+- Logo mark is a small raster (`logo.png`); swap in an SVG if you ever have the vector.
 - Ministries list and "what to expect" copy are sensible placeholders — confirm against the real ministries.
 - The apostles' bio on `about.html` is placeholder copy — replace with their real bio whenever you have it.
 - Contact uses `mailto:` (no backend form). Easy to add later.
