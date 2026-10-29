@@ -192,6 +192,13 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .event-item.reveal:nth-child(3){transition-delay:.2s}
 .event-item.reveal:nth-child(4){transition-delay:.3s}
 
+/* first visit — photo background */
+.section-photo{color:var(--white);background:linear-gradient(rgba(11,11,12,.5),rgba(11,11,12,.7)),url('/ven-como-eres.webp') center 30%/cover no-repeat var(--black)}
+.section-photo .section-head p{color:rgba(255,255,255,.86)}
+.section-photo .expect-card{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.22);box-shadow:0 10px 30px -12px rgba(0,0,0,.45);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}
+.section-photo .expect-card:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4)}
+.section-photo .expect-card .icon{background:rgba(255,255,255,.14);color:var(--white)}
+.section-photo .expect-card p{color:rgba(255,255,255,.9)}
 /* first visit */
 .expect-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .expect-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:30px 28px;display:grid;gap:10px;align-content:start}
@@ -294,6 +301,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   .nav.is-open .nav-give{display:inline-flex;width:100%;font-size:17px;padding:16px 24px;min-height:54px}
   .nav.is-open .lang-toggle{display:flex;align-self:center;width:max-content;font-size:15px}
   .nav.is-open .lang-toggle button{padding:10px 22px;min-width:64px}
+  .section-photo{background-image:linear-gradient(rgba(11,11,12,.5),rgba(11,11,12,.7)),url('/ven-como-eres-m.webp')}
   .grid-3,.ministry-grid,.expect-grid{grid-template-columns:1fr}
   .event-item{grid-template-columns:1fr;justify-items:center;text-align:center}
   .sermon-grid{grid-template-columns:1fr}
@@ -430,7 +438,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   </div>
 </section>
 
-<section class="section section-paper" id="first-visit">
+<section class="section section-photo" id="first-visit">
   <div class="container">
     <div class="section-head is-center reveal">
       <h2><span data-lang-es>Ven como eres</span><span data-lang-en>Come as you are</span></h2>
