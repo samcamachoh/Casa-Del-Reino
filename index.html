@@ -22,8 +22,8 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet"></noscript>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet"></noscript>
 
 <noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
 <style>
@@ -31,7 +31,7 @@
   --black:#0b0b0c; --white:#ffffff; --paper:#f7f7f5; --line:#e3e3e0;
   --gray:#5d5d61; --blue:#2c6cc9; --blue-deep:#22549c; --live:#e11d3c;
   --blue-light:#6ea3f0; --blue-tint:#eaf1fb; --warm:#fbf8f2;
-  --font-display:'Big Shoulders Display',sans-serif;
+  --font-display:'Playfair Display',Georgia,'Times New Roman',serif;
   --font-body:'Inter',sans-serif; --font-mono:'JetBrains Mono',monospace;
   --container:1180px; --pad:clamp(20px,5vw,64px);
   --ease:cubic-bezier(.22,.61,.36,1);
@@ -42,7 +42,7 @@ html{scroll-behavior:smooth; scroll-padding-top:84px}
 body{margin:0;background:var(--white);color:var(--black);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
 img,svg{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
-h1,h2,h3,h4{font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.01em;line-height:1;margin:0}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em;line-height:1.15;margin:0}
 p{margin:0}
 .container{max-width:var(--container);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
 
@@ -57,7 +57,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .site-header{position:sticky;top:0;z-index:100;background:rgba(11,11,12,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.12);transition:background .25s var(--ease),box-shadow .25s var(--ease)}
 .site-header.is-scrolled{background:rgba(11,11,12,.95);box-shadow:0 10px 28px -14px rgba(0,0,0,.6)}
 .header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 0;min-height:72px}
-.logo{position:relative;z-index:95;font-family:var(--font-display);font-weight:900;font-size:22px;text-transform:uppercase;letter-spacing:.02em;color:var(--white);display:flex;align-items:center;gap:12px}
+.logo{position:relative;z-index:95;font-family:var(--font-display);font-weight:700;font-size:21px;letter-spacing:0;color:var(--white);display:flex;align-items:center;gap:12px}
 .logo-img{height:40px;width:auto;display:block;transition:transform .3s var(--ease)}
 .logo:hover .logo-img{transform:scale(1.06)}
 .nav{display:flex;align-items:center;gap:24px}
@@ -100,10 +100,12 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .hero{position:relative;background:var(--black);color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:100vh;min-height:min(100svh,920px);padding:clamp(56px,9vw,96px) 0 56px}
 .hero-slides{position:absolute;inset:0;z-index:0}
 /* real <img>s (not CSS vars) so every browser paints them */
-.hero-slide{position:absolute;inset:0;display:block;opacity:0;transition:opacity 1.4s ease-in-out;transform:scale(1.04)}
+/* Crossfade: the new photo fades in ON TOP of the old one, which stays fully
+   opaque underneath until the fade finishes — so the black background never shows through. */
+.hero-slide{position:absolute;inset:0;display:block;opacity:0;z-index:0;transition:opacity 1.6s ease-in-out}
 .hero-slide img{width:100%;height:100%;object-fit:cover;object-position:var(--pos,center)}
-.hero-slide.is-active{opacity:1;animation:heroZoom 9s ease-out forwards}
-@keyframes heroZoom{from{transform:scale(1.04)}to{transform:scale(1)}}
+.hero-slide.is-leaving{opacity:1;z-index:1;transition:none}
+.hero-slide.is-active{opacity:1;z-index:2}
 .hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.6) 0%,rgba(11,11,12,.72) 50%,rgba(11,11,12,.95) 100%)}
 .hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
 @keyframes heroIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
@@ -112,9 +114,9 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .hero .live-tag{animation:heroIn .6s var(--ease) both}
 .hero .btn-row{animation:heroIn .8s var(--ease) .35s both}
 .hero .btn{padding:16px 32px;font-size:16px}
-.hero h1{font-size:clamp(28px,8.2vw,96px);line-height:1.25;overflow-wrap:break-word;min-width:0;max-width:100%}
+.hero h1{font-size:clamp(30px,6.2vw,80px);line-height:1.2;overflow-wrap:break-word;min-width:0;max-width:100%}
 .hero h1 .hl-bold{font-weight:900}
-.hero h1 .hl-accent{color:var(--blue)}
+.hero h1 .hl-accent{color:var(--blue-light)}
 .hero h1 .hl-block{background:var(--blue);color:var(--white);padding:0 .12em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 .hero-line-left{display:inline-block;animation:heroLineLeft .8s var(--ease) .1s both}
 .hero-line-mid{display:inline-block;animation:heroIn .8s var(--ease) .3s both}
@@ -139,7 +141,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .section-dark{background:var(--black);color:var(--white)}
 .section-blue{background:var(--blue);color:var(--white)}
 .section-head{display:grid;gap:18px;max-width:640px;margin-bottom:56px}
-.section-head h2{font-size:clamp(34px,5vw,54px)}
+.section-head h2{font-size:clamp(32px,4.4vw,48px)}
 .section-head p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:18px;line-height:1.65;color:var(--gray);letter-spacing:0}
 .section-dark .section-head p{color:rgba(255,255,255,.78)}
 .section-dark .tag,.section-dark .num,.section-dark .month{color:var(--blue-light)}
@@ -155,7 +157,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .section-dark .value-card{background:var(--black);border-color:rgba(255,255,255,.15)}
 .section-dark .value-card:hover{background:rgba(255,255,255,.05);border-color:var(--blue-light)}
 .value-card .num{font-family:var(--font-mono);font-size:12px;color:var(--blue);letter-spacing:.1em}
-.value-card h3{font-size:28px}
+.value-card h3{font-size:24px}
 .value-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:16px;line-height:1.65;color:var(--gray)}
 .section-dark .value-card p{color:rgba(255,255,255,.68)}
 .value-card.reveal:nth-child(2){transition-delay:.1s}
@@ -170,7 +172,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .ministry-card.reveal:nth-child(4){transition-delay:.24s}
 .ministry-card.reveal:nth-child(5){transition-delay:.32s}
 .ministry-card.reveal:nth-child(6){transition-delay:.4s}
-.ministry-card h3{font-size:28px}
+.ministry-card h3{font-size:24px}
 .ministry-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:16px;line-height:1.65;color:rgba(255,255,255,.78)}
 .ministry-card .tag{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-light)}
 
@@ -181,7 +183,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .event-item:hover{background:rgba(255,255,255,.04)}
 .event-item-date{display:grid;justify-items:center;gap:2px}
 .event-item-date .month{font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
-.event-item-date .day{font-family:var(--font-display);font-size:clamp(32px,4vw,44px);font-weight:800;color:var(--white);line-height:1}
+.event-item-date .day{font-family:var(--font-display);font-size:clamp(32px,4vw,44px);font-weight:700;color:var(--white);line-height:1}
 .event-item-body{display:grid;gap:8px}
 .event-item-body .tag{font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
 .event-item-body h3{font-size:clamp(24px,3vw,32px)}
@@ -195,7 +197,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .expect-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:30px 28px;display:grid;gap:10px;align-content:start}
 .expect-card .icon{width:44px;height:44px;border-radius:999px;background:var(--blue-tint);color:var(--blue-deep);display:flex;align-items:center;justify-content:center;margin-bottom:6px}
 .expect-card .icon svg{width:22px;height:22px}
-.expect-card h3{font-size:24px}
+.expect-card h3{font-size:22px}
 .expect-card p{font-size:16px;line-height:1.65;color:var(--gray)}
 .giving-fallback{display:block;text-align:center;color:var(--blue-deep);font-weight:700;text-decoration:underline;text-underline-offset:3px;padding:8px}
 .visit-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
@@ -212,7 +214,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 /* footer */
 .site-footer{background:var(--black);color:var(--white);padding:70px 0 28px}
 .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.15)}
-.footer-logo{display:flex;align-items:center;gap:12px;font-family:var(--font-display);font-weight:900;font-size:26px;text-transform:uppercase;margin-bottom:14px}
+.footer-logo{display:flex;align-items:center;gap:12px;font-family:var(--font-display);font-weight:700;font-size:24px;margin-bottom:14px}
 .footer-logo-mark{height:32px;width:auto;display:block}
 .footer-tagline{font-family:var(--font-body);font-weight:400;text-transform:none;color:rgba(255,255,255,.72);font-size:15px;max-width:280px}
 .footer-col h4{font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;color:var(--blue-light);margin-bottom:18px;font-weight:600}
@@ -234,7 +236,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .sermon-thumb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .sermon-body{padding:22px 22px 24px;display:grid;gap:8px}
 .sermon-date{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
-.sermon-title{font-family:var(--font-display);font-weight:700;text-transform:uppercase;font-size:21px;line-height:1.05;letter-spacing:.01em;color:var(--black);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sermon-title{font-family:var(--font-display);font-weight:700;font-size:20px;line-height:1.25;letter-spacing:0;color:var(--black);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 a.sermon-title:hover{color:var(--blue)}
 .sermon-note{grid-column:1/-1;font-family:var(--font-body);color:var(--gray);font-size:15px}
 /* skeleton */
@@ -273,7 +275,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   .nav.is-open .nav-links li:nth-child(3){animation-delay:.15s}
   .nav.is-open .nav-links li:nth-child(4){animation-delay:.2s}
   .nav.is-open .nav-links li:nth-child(5){animation-delay:.25s}
-  .nav.is-open .nav-links a{display:flex;align-items:center;justify-content:space-between;font-family:var(--font-display);font-size:clamp(30px,9vw,40px);font-weight:800;text-transform:uppercase;letter-spacing:.01em;line-height:1;padding:18px 0;border-radius:0;color:var(--white);background:none}
+  .nav.is-open .nav-links a{display:flex;align-items:center;justify-content:space-between;font-family:var(--font-display);font-size:clamp(28px,8vw,36px);font-weight:700;letter-spacing:-.01em;line-height:1.1;padding:18px 0;border-radius:0;color:var(--white);background:none}
   .nav.is-open .nav-links a::after{content:'\2192';font-family:var(--font-body);font-size:24px;font-weight:400;color:var(--blue-light);transition:transform .25s var(--ease)}
   .nav.is-open .nav-links a:active{color:var(--blue-light)}
   .nav.is-open .nav-links a:active::after{transform:translateX(6px)}
@@ -294,7 +296,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 }
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
-  .hero-slide{transition:none;animation:none !important;transform:none}
+  .hero-slide{transition:none}
   .live-dot,.hero .live-tag,.hero .btn-row,.hero-line-left,.hero-line-mid,.hero-line-right,.nav.is-open,.nav.is-open .nav-links li,.nav.is-open .nav-bottom{animation:none;opacity:1}
   html{scroll-behavior:auto}
 }
@@ -823,10 +825,20 @@ document.getElementById('year').textContent = new Date().getFullYear();
   ];
   var slides=[wrap.firstElementChild], idx=0, timer=null;
   function show(i){
-    slides[idx].classList.remove('is-active');
-    idx=i; slides[idx].classList.add('is-active');
+    var prev=slides[idx], cur=slides[i];
+    slides.forEach(function(s){ s.classList.remove('is-leaving'); });
+    prev.classList.remove('is-active'); prev.classList.add('is-leaving');
+    cur.classList.add('is-active');
+    idx=i;
+    // once the fade-in has finished, retire the old photo underneath
+    setTimeout(function(){ if(prev!==slides[idx]) prev.classList.remove('is-leaving'); },1800);
   }
-  function next(){ show((idx+1)%slides.length); }
+  function next(){
+    var i=(idx+1)%slides.length, img=slides[i].querySelector('img');
+    // never fade to a photo that hasn't downloaded yet (that is what showed as black)
+    if(img&&!(img.complete&&img.naturalWidth)) return;
+    show(i);
+  }
   function start(){ if(!timer&&slides.length>1) timer=setInterval(next,6000); }
   function stop(){ clearInterval(timer); timer=null; }
   function build(){
