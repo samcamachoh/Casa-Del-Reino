@@ -15,15 +15,15 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet"></noscript>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet"></noscript>
 
 <style>
 :root{
   --black:#0b0b0c; --white:#ffffff; --paper:#f7f7f5; --line:#e3e3e0;
   --gray:#5d5d61; --blue:#2c6cc9; --blue-deep:#22549c; --live:#e11d3c;
   --blue-light:#6ea3f0; --blue-tint:#eaf1fb; --warm:#fbf8f2;
-  --font-display:'Playfair Display',Georgia,'Times New Roman',serif;
+  --font-display:'Lora',Georgia,'Times New Roman',serif;
   --font-body:'Inter',sans-serif; --font-mono:'JetBrains Mono',monospace;
   --container:1180px; --pad:clamp(20px,5vw,64px);
   --ease:cubic-bezier(.22,1,.36,1);
@@ -191,8 +191,10 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   .container{padding-left:28px;padding-right:28px}
   .nav-links,.lang-menu,.nav-give,.nav-bottom{display:none}
   .menu-btn{display:flex}
-  .nav.is-open{position:fixed;top:0;left:0;right:0;bottom:0;height:100dvh;z-index:90;background:var(--black);flex-direction:column;align-items:stretch;justify-content:center;padding:96px var(--pad) 36px;gap:28px;overflow-y:auto;animation:navDropIn .3s var(--ease)}
-  @keyframes navDropIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+  /* backdrop-filter on the header would make it the containing block for the fixed menu (menu only as tall as the header) — drop it while open */
+  body.nav-locked .site-header{-webkit-backdrop-filter:none;backdrop-filter:none;background:var(--black)}
+  .nav.is-open{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:90;background:var(--black);flex-direction:column;align-items:stretch;justify-content:flex-start;padding:104px var(--pad) max(32px,env(safe-area-inset-bottom));gap:24px;overflow-y:auto;animation:navDropIn .55s var(--ease)}
+  @keyframes navDropIn{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
   @keyframes navItemIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
   .nav.is-open .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:0;width:100%}
   .nav.is-open .nav-links li{border-bottom:1px solid rgba(255,255,255,.14);opacity:0;animation:navItemIn .45s var(--ease) forwards}
@@ -207,7 +209,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   .nav.is-open .nav-links a:active{color:var(--blue-light)}
   .nav.is-open .nav-links a:active::after{transform:translateX(6px)}
   .nav.is-open .nav-links a[aria-current]{color:var(--blue-light);background:none}
-  .nav.is-open .nav-bottom{order:2;display:flex;flex-direction:column;align-items:stretch;gap:16px;width:100%;opacity:0;animation:navItemIn .45s var(--ease) .32s forwards}
+  .nav.is-open .nav-bottom{order:2;margin-top:auto;display:flex;flex-direction:column;align-items:stretch;gap:16px;width:100%;opacity:0;animation:navItemIn .45s var(--ease) .32s forwards}
   .nav.is-open .nav-give{display:inline-flex;width:100%;font-size:16px;padding:0 24px;height:54px}
   .nav.is-open .lang-menu{display:block;width:100%}
   .nav.is-open .lang-btn{width:100%;height:54px;justify-content:center;font-size:16px}
