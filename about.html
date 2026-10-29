@@ -15,13 +15,14 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet"></noscript>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet"></noscript>
 
 <style>
 :root{
   --black:#0b0b0c; --white:#ffffff; --paper:#f7f7f5; --line:#e3e3e0;
   --gray:#5d5d61; --blue:#2c6cc9; --blue-deep:#22549c; --live:#e11d3c;
+  --blue-light:#6ea3f0; --blue-tint:#eaf1fb; --warm:#fbf8f2;
   --font-display:'Big Shoulders Display',sans-serif;
   --font-body:'Inter',sans-serif; --font-mono:'JetBrains Mono',monospace;
   --container:1180px; --pad:clamp(20px,5vw,64px);
@@ -29,11 +30,11 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none !important}
-html{scroll-behavior:smooth; scroll-padding-top:72px}
+html{scroll-behavior:smooth; scroll-padding-top:84px}
 body{margin:0;background:var(--white);color:var(--black);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
 img,svg{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
-h1,h2,h3,h4{font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.01em;line-height:.92;margin:0}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.01em;line-height:1;margin:0}
 p{margin:0}
 .container{max-width:var(--container);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
 
@@ -47,50 +48,49 @@ html[data-active-lang="es"] [data-lang-en]{display:none !important}
 html[data-active-lang="en"] [data-lang-es]{display:none !important}
 
 /* header */
-.site-header{position:sticky;top:0;z-index:100;background:rgba(11,11,12,.85);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.12)}
-.header-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
-.logo{position:relative;z-index:95;font-family:var(--font-display);font-weight:900;font-size:21px;text-transform:uppercase;letter-spacing:.02em;color:var(--white);display:flex;align-items:center;gap:12px}
-.logo .mark{width:12px;height:12px;background:var(--blue);display:inline-block}
+.site-header{position:sticky;top:0;z-index:100;background:rgba(11,11,12,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.12);transition:background .25s var(--ease),box-shadow .25s var(--ease)}
+.site-header.is-scrolled{background:rgba(11,11,12,.95);box-shadow:0 10px 28px -14px rgba(0,0,0,.6)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 0;min-height:72px}
+.logo{position:relative;z-index:95;font-family:var(--font-display);font-weight:900;font-size:22px;text-transform:uppercase;letter-spacing:.02em;color:var(--white);display:flex;align-items:center;gap:12px}
 .logo-img{height:40px;width:auto;display:block;transition:transform .3s var(--ease)}
 .logo:hover .logo-img{transform:scale(1.06)}
-.nav{display:flex;align-items:center;gap:36px}
-.nav-links{display:flex;gap:30px;list-style:none;margin:0;padding:0}
-.nav-links a{font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--white);position:relative;padding-bottom:4px;transition:color .2s var(--ease)}
-.nav-links a::after{content:'';position:absolute;left:0;right:100%;bottom:0;height:2px;background:var(--blue);transition:right .25s var(--ease)}
-.nav-links a:hover{color:var(--blue)}
-.nav-links a:hover::after{right:0}
-.lang-toggle{display:flex;border:1px solid rgba(255,255,255,.5);border-radius:999px;overflow:hidden;font-family:var(--font-mono);font-size:12px;font-weight:600}
-.lang-toggle button{background:transparent;border:none;padding:7px 14px;cursor:pointer;color:var(--white);font:inherit;letter-spacing:.04em;transition:background .2s var(--ease),color .2s var(--ease)}
+.nav{display:flex;align-items:center;gap:24px}
+.nav-bottom{display:contents}
+.nav-links{display:flex;gap:2px;list-style:none;margin:0;padding:0;order:1}
+.lang-toggle{order:2}
+.nav-give{order:3}
+.nav-links a{display:block;font-family:var(--font-body);font-size:15px;font-weight:600;letter-spacing:.01em;color:rgba(255,255,255,.88);padding:10px 14px;border-radius:999px;transition:color .2s var(--ease),background .2s var(--ease)}
+.nav-links a:hover{color:var(--white);background:rgba(255,255,255,.1)}
+.nav-links a[aria-current]{color:var(--white);background:rgba(110,163,240,.22)}
+.lang-toggle{display:flex;border:1px solid rgba(255,255,255,.4);border-radius:999px;overflow:hidden;font-family:var(--font-body);font-size:13px;font-weight:600}
+.lang-toggle button{background:transparent;border:none;padding:8px 14px;min-width:42px;cursor:pointer;color:var(--white);font:inherit;letter-spacing:.04em;transition:background .2s var(--ease),color .2s var(--ease)}
+.lang-toggle button:hover:not(.is-active){background:rgba(255,255,255,.12)}
 .lang-toggle button.is-active{background:var(--white);color:var(--black)}
-.menu-btn{position:relative;z-index:95;display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:6px}
-.menu-btn span{width:22px;height:2px;background:var(--white);transition:transform .25s var(--ease),opacity .25s var(--ease)}
-.nav.is-open ~ .menu-btn span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.nav.is-open ~ .menu-btn span:nth-child(2){opacity:0}
-.nav.is-open ~ .menu-btn span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.menu-btn{position:relative;z-index:95;display:none;background:none;border:none;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:44px;height:44px;margin-right:-10px;padding:0}
+.menu-btn span{width:24px;height:2px;border-radius:2px;background:var(--white);transition:transform .25s var(--ease),opacity .25s var(--ease)}
+.menu-btn[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.menu-btn[aria-expanded="true"] span:nth-child(2){opacity:0}
+.menu-btn[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
 /* buttons */
-.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:15px 26px;border-radius:2px;border:1px solid transparent;cursor:pointer;transition:all .2s var(--ease)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--font-body);font-size:15px;font-weight:700;letter-spacing:.01em;padding:14px 28px;min-height:48px;border-radius:999px;border:1px solid transparent;cursor:pointer;transition:all .2s var(--ease)}
 .btn:hover{transform:translateY(-2px)}
 .btn:active{transform:translateY(0) scale(.97)}
 .btn-primary{background:var(--blue);color:var(--white);border-color:var(--blue)}
 .btn-primary:hover{background:var(--blue-deep);border-color:var(--blue-deep)}
-.btn-outline-light{background:transparent;color:var(--white);border-color:rgba(255,255,255,.4)}
-.btn-outline-light:hover{border-color:var(--white);background:rgba(255,255,255,.08)}
+.btn-live{background:var(--live);color:var(--white);border-color:var(--live)}
+.btn-live:hover{background:#b81631;border-color:#b81631}
+.btn-outline-light{background:transparent;color:var(--white);border-color:rgba(255,255,255,.55)}
+.btn-outline-light:hover{border-color:var(--white);background:rgba(255,255,255,.1)}
 .btn-outline-dark{background:transparent;color:var(--black);border-color:var(--black)}
 .btn-outline-dark:hover{background:var(--black);color:var(--white)}
-.btn-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.btn-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
 
-/* Dar/Give nav button — kept extra prominent with a standing glow and gentle pulse */
-.nav-give{position:relative;font-weight:700;padding:13px 30px;box-shadow:0 6px 18px -4px rgba(44,108,201,.55);animation:givePulse 2.8s ease-in-out infinite}
-.nav-give:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 10px 26px -4px rgba(44,108,201,.7)}
-@keyframes givePulse{0%,100%{box-shadow:0 6px 18px -4px rgba(44,108,201,.55)}50%{box-shadow:0 6px 26px -2px rgba(44,108,201,.9)}}
+/* Dar/Give nav button — prominent, with a soft standing glow */
+.nav-give{position:relative;padding:11px 26px;min-height:44px;box-shadow:0 6px 18px -6px rgba(44,108,201,.7)}
+.nav-give:hover{transform:translateY(-2px);box-shadow:0 10px 24px -6px rgba(44,108,201,.85)}
 
 /* hero */
-.hero{position:relative;background:var(--black) url('Hero%20Image') center/cover no-repeat;color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:min(760px,90vh);padding:clamp(56px,9vw,96px) 0 56px}
-.hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
-.hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
-.hero h1{font-size:clamp(48px,9vw,96px)}
-.hero-sub{font-size:clamp(16px,2vw,19px);color:rgba(255,255,255,.78);max-width:480px;font-weight:400;text-transform:none}
 .live-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--white);background:var(--live);padding:6px 14px;border-radius:999px}
 .live-dot{width:7px;height:7px;border-radius:999px;background:var(--white);animation:livepulse 1.4s ease-in-out infinite;flex:none}
 @keyframes livepulse{0%,100%{opacity:1}50%{opacity:.3}}
@@ -100,21 +100,23 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 /* sections */
 .section{padding:clamp(70px,9vw,120px) 0}
 .section-paper{background:var(--paper)}
+.section-warm{background:var(--warm)}
+.section-head.is-center{margin-left:auto;margin-right:auto;text-align:center;justify-items:center}
 .section-dark{background:var(--black);color:var(--white)}
 .section-blue{background:var(--blue);color:var(--white)}
 .section-head{display:grid;gap:18px;max-width:640px;margin-bottom:56px}
 .section-head h2{font-size:clamp(34px,5vw,54px)}
-.section-head p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:17px;color:var(--gray);letter-spacing:0}
-.section-dark .section-head p{color:rgba(255,255,255,.7)}
+.section-head p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:18px;line-height:1.65;color:var(--gray);letter-spacing:0}
+.section-dark .section-head p{color:rgba(255,255,255,.78)}
 
 /* grids / cards */
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
-.section-dark .grid-3{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.15)}
-.value-card{background:var(--white);padding:40px 32px;display:grid;gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.value-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:36px 30px;display:grid;gap:14px;align-content:start}
+.value-card:hover{background:var(--blue-tint);border-color:var(--blue)}
 .section-dark .value-card{background:var(--black)}
 .value-card .num{font-family:var(--font-mono);font-size:12px;color:var(--blue);letter-spacing:.1em}
 .value-card h3{font-size:26px}
-.value-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:15px;color:var(--gray)}
+.value-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:16px;line-height:1.65;color:var(--gray)}
 .section-dark .value-card p{color:rgba(255,255,255,.68)}
 
 .ministry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
@@ -144,13 +146,13 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .footer-logo{display:flex;align-items:center;gap:12px;font-family:var(--font-display);font-weight:900;font-size:26px;text-transform:uppercase;margin-bottom:14px}
 .footer-logo-mark{height:32px;width:auto;display:block}
 .footer-tagline{font-family:var(--font-body);font-weight:400;text-transform:none;color:rgba(255,255,255,.6);font-size:14.5px;max-width:280px}
-.footer-col h4{font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;color:var(--blue);margin-bottom:18px;font-weight:600}
+.footer-col h4{font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;color:var(--blue-light);margin-bottom:18px;font-weight:600}
 .footer-col p,.footer-col a{display:block;font-family:var(--font-body);font-weight:400;text-transform:none;font-size:14.5px;color:rgba(255,255,255,.75);margin-bottom:10px}
-.footer-col a:hover{color:var(--blue)}
+.footer-col a:hover{color:var(--blue-light)}
 .footer-social{display:flex;gap:14px;margin-top:6px}
 .footer-social a{width:36px;height:36px;border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;margin-bottom:0}
 .footer-social a:hover{border-color:var(--blue);background:var(--blue)}
-.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-family:var(--font-mono);font-size:12px;color:rgba(255,255,255,.4);flex-wrap:wrap;gap:12px}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-family:var(--font-mono);font-size:12px;color:rgba(255,255,255,.62);flex-wrap:wrap;gap:12px}
 
 /* sermons */
 .sermon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
@@ -178,19 +180,33 @@ a.sermon-title:hover{color:var(--blue)}
 .reveal.is-visible{opacity:1;transform:translateY(0)}
 
 a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.site-header a:focus-visible,.site-header button:focus-visible,.site-footer a:focus-visible{outline-color:var(--blue-light)}
 
 @media (max-width:900px){
   body.nav-locked{overflow:hidden}
   .container{padding-left:28px;padding-right:28px}
-  .nav-links,.lang-toggle,.nav-give{display:none}
+  .nav-links,.lang-toggle,.nav-give,.nav-bottom{display:none}
   .menu-btn{display:flex}
-  .nav.is-open{position:fixed;top:0;left:0;right:0;bottom:0;height:100dvh;z-index:90;background:var(--black);flex-direction:column;align-items:center;justify-content:center;padding:100px var(--pad) 40px;gap:36px;overflow-y:auto;animation:navDropIn .3s var(--ease)}
+  .nav.is-open{position:fixed;top:0;left:0;right:0;bottom:0;height:100dvh;z-index:90;background:var(--black);flex-direction:column;align-items:stretch;justify-content:center;padding:96px var(--pad) 36px;gap:28px;overflow-y:auto;animation:navDropIn .3s var(--ease)}
   @keyframes navDropIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
-  .nav.is-open .nav-links{display:flex;flex-direction:column;align-items:center;gap:30px}
-  .nav.is-open .nav-links a{font-family:var(--font-display);font-size:clamp(30px,9vw,42px);font-weight:800;letter-spacing:.01em;padding-bottom:0}
-  .nav.is-open .lang-toggle{display:flex;width:max-content;font-size:15px}
-  .nav.is-open .lang-toggle button{padding:9px 18px}
-  .nav.is-open .nav-give{display:inline-flex;width:max-content;font-size:16px;padding:16px 36px}
+  @keyframes navItemIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+  .nav.is-open .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:0;width:100%}
+  .nav.is-open .nav-links li{border-bottom:1px solid rgba(255,255,255,.14);opacity:0;animation:navItemIn .45s var(--ease) forwards}
+  .nav.is-open .nav-links li:last-child{border-bottom:none}
+  .nav.is-open .nav-links li:nth-child(1){animation-delay:.05s}
+  .nav.is-open .nav-links li:nth-child(2){animation-delay:.1s}
+  .nav.is-open .nav-links li:nth-child(3){animation-delay:.15s}
+  .nav.is-open .nav-links li:nth-child(4){animation-delay:.2s}
+  .nav.is-open .nav-links li:nth-child(5){animation-delay:.25s}
+  .nav.is-open .nav-links a{display:flex;align-items:center;justify-content:space-between;font-family:var(--font-display);font-size:clamp(30px,9vw,40px);font-weight:800;text-transform:uppercase;letter-spacing:.01em;line-height:1;padding:18px 0;border-radius:0;color:var(--white);background:none}
+  .nav.is-open .nav-links a::after{content:'\2192';font-family:var(--font-body);font-size:24px;font-weight:400;color:var(--blue-light);transition:transform .25s var(--ease)}
+  .nav.is-open .nav-links a:active{color:var(--blue-light)}
+  .nav.is-open .nav-links a:active::after{transform:translateX(6px)}
+  .nav.is-open .nav-links a[aria-current]{color:var(--blue-light);background:none}
+  .nav.is-open .nav-bottom{order:2;display:flex;flex-direction:column;align-items:stretch;gap:16px;width:100%;opacity:0;animation:navItemIn .45s var(--ease) .32s forwards}
+  .nav.is-open .nav-give{display:inline-flex;width:100%;font-size:17px;padding:16px 24px;min-height:54px}
+  .nav.is-open .lang-toggle{display:flex;align-self:center;width:max-content;font-size:15px}
+  .nav.is-open .lang-toggle button{padding:10px 22px;min-width:64px}
   .grid-3,.ministry-grid{grid-template-columns:1fr}
   .sermon-grid{grid-template-columns:1fr}
   .visit-grid{grid-template-columns:1fr}
@@ -202,18 +218,18 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 }
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
-  .live-dot,.nav-give,.nav.is-open{animation:none}
+  .live-dot,.nav.is-open,.nav.is-open .nav-links li,.nav.is-open .nav-bottom{animation:none;opacity:1}
   html{scroll-behavior:auto}
 }
 
 /* about page */
-.about-photo{background:var(--paper) center/cover no-repeat;border:1px solid var(--line)}
+.about-photo{background:var(--paper) center/cover no-repeat;border:1px solid var(--line);border-radius:16px}
 .leaders-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:56px;align-items:center}
 .leader-photo{aspect-ratio:4/5;background-position:center top;background-image:url('/apostoles.jpg');background-image:image-set(url('/apostoles.webp') type('image/webp'),url('/apostoles.jpg') type('image/jpeg'))}
 .leader-list{display:grid;gap:32px}
 .leader-item .role{margin-bottom:10px}
 .leader-item h3{font-size:26px;margin-bottom:8px}
-.leader-item p{font-family:var(--font-body);font-weight:400;text-transform:none;font-size:15.5px;color:var(--gray)}
+.leader-item p{font-family:var(--font-body);font-weight:400;text-transform:none;font-size:17px;line-height:1.65;color:var(--gray)}
 .campus-photo{aspect-ratio:21/9;background-image:url('/campus.jpg');background-image:image-set(url('/campus.webp') type('image/webp'),url('/campus.jpg') type('image/jpeg'))}
 .photo-caption{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--gray);margin-top:14px}
 @media (max-width:900px){
@@ -233,31 +249,34 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <header class="site-header">
   <div class="container header-inner">
     <a href="/" class="logo" aria-label="Casa Del Reino — Inicio"><img class="logo-img" alt="" src="/logo.png" width="179" height="120" decoding="async">Casa Del Reino</a>
-    <nav class="nav">
-      <div class="lang-toggle">
-        <button data-lang="es" class="is-active">ES</button>
-        <button data-lang="en">EN</button>
-      </div>
+    <nav class="nav" id="site-nav" aria-label="Principal / Main">
       <ul class="nav-links">
-        <li><a href="/welcome"><span data-lang-es>Nosotros</span><span data-lang-en>About</span></a></li>
+        <li><a href="/about" aria-current="page"><span data-lang-es>Nosotros</span><span data-lang-en>About</span></a></li>
+        <!-- Events link omitted while the homepage Events section is hidden -->
         <li><a href="/sermons"><span data-lang-es>Sermones</span><span data-lang-en>Sermons</span></a></li>
         <li><a href="/ministries"><span data-lang-es>Ministerios</span><span data-lang-en>Ministries</span></a></li>
         <li><a href="/visit"><span data-lang-es>Visítanos</span><span data-lang-en>Visit</span></a></li>
       </ul>
-      <a href="/giving" class="btn btn-primary nav-give"><span data-lang-es>Dar</span><span data-lang-en>Give</span></a>
+      <div class="nav-bottom">
+        <div class="lang-toggle" role="group" aria-label="Idioma / Language">
+          <button type="button" data-lang="es" class="is-active" aria-pressed="true" aria-label="Español">ES</button>
+          <button type="button" data-lang="en" aria-pressed="false" aria-label="English">EN</button>
+        </div>
+        <a href="/giving" class="btn btn-primary nav-give"><span data-lang-es>Dar</span><span data-lang-en>Give</span></a>
+      </div>
     </nav>
-    <button class="menu-btn" aria-label="Abrir menú / Open menu"><span></span><span></span><span></span></button>
+    <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span></button>
   </div>
 </header>
 
 <a id="top"></a>
-<section class="section section-paper" id="bienvenido">
+<section class="section section-warm" id="bienvenido">
   <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow"><span data-lang-es>Bienvenido</span><span data-lang-en>Welcome</span></span>
+    <div class="section-head is-center reveal">
+      <span class="eyebrow"><span data-lang-es>Nuestra historia</span><span data-lang-en>Our story</span></span>
       <h2><span data-lang-es>Bienvenido a casa</span><span data-lang-en>Welcome home</span></h2>
-      <p data-lang-es>Casa Del Reino nació con una visión sencilla: construir una casa donde las familias puedan encontrar amor real, una comunidad genuina, y un camino claro de transformación a través de Jesús. No importa de dónde vengas o qué temporada estés viviendo — aquí hay un lugar para ti.</p>
-      <p data-lang-en>Casa Del Reino was built around a simple vision: a house where families can find real love, genuine community, and a clear path of transformation through Jesus. No matter where you're coming from or what season you're in, there's a place for you here.</p>
+      <p data-lang-es>Casa Del Reino nació con un sueño sencillo: construir una casa donde las familias encuentren amor real, una comunidad que las abrace y un camino claro de transformación a través de Jesús. No importa de dónde vengas ni qué temporada estés viviendo — aquí hay un lugar para ti.</p>
+      <p data-lang-en>Casa Del Reino began with a simple dream: a house where families find real love, a community that embraces them, and a clear path of transformation through Jesus. No matter where you're coming from or what season you're in, there's a place for you here.</p>
     </div>
     <div class="grid-3">
       <div class="value-card reveal">
@@ -314,8 +333,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section section-paper" id="leaders">
   <div class="container">
     <div class="section-head reveal">
-      <span class="eyebrow"><span data-lang-es>Liderazgo</span><span data-lang-en>Leadership</span></span>
-      <h2><span data-lang-es>Nuestros Apóstoles</span><span data-lang-en>Our Apostles</span></h2>
+      <span class="eyebrow"><span data-lang-es>Nuestros Apóstoles</span><span data-lang-en>Our Apostles</span></span>
+      <h2><span data-lang-es>Quienes te reciben en casa</span><span data-lang-en>Meet your pastors</span></h2>
     </div>
     <div class="leaders-grid reveal">
       <div class="about-photo leader-photo" role="img" aria-label="Apóstoles Luis Pérez y Shirley Roldán"></div>
@@ -335,7 +354,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   <div class="container">
     <div class="section-head reveal">
       <span class="eyebrow"><span data-lang-es>Nuestro Hogar</span><span data-lang-en>Our Home</span></span>
-      <h2><span data-lang-es>El Campus</span><span data-lang-en>The Campus</span></h2>
+      <h2><span data-lang-es>Te esperamos en el campus</span><span data-lang-en>We'll see you at the campus</span></h2>
     </div>
     <div class="reveal">
       <div class="about-photo campus-photo" role="img" aria-label="Campus Casa Del Reino"></div>
@@ -344,6 +363,20 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   </div>
 </section>
 
+<section class="section section-dark" id="invite">
+  <div class="container">
+    <div class="section-head is-center reveal" style="margin-bottom:32px">
+      <span class="eyebrow" style="color:var(--blue-light)"><span data-lang-es>Te esperamos</span><span data-lang-en>We're expecting you</span></span>
+      <h2><span data-lang-es>Hay un lugar para ti</span><span data-lang-en>There's a place for you</span></h2>
+      <p data-lang-es>Ven este domingo y sé parte de nuestra familia.</p>
+      <p data-lang-en>Join us this Sunday and become part of our family.</p>
+    </div>
+    <div class="btn-row reveal">
+      <a href="/visit" class="btn btn-primary"><span data-lang-es>Planifica tu visita</span><span data-lang-en>Plan your visit</span></a>
+      <a href="/ministries" class="btn btn-outline-light"><span data-lang-es>Conoce nuestros ministerios</span><span data-lang-en>Explore our ministries</span></a>
+    </div>
+  </div>
+</section>
 
 <footer class="site-footer">
   <div class="container">
@@ -391,11 +424,32 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
 (function(){
   var KEY='cdr-lang';
+  var menuBtn=document.querySelector('.menu-btn'), nav=document.querySelector('.nav');
+  var header=document.querySelector('.site-header');
+  var mq=window.matchMedia('(max-width:900px)');
+
+  function curLang(){return document.documentElement.getAttribute('data-active-lang')==='en'?'en':'es';}
+  function menuLabel(open){
+    var en=curLang()==='en';
+    return open?(en?'Close menu':'Cerrar menú'):(en?'Open menu':'Abrir menú');
+  }
+  function setMenu(open,restoreFocus){
+    nav.classList.toggle('is-open',open);
+    document.body.classList.toggle('nav-locked',open);
+    menuBtn.setAttribute('aria-expanded',open?'true':'false');
+    menuBtn.setAttribute('aria-label',menuLabel(open));
+    if(!open&&restoreFocus) menuBtn.focus();
+  }
   function setLang(l){
+    if(l!=='es'&&l!=='en') l='es';
     document.documentElement.setAttribute('data-active-lang',l);
+    document.documentElement.lang=l;
     document.querySelectorAll('.lang-toggle button').forEach(function(b){
-      b.classList.toggle('is-active', b.dataset.lang===l);
+      var on=b.dataset.lang===l;
+      b.classList.toggle('is-active',on);
+      b.setAttribute('aria-pressed',on?'true':'false');
     });
+    menuBtn.setAttribute('aria-label',menuLabel(nav.classList.contains('is-open')));
     try{localStorage.setItem(KEY,l);}catch(e){}
     if(window.__reformatSermonDates){window.__reformatSermonDates(l);}
   }
@@ -405,17 +459,28 @@ document.getElementById('year').textContent = new Date().getFullYear();
     b.addEventListener('click',function(){setLang(b.dataset.lang);});
   });
 
-  var menuBtn=document.querySelector('.menu-btn'), nav=document.querySelector('.nav');
-  menuBtn.addEventListener('click',function(){
-    nav.classList.toggle('is-open');
-    document.body.classList.toggle('nav-locked', nav.classList.contains('is-open'));
-  });
+  menuBtn.setAttribute('aria-controls','site-nav');
+  menuBtn.addEventListener('click',function(){setMenu(!nav.classList.contains('is-open'));});
   document.querySelectorAll('.nav-links a, .nav-give').forEach(function(a){
-    a.addEventListener('click',function(){
-      nav.classList.remove('is-open');
-      document.body.classList.remove('nav-locked');
-    });
+    a.addEventListener('click',function(){setMenu(false);});
   });
+  document.addEventListener('keydown',function(e){
+    if(!nav.classList.contains('is-open')) return;
+    if(e.key==='Escape'){ setMenu(false,true); return; }
+    if(e.key!=='Tab') return;
+    // keep keyboard focus inside the open full-screen menu
+    var f=Array.prototype.slice.call(header.querySelectorAll('a[href],button')).filter(function(el){return el.offsetParent!==null;});
+    if(!f.length) return;
+    var first=f[0], last=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+  });
+  // rotating a phone / widening the window must not leave the page scroll-locked
+  var onBreak=function(){ if(!mq.matches&&nav.classList.contains('is-open')) setMenu(false); };
+  if(mq.addEventListener) mq.addEventListener('change',onBreak); else mq.addListener(onBreak);
+
+  var onScroll=function(){header.classList.toggle('is-scrolled',window.scrollY>8);};
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
 
   var items=document.querySelectorAll('.reveal');
   if('IntersectionObserver' in window && items.length){

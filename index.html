@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Casa Del Reino | Kissimmee, FL</title>
 <meta name="description" content="Casa Del Reino — Un lugar de Amor, Familia y Transformación. Iglesia en Kissimmee, FL. Domingos 11:00 AM, Celebración Jueves 7:30 PM.">
+<meta name="theme-color" content="#0b0b0c">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Casa Del Reino">
+<meta property="og:title" content="Casa Del Reino | Kissimmee, FL">
+<meta property="og:description" content="Un lugar de Amor, Familia y Transformación. Hay un lugar para ti en Casa Del Reino.">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png">
 <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
@@ -17,13 +22,15 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet"></noscript>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet"></noscript>
 
+<noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
 <style>
 :root{
   --black:#0b0b0c; --white:#ffffff; --paper:#f7f7f5; --line:#e3e3e0;
   --gray:#5d5d61; --blue:#2c6cc9; --blue-deep:#22549c; --live:#e11d3c;
+  --blue-light:#6ea3f0; --blue-tint:#eaf1fb; --warm:#fbf8f2;
   --font-display:'Big Shoulders Display',sans-serif;
   --font-body:'Inter',sans-serif; --font-mono:'JetBrains Mono',monospace;
   --container:1180px; --pad:clamp(20px,5vw,64px);
@@ -31,11 +38,11 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none !important}
-html{scroll-behavior:smooth; scroll-padding-top:72px}
+html{scroll-behavior:smooth; scroll-padding-top:84px}
 body{margin:0;background:var(--white);color:var(--black);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
 img,svg{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
-h1,h2,h3,h4{font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.01em;line-height:.92;margin:0}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.01em;line-height:1;margin:0}
 p{margin:0}
 .container{max-width:var(--container);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
 
@@ -49,58 +56,59 @@ html[data-active-lang="es"] [data-lang-en]{display:none !important}
 html[data-active-lang="en"] [data-lang-es]{display:none !important}
 
 /* header */
-.site-header{position:sticky;top:0;z-index:100;background:rgba(11,11,12,.85);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.12)}
-.header-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
-.logo{position:relative;z-index:95;font-family:var(--font-display);font-weight:900;font-size:21px;text-transform:uppercase;letter-spacing:.02em;color:var(--white);display:flex;align-items:center;gap:12px}
-.logo .mark{width:12px;height:12px;background:var(--blue);display:inline-block}
+.site-header{position:sticky;top:0;z-index:100;background:rgba(11,11,12,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.12);transition:background .25s var(--ease),box-shadow .25s var(--ease)}
+.site-header.is-scrolled{background:rgba(11,11,12,.95);box-shadow:0 10px 28px -14px rgba(0,0,0,.6)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 0;min-height:72px}
+.logo{position:relative;z-index:95;font-family:var(--font-display);font-weight:900;font-size:22px;text-transform:uppercase;letter-spacing:.02em;color:var(--white);display:flex;align-items:center;gap:12px}
 .logo-img{height:40px;width:auto;display:block;transition:transform .3s var(--ease)}
 .logo:hover .logo-img{transform:scale(1.06)}
-.nav{display:flex;align-items:center;gap:36px}
+.nav{display:flex;align-items:center;gap:24px}
 .nav-bottom{display:contents}
-.nav-links{display:flex;gap:30px;list-style:none;margin:0;padding:0;order:2}
-.lang-toggle{order:1}
+.nav-links{display:flex;gap:2px;list-style:none;margin:0;padding:0;order:1}
+.lang-toggle{order:2}
 .nav-give{order:3}
-.nav-links a{font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--white);position:relative;padding-bottom:4px;transition:color .2s var(--ease)}
-.nav-links a::after{content:'';position:absolute;left:0;right:100%;bottom:0;height:2px;background:var(--blue);transition:right .25s var(--ease)}
-.nav-links a:hover{color:var(--blue)}
-.nav-links a:hover::after{right:0}
-.lang-toggle{display:flex;border:1px solid rgba(255,255,255,.5);border-radius:999px;overflow:hidden;font-family:var(--font-mono);font-size:12px;font-weight:600}
-.lang-toggle button{background:transparent;border:none;padding:7px 14px;cursor:pointer;color:var(--white);font:inherit;letter-spacing:.04em;transition:background .2s var(--ease),color .2s var(--ease)}
+.nav-links a{display:block;font-family:var(--font-body);font-size:15px;font-weight:600;letter-spacing:.01em;color:rgba(255,255,255,.88);padding:10px 14px;border-radius:999px;transition:color .2s var(--ease),background .2s var(--ease)}
+.nav-links a:hover{color:var(--white);background:rgba(255,255,255,.1)}
+.nav-links a[aria-current]{color:var(--white);background:rgba(110,163,240,.22)}
+.lang-toggle{display:flex;border:1px solid rgba(255,255,255,.4);border-radius:999px;overflow:hidden;font-family:var(--font-body);font-size:13px;font-weight:600}
+.lang-toggle button{background:transparent;border:none;padding:8px 14px;min-width:42px;cursor:pointer;color:var(--white);font:inherit;letter-spacing:.04em;transition:background .2s var(--ease),color .2s var(--ease)}
+.lang-toggle button:hover:not(.is-active){background:rgba(255,255,255,.12)}
 .lang-toggle button.is-active{background:var(--white);color:var(--black)}
-.menu-btn{position:relative;z-index:95;display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:5px;padding:6px}
-.menu-btn span{width:22px;height:2px;background:var(--white);transition:transform .25s var(--ease),opacity .25s var(--ease)}
-.nav.is-open ~ .menu-btn span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.nav.is-open ~ .menu-btn span:nth-child(2){opacity:0}
-.nav.is-open ~ .menu-btn span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.menu-btn{position:relative;z-index:95;display:none;background:none;border:none;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:44px;height:44px;margin-right:-10px;padding:0}
+.menu-btn span{width:24px;height:2px;border-radius:2px;background:var(--white);transition:transform .25s var(--ease),opacity .25s var(--ease)}
+.menu-btn[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.menu-btn[aria-expanded="true"] span:nth-child(2){opacity:0}
+.menu-btn[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
 /* buttons */
-.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:15px 26px;border-radius:2px;border:1px solid transparent;cursor:pointer;transition:all .2s var(--ease)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--font-body);font-size:15px;font-weight:700;letter-spacing:.01em;padding:14px 28px;min-height:48px;border-radius:999px;border:1px solid transparent;cursor:pointer;transition:all .2s var(--ease)}
 .btn:hover{transform:translateY(-2px)}
 .btn:active{transform:translateY(0) scale(.97)}
 .btn-primary{background:var(--blue);color:var(--white);border-color:var(--blue)}
 .btn-primary:hover{background:var(--blue-deep);border-color:var(--blue-deep)}
 .btn-live{background:var(--live);color:var(--white);border-color:var(--live)}
 .btn-live:hover{background:#b81631;border-color:#b81631}
-.btn-outline-light{background:transparent;color:var(--white);border-color:rgba(255,255,255,.4)}
-.btn-outline-light:hover{border-color:var(--white);background:rgba(255,255,255,.08)}
+.btn-outline-light{background:transparent;color:var(--white);border-color:rgba(255,255,255,.55)}
+.btn-outline-light:hover{border-color:var(--white);background:rgba(255,255,255,.1)}
 .btn-outline-dark{background:transparent;color:var(--black);border-color:var(--black)}
 .btn-outline-dark:hover{background:var(--black);color:var(--white)}
-.btn-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.btn-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
 
-/* Dar/Give nav button — kept extra prominent with a standing glow and gentle pulse */
-.nav-give{position:relative;font-weight:700;padding:13px 30px;box-shadow:0 6px 18px -4px rgba(44,108,201,.55);animation:givePulse 2.8s ease-in-out infinite}
-.nav-give:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 10px 26px -4px rgba(44,108,201,.7)}
-@keyframes givePulse{0%,100%{box-shadow:0 6px 18px -4px rgba(44,108,201,.55)}50%{box-shadow:0 6px 26px -2px rgba(44,108,201,.9)}}
+/* Dar/Give nav button — prominent, with a soft standing glow */
+.nav-give{position:relative;padding:11px 26px;min-height:44px;box-shadow:0 6px 18px -6px rgba(44,108,201,.7)}
+.nav-give:hover{transform:translateY(-2px);box-shadow:0 10px 24px -6px rgba(44,108,201,.85)}
 
 /* hero */
-.hero{position:relative;background:var(--black) center/cover no-repeat;background-image:url('/hero.jpg');background-image:image-set(url('/hero.webp') type('image/webp'),url('/hero.jpg') type('image/jpeg'));color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:100vh;padding:clamp(56px,9vw,96px) 0 56px}
+.hero{position:relative;background:var(--black) center/cover no-repeat;background-image:url('/hero.jpg');background-image:image-set(url('/hero.webp') type('image/webp'),url('/hero.jpg') type('image/jpeg'));color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:100vh;min-height:min(100svh,920px);padding:clamp(56px,9vw,96px) 0 56px}
 .hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
 .hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
 @keyframes heroIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes heroLineLeft{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:translateX(0)}}
 @keyframes heroLineRight{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:translateX(0)}}
 .hero .live-tag{animation:heroIn .6s var(--ease) both}
-.hero .btn-row{animation:heroIn .8s var(--ease) .25s both}
+.hero .btn-row{animation:heroIn .8s var(--ease) .35s both}
+.hero .btn{padding:16px 32px;font-size:16px}
+.hero-sub{max-width:560px;font-size:clamp(17px,2.2vw,20px);line-height:1.6;color:rgba(255,255,255,.88);animation:heroIn .8s var(--ease) .2s both}
 .hero h1{font-size:clamp(28px,8.2vw,96px);line-height:1.25;overflow-wrap:break-word;min-width:0;max-width:100%}
 .hero h1 .hl-bold{font-weight:900}
 .hero h1 .hl-accent{color:var(--blue)}
@@ -111,60 +119,64 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .live-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--white);background:var(--live);padding:6px 14px;border-radius:999px}
 .live-dot{width:7px;height:7px;border-radius:999px;background:var(--white);animation:livepulse 1.4s ease-in-out infinite;flex:none}
 @keyframes livepulse{0%,100%{opacity:1}50%{opacity:.3}}
-.live-bar{display:none;align-items:center;justify-content:center;gap:10px;background:var(--live);color:var(--white);text-align:center;padding:10px var(--pad);font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.live-bar{display:none;align-items:center;justify-content:center;gap:10px;background:var(--live);color:var(--white);text-align:center;padding:10px var(--pad);font-family:var(--font-body);font-size:14px;letter-spacing:.04em;font-weight:700}
 .live-bar.is-visible{display:flex}
 .schedule-strip{background:var(--blue);padding:16px var(--pad);text-align:center}
-.schedule-strip span{font-family:var(--font-mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--white);font-weight:600}
+.schedule-strip span{font-family:var(--font-body);font-size:15px;letter-spacing:.02em;color:var(--white);font-weight:600}
 
 /* sections */
 .section{padding:clamp(70px,9vw,120px) 0}
 /* #welcome and #sermons are both plain white with no color break between
    them, so stacking each section's own top+bottom padding reads as one
    oversized gap — collapse it down to a single section's worth of space. */
-#welcome + #sermons{padding-top:0}
+#welcome + #first-visit + #sermons{padding-top:clamp(70px,9vw,120px)}
 .section-paper{background:var(--paper)}
+.section-warm{background:var(--warm)}
+.section-head.is-center{margin-left:auto;margin-right:auto;text-align:center;justify-items:center}
 .section-dark{background:var(--black);color:var(--white)}
 .section-blue{background:var(--blue);color:var(--white)}
 .section-head{display:grid;gap:18px;max-width:640px;margin-bottom:56px}
 .section-head h2{font-size:clamp(34px,5vw,54px)}
-.section-head p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:17px;color:var(--gray);letter-spacing:0}
-.section-dark .section-head p{color:rgba(255,255,255,.7)}
+.section-head p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:18px;line-height:1.65;color:var(--gray);letter-spacing:0}
+.section-dark .section-head p{color:rgba(255,255,255,.78)}
+.section-dark .eyebrow,.section-dark .tag,.section-dark .num,.section-dark .month{color:var(--blue-light)}
+.section-dark .eyebrow::before{background:var(--blue-light)}
 .section-blue .eyebrow{color:var(--white)}
 .section-blue .eyebrow::before{background:var(--white)}
-.section-blue .section-head p{color:rgba(255,255,255,.85);font-style:italic}
-.giving-embed{background:var(--white);border-radius:2px;padding:clamp(24px,4vw,40px);max-width:600px;margin:0 auto}
+.section-blue .section-head p{color:rgba(255,255,255,.92);font-style:italic}
+.giving-embed{background:var(--white);border-radius:16px;padding:clamp(24px,4vw,40px);max-width:600px;margin:0 auto}
 
 /* grids / cards */
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
-.section-dark .grid-3{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.15)}
-.value-card{background:var(--white);padding:40px 32px;display:grid;gap:16px}
-.value-card:hover{background:var(--paper)}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.value-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:36px 30px;display:grid;gap:14px;align-content:start}
+.value-card:hover{background:var(--blue-tint);border-color:var(--blue)}
+.section-warm .value-card{background:var(--white)}
 .value-card.reveal{transition:opacity .7s var(--ease),transform .5s var(--ease),background-color .25s var(--ease)}
-.section-dark .value-card{background:var(--black)}
-.section-dark .value-card:hover{background:rgba(255,255,255,.04)}
+.section-dark .value-card{background:var(--black);border-color:rgba(255,255,255,.15)}
+.section-dark .value-card:hover{background:rgba(255,255,255,.05);border-color:var(--blue-light)}
 .value-card .num{font-family:var(--font-mono);font-size:12px;color:var(--blue);letter-spacing:.1em}
-.value-card h3{font-size:26px}
-.value-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:15px;color:var(--gray)}
+.value-card h3{font-size:28px}
+.value-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:16px;line-height:1.65;color:var(--gray)}
 .section-dark .value-card p{color:rgba(255,255,255,.68)}
 .value-card.reveal:nth-child(2){transition-delay:.1s}
 .value-card.reveal:nth-child(3){transition-delay:.2s}
 
 .ministry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
-.ministry-card{border:1px solid var(--line);padding:32px 28px;display:grid;gap:14px}
-.ministry-card:hover{border-color:var(--blue);transform:translateY(-3px);box-shadow:0 14px 28px -12px rgba(0,0,0,.35)}
+.ministry-card{border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:32px 28px;display:grid;gap:14px;align-content:start}
+.ministry-card:hover{border-color:var(--blue-light);background:rgba(255,255,255,.04);transform:translateY(-3px);box-shadow:0 14px 28px -12px rgba(0,0,0,.35)}
 .ministry-card.reveal{transition:opacity .7s var(--ease),transform .5s var(--ease),border-color .25s var(--ease),box-shadow .25s var(--ease)}
 .ministry-card.reveal:nth-child(2){transition-delay:.08s}
 .ministry-card.reveal:nth-child(3){transition-delay:.16s}
 .ministry-card.reveal:nth-child(4){transition-delay:.24s}
 .ministry-card.reveal:nth-child(5){transition-delay:.32s}
 .ministry-card.reveal:nth-child(6){transition-delay:.4s}
-.ministry-card h3{font-size:24px}
-.ministry-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:14.5px;color:var(--gray)}
-.ministry-card .tag{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.ministry-card h3{font-size:28px}
+.ministry-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:16px;line-height:1.65;color:rgba(255,255,255,.78)}
+.ministry-card .tag{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue-light)}
 
 /* events */
-.events-list{display:grid;gap:1px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.15)}
-.event-item{background:var(--black);display:grid;grid-template-columns:120px 1fr;gap:28px;padding:32px 28px;align-items:center}
+.events-list{display:grid;gap:14px}
+.event-item{background:var(--black);border:1px solid rgba(255,255,255,.15);border-radius:16px;display:grid;grid-template-columns:120px 1fr;gap:28px;padding:32px 28px;align-items:center}
 .event-item.reveal{transition:opacity .7s var(--ease),transform .5s var(--ease),background-color .25s var(--ease)}
 .event-item:hover{background:rgba(255,255,255,.04)}
 .event-item-date{display:grid;justify-items:center;gap:2px}
@@ -173,18 +185,28 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .event-item-body{display:grid;gap:8px}
 .event-item-body .tag{font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
 .event-item-body h3{font-size:clamp(24px,3vw,32px)}
-.event-item-body p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:15px;color:rgba(255,255,255,.68)}
+.event-item-body p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:16px;color:rgba(255,255,255,.78)}
 .event-item.reveal:nth-child(2){transition-delay:.1s}
 .event-item.reveal:nth-child(3){transition-delay:.2s}
 .event-item.reveal:nth-child(4){transition-delay:.3s}
 
+/* first visit */
+.expect-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.expect-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:30px 28px;display:grid;gap:10px;align-content:start}
+.expect-card .icon{width:44px;height:44px;border-radius:999px;background:var(--blue-tint);color:var(--blue-deep);display:flex;align-items:center;justify-content:center;margin-bottom:6px}
+.expect-card .icon svg{width:22px;height:22px}
+.expect-card h3{font-size:24px}
+.expect-card p{font-size:16px;line-height:1.65;color:var(--gray)}
+.giving-fallback{display:block;text-align:center;color:var(--blue-deep);font-weight:700;text-decoration:underline;text-underline-offset:3px;padding:8px}
+.visit-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+
 /* visit */
 .visit-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
 .detail-row{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:20px 0;border-bottom:1px solid var(--line)}
-.detail-row .label{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
-.detail-row .value{font-size:16px}
+.detail-row .label{font-family:var(--font-mono);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.detail-row .value{font-size:17px}
 .detail-row .value a:hover{color:var(--blue)}
-.map-frame{border:1px solid var(--line);height:100%;min-height:380px;background:var(--paper)}
+.map-frame{border:1px solid var(--line);border-radius:16px;overflow:hidden;height:100%;min-height:380px;background:var(--paper)}
 .map-frame iframe{width:100%;height:100%;min-height:380px;border:0;filter:grayscale(.4) contrast(1.05)}
 
 /* footer */
@@ -192,18 +214,18 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.15)}
 .footer-logo{display:flex;align-items:center;gap:12px;font-family:var(--font-display);font-weight:900;font-size:26px;text-transform:uppercase;margin-bottom:14px}
 .footer-logo-mark{height:32px;width:auto;display:block}
-.footer-tagline{font-family:var(--font-body);font-weight:400;text-transform:none;color:rgba(255,255,255,.6);font-size:14.5px;max-width:280px}
-.footer-col h4{font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;color:var(--blue);margin-bottom:18px;font-weight:600}
+.footer-tagline{font-family:var(--font-body);font-weight:400;text-transform:none;color:rgba(255,255,255,.72);font-size:15px;max-width:280px}
+.footer-col h4{font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;color:var(--blue-light);margin-bottom:18px;font-weight:600}
 .footer-col p,.footer-col a{display:block;font-family:var(--font-body);font-weight:400;text-transform:none;font-size:14.5px;color:rgba(255,255,255,.75);margin-bottom:10px}
-.footer-col a:hover{color:var(--blue)}
+.footer-col a:hover{color:var(--blue-light)}
 .footer-social{display:flex;gap:14px;margin-top:6px}
 .footer-social a{width:36px;height:36px;border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;margin-bottom:0;transition:border-color .2s var(--ease),background .2s var(--ease),transform .2s var(--ease)}
 .footer-social a:hover{border-color:var(--blue);background:var(--blue);transform:translateY(-2px)}
-.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-family:var(--font-mono);font-size:12px;color:rgba(255,255,255,.4);flex-wrap:wrap;gap:12px}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:24px;font-family:var(--font-mono);font-size:12px;color:rgba(255,255,255,.62);flex-wrap:wrap;gap:12px}
 
 /* sermons */
 .sermon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
-.sermon-card{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--white);overflow:hidden;transition:border-color .2s var(--ease),transform .2s var(--ease),box-shadow .2s var(--ease)}
+.sermon-card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;background:var(--white);overflow:hidden;transition:border-color .2s var(--ease),transform .2s var(--ease),box-shadow .2s var(--ease)}
 .sermon-card:not(.is-skeleton):hover{border-color:var(--blue);transform:translateY(-3px);box-shadow:0 14px 28px -12px rgba(0,0,0,.18)}
 .sermon-thumb{position:relative;aspect-ratio:16/9;background:#0b0b0c center/cover no-repeat;cursor:pointer;display:block;border:0;width:100%;padding:0}
 .sermon-thumb .play{position:absolute;inset:0;margin:auto;width:56px;height:56px;border-radius:999px;background:rgba(44,108,201,.92);display:flex;align-items:center;justify-content:center;transition:transform .2s var(--ease),background .2s var(--ease)}
@@ -211,12 +233,12 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .sermon-card:hover .sermon-thumb .play{transform:scale(1.08);background:var(--blue)}
 .sermon-thumb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .sermon-body{padding:22px 22px 24px;display:grid;gap:8px}
-.sermon-date{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
-.sermon-title{font-family:var(--font-display);font-weight:700;text-transform:uppercase;font-size:19px;line-height:1.05;letter-spacing:.01em;color:var(--black);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sermon-date{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.sermon-title{font-family:var(--font-display);font-weight:700;text-transform:uppercase;font-size:21px;line-height:1.05;letter-spacing:.01em;color:var(--black);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 a.sermon-title:hover{color:var(--blue)}
 .sermon-note{grid-column:1/-1;font-family:var(--font-body);color:var(--gray);font-size:15px}
 /* skeleton */
-.is-skeleton .sermon-thumb{cursor:default}
+.is-skeleton .sermon-thumb,.sermon-thumb.is-playing{cursor:default}
 .sk-line{display:block;height:13px;border-radius:3px;background:linear-gradient(90deg,var(--line) 25%,#eee 37%,var(--line) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite}
 .sk-line.short{width:55%}
 .is-skeleton .sermon-thumb{background:linear-gradient(90deg,var(--line) 25%,#eee 37%,var(--line) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite}
@@ -227,10 +249,11 @@ a.sermon-title:hover{color:var(--blue)}
 .reveal.is-visible{opacity:1;transform:translateY(0)}
 
 /* Skip offscreen layout/paint for below-fold sections */
-#welcome,#sermons,#ministries,#giving,#visit,.site-footer{content-visibility:auto;contain-intrinsic-size:auto 800px}
+#welcome,#first-visit,#sermons,#ministries,#giving,#visit,.site-footer{content-visibility:auto;contain-intrinsic-size:auto 800px}
 
 
 a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.site-header a:focus-visible,.site-header button:focus-visible,.section-dark a:focus-visible,.site-footer a:focus-visible,.hero a:focus-visible,.section-blue a:focus-visible{outline-color:var(--blue-light)}
 
 @media (max-width:900px){
   body.nav-locked{overflow:hidden}
@@ -239,25 +262,27 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   .container{padding-left:28px;padding-right:28px}
   .nav-links,.lang-toggle,.nav-give,.nav-bottom{display:none}
   .menu-btn{display:flex}
-  .nav.is-open{position:fixed;top:0;left:0;right:0;bottom:0;height:100dvh;z-index:90;background:var(--black);flex-direction:column;align-items:flex-start;justify-content:center;padding:100px var(--pad) 40px;gap:36px;overflow-y:auto;animation:navDropIn .3s var(--ease)}
+  .nav.is-open{position:fixed;top:0;left:0;right:0;bottom:0;height:100dvh;z-index:90;background:var(--black);flex-direction:column;align-items:stretch;justify-content:center;padding:96px var(--pad) 36px;gap:28px;overflow-y:auto;animation:navDropIn .3s var(--ease)}
   @keyframes navDropIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
-  @keyframes navItemIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes navItemIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
   .nav.is-open .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:0;width:100%}
-  .nav.is-open .nav-links li{width:100%;border-bottom:1px solid rgba(255,255,255,.15);padding:18px 0;opacity:0;animation:navItemIn .5s var(--ease) forwards}
-  .nav.is-open .nav-links li:first-child{padding-top:0}
+  .nav.is-open .nav-links li{border-bottom:1px solid rgba(255,255,255,.14);opacity:0;animation:navItemIn .45s var(--ease) forwards}
   .nav.is-open .nav-links li:last-child{border-bottom:none}
-  .nav.is-open .nav-links li:nth-child(1){animation-delay:.08s}
-  .nav.is-open .nav-links li:nth-child(2){animation-delay:.15s}
-  .nav.is-open .nav-links li:nth-child(3){animation-delay:.22s}
-  .nav.is-open .nav-links li:nth-child(4){animation-delay:.29s}
-  .nav.is-open .nav-links li:nth-child(5){animation-delay:.36s}
-  .nav.is-open .nav-links a{font-family:var(--font-display);font-size:clamp(30px,9vw,42px);font-weight:800;letter-spacing:.01em;padding-bottom:0;display:block;text-align:left;transition:transform .25s var(--ease),color .25s var(--ease)}
-  .nav.is-open .nav-links a:active{transform:translateX(10px);color:var(--blue)}
-  .nav.is-open .nav-bottom{display:flex;align-items:center;justify-content:center;gap:20px;order:3;opacity:0;animation:navItemIn .5s var(--ease) forwards;animation-delay:.43s;width:100%}
-  .nav.is-open .lang-toggle{display:flex;width:max-content;font-size:15px}
-  .nav.is-open .lang-toggle button{padding:9px 18px}
-  .nav.is-open .nav-give{display:inline-flex;justify-content:center;width:max-content;font-size:16px;padding:16px 56px}
-  .grid-3,.ministry-grid{grid-template-columns:1fr}
+  .nav.is-open .nav-links li:nth-child(1){animation-delay:.05s}
+  .nav.is-open .nav-links li:nth-child(2){animation-delay:.1s}
+  .nav.is-open .nav-links li:nth-child(3){animation-delay:.15s}
+  .nav.is-open .nav-links li:nth-child(4){animation-delay:.2s}
+  .nav.is-open .nav-links li:nth-child(5){animation-delay:.25s}
+  .nav.is-open .nav-links a{display:flex;align-items:center;justify-content:space-between;font-family:var(--font-display);font-size:clamp(30px,9vw,40px);font-weight:800;text-transform:uppercase;letter-spacing:.01em;line-height:1;padding:18px 0;border-radius:0;color:var(--white);background:none}
+  .nav.is-open .nav-links a::after{content:'\2192';font-family:var(--font-body);font-size:24px;font-weight:400;color:var(--blue-light);transition:transform .25s var(--ease)}
+  .nav.is-open .nav-links a:active{color:var(--blue-light)}
+  .nav.is-open .nav-links a:active::after{transform:translateX(6px)}
+  .nav.is-open .nav-links a[aria-current]{color:var(--blue-light);background:none}
+  .nav.is-open .nav-bottom{order:2;display:flex;flex-direction:column;align-items:stretch;gap:16px;width:100%;opacity:0;animation:navItemIn .45s var(--ease) .32s forwards}
+  .nav.is-open .nav-give{display:inline-flex;width:100%;font-size:17px;padding:16px 24px;min-height:54px}
+  .nav.is-open .lang-toggle{display:flex;align-self:center;width:max-content;font-size:15px}
+  .nav.is-open .lang-toggle button{padding:10px 22px;min-width:64px}
+  .grid-3,.ministry-grid,.expect-grid{grid-template-columns:1fr}
   .event-item{grid-template-columns:1fr;justify-items:center;text-align:center}
   .sermon-grid{grid-template-columns:1fr}
   .visit-grid{grid-template-columns:1fr}
@@ -269,7 +294,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 }
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
-  .live-dot,.nav-give,.hero .live-tag,.hero .btn-row,.hero-line-left,.hero-line-mid,.hero-line-right,.nav.is-open,.nav.is-open .nav-links li,.nav.is-open .nav-bottom{animation:none;opacity:1}
+  .live-dot,.hero-sub,.hero .live-tag,.hero .btn-row,.hero-line-left,.hero-line-mid,.hero-line-right,.nav.is-open,.nav.is-open .nav-links li,.nav.is-open .nav-bottom{animation:none;opacity:1}
   html{scroll-behavior:auto}
 }
 </style>
@@ -284,7 +309,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <header class="site-header">
   <div class="container header-inner">
     <a href="/" class="logo" aria-label="Casa Del Reino — Inicio"><img class="logo-img" alt="" src="/logo.png" width="179" height="120" decoding="async">Casa Del Reino</a>
-    <nav class="nav">
+    <nav class="nav" id="site-nav" aria-label="Principal / Main">
       <ul class="nav-links">
         <li><a href="/about"><span data-lang-es>Nosotros</span><span data-lang-en>About</span></a></li>
         <li><a href="/events"><span data-lang-es>Eventos</span><span data-lang-en>Events</span></a></li>
@@ -293,14 +318,14 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
         <li><a href="/visit"><span data-lang-es>Visítanos</span><span data-lang-en>Visit</span></a></li>
       </ul>
       <div class="nav-bottom">
-        <div class="lang-toggle">
-          <button data-lang="es" class="is-active">ES</button>
-          <button data-lang="en">EN</button>
+        <div class="lang-toggle" role="group" aria-label="Idioma / Language">
+          <button type="button" data-lang="es" class="is-active" aria-pressed="true" aria-label="Español">ES</button>
+          <button type="button" data-lang="en" aria-pressed="false" aria-label="English">EN</button>
         </div>
         <a href="/giving" class="btn btn-primary nav-give"><span data-lang-es>Dar</span><span data-lang-en>Give</span></a>
       </div>
     </nav>
-    <button class="menu-btn" aria-label="Abrir menú / Open menu"><span></span><span></span><span></span></button>
+    <button class="menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="site-nav"><span></span><span></span><span></span></button>
   </div>
 </header>
 
@@ -312,15 +337,16 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
       <span data-lang-es>En vivo ahora</span><span data-lang-en>Live now</span>
     </span>
     <h1><span data-lang-es><span class="hero-line-left">Un lugar de <span class="hl-bold">Amor</span>,</span> <span class="hero-line-mid"><span class="hl-accent">Familia</span> y</span> <span class="hl-block hero-line-right">Transformación</span>.</span><span data-lang-en><span class="hero-line-left">A place of <span class="hl-bold">Love</span>,</span> <span class="hero-line-mid"><span class="hl-accent">Family</span>, and</span> <span class="hl-block hero-line-right">Transformation</span>.</span></h1>
+    <p class="hero-sub"><span data-lang-es>Seas quien seas y vengas de donde vengas, hay un lugar para ti en nuestra familia. Te estamos esperando con los brazos abiertos.</span><span data-lang-en>Whoever you are and wherever you're coming from, there's a place for you in our family. We're waiting for you with open arms.</span></p>
     <div class="btn-row">
       <a href="https://www.youtube.com/@casadelreinomaincampus" id="hero-live-btn" class="btn btn-live" target="_blank" rel="noopener" hidden>
         <span data-lang-es>Ver la transmisión ahora</span><span data-lang-en>Watch the Stream Now</span>
       </a>
       <a href="/visit" class="btn btn-primary">
-        <span data-lang-es>Visítanos este domingo</span><span data-lang-en>Plan your visit</span>
+        <span data-lang-es>Planifica tu visita</span><span data-lang-en>Plan your visit</span>
       </a>
       <a href="/ministries" class="btn btn-outline-light">
-        <span data-lang-es>Ver ministerios</span><span data-lang-en>See ministries</span>
+        <span data-lang-es>Conoce nuestros ministerios</span><span data-lang-en>Explore our ministries</span>
       </a>
     </div>
   </div>
@@ -352,13 +378,13 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   </div>
 </section>
 
-<section class="section" id="welcome">
+<section class="section section-warm" id="welcome">
   <div class="container">
-    <div class="section-head reveal">
-      <span class="eyebrow"><span data-lang-es>Bienvenido</span><span data-lang-en>Welcome</span></span>
+    <div class="section-head is-center reveal">
+      <span class="eyebrow"><span data-lang-es>Nuestra casa es tu casa</span><span data-lang-en>Our home is your home</span></span>
       <h2><span data-lang-es>Bienvenido a casa</span><span data-lang-en>Welcome home</span></h2>
-      <p data-lang-es>Casa Del Reino nació con una visión sencilla: construir una casa donde las familias puedan encontrar amor real, una comunidad genuina, y un camino claro de transformación a través de Jesús. No importa de dónde vengas o qué temporada estés viviendo — aquí hay un lugar para ti.</p>
-      <p data-lang-en>Casa Del Reino was built around a simple vision: a house where families can find real love, genuine community, and a clear path of transformation through Jesus. No matter where you're coming from or what season you're in, there's a place for you here.</p>
+      <p data-lang-es>Casa Del Reino nació con un sueño sencillo: construir una casa donde las familias encuentren amor real, una comunidad que las abrace y un camino claro de transformación a través de Jesús. No importa de dónde vengas ni qué temporada estés viviendo — aquí hay un lugar para ti.</p>
+      <p data-lang-en>Casa Del Reino began with a simple dream: a house where families find real love, a community that embraces them, and a clear path of transformation through Jesus. No matter where you're coming from or what season you're in, there's a place for you here.</p>
     </div>
     <div class="grid-3">
       <div class="value-card reveal">
@@ -385,8 +411,42 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
     </div>
     <div class="btn-row reveal" style="margin-top:48px;">
       <a href="/about" class="btn btn-outline-dark">
-        <span data-lang-es>Conoce más sobre nosotros</span><span data-lang-en>Learn more about us</span>
+        <span data-lang-es>Conoce nuestra historia</span><span data-lang-en>Get to know our story</span>
       </a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-paper" id="first-visit">
+  <div class="container">
+    <div class="section-head is-center reveal">
+      <span class="eyebrow"><span data-lang-es>Tu primera visita</span><span data-lang-en>Your first visit</span></span>
+      <h2><span data-lang-es>Ven como eres</span><span data-lang-en>Come as you are</span></h2>
+      <p data-lang-es>Sabemos que visitar un lugar nuevo puede dar un poco de nervios. Aquí no tienes que aparentar nada: solo ven, y deja que nosotros hagamos el resto.</p>
+      <p data-lang-en>We know visiting somewhere new can feel a little nerve-racking. You don't have to pretend here — just come, and let us take care of the rest.</p>
+    </div>
+    <div class="expect-grid">
+      <div class="expect-card reveal">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg></span>
+        <h3 data-lang-es>Una bienvenida cálida</h3><h3 data-lang-en>A warm welcome</h3>
+        <p data-lang-es>Alguien te saludará con una sonrisa y te ayudará a encontrar tu lugar. Nadie se queda solo en esta casa.</p>
+        <p data-lang-en>Someone will greet you with a smile and help you find your seat. No one stays a stranger in this house.</p>
+      </div>
+      <div class="expect-card reveal">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+        <h3 data-lang-es>Alabanza y Palabra</h3><h3 data-lang-en>Worship and the Word</h3>
+        <p data-lang-es>Música que te levanta y un mensaje práctico de la Biblia para aplicar a tu vida y a tu familia durante la semana.</p>
+        <p data-lang-en>Music that lifts you up and a practical message from the Bible to carry into your life and family all week.</p>
+      </div>
+      <div class="expect-card reveal">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></svg></span>
+        <h3 data-lang-es>Para toda la familia</h3><h3 data-lang-en>For the whole family</h3>
+        <p data-lang-es>Tus hijos son bienvenidos. Tenemos un espacio seguro y divertido para los niños durante el servicio.</p>
+        <p data-lang-en>Your kids are welcome. We have a safe, fun space for children during the service.</p>
+      </div>
+    </div>
+    <div class="btn-row reveal" style="margin-top:44px;">
+      <a href="/visit" class="btn btn-primary"><span data-lang-es>Ver horarios y dirección</span><span data-lang-en>See times &amp; location</span></a>
     </div>
   </div>
 </section>
@@ -394,10 +454,10 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section" id="sermons">
   <div class="container">
     <div class="section-head reveal">
-      <span class="eyebrow"><span data-lang-es>Mensajes</span><span data-lang-en>Messages</span></span>
+      <span class="eyebrow"><span data-lang-es>Para tu semana</span><span data-lang-en>For your week</span></span>
       <h2><span data-lang-es>Sermones recientes</span><span data-lang-en>Recent sermons</span></h2>
-      <p data-lang-es>Vuelve a ver los mensajes más recientes de nuestras celebraciones.</p>
-      <p data-lang-en>Catch up on the latest messages from our services.</p>
+      <p data-lang-es>¿No pudiste acompañarnos? Mira los mensajes más recientes y sigue creciendo desde donde estés.</p>
+      <p data-lang-en>Couldn't join us? Watch the latest messages and keep growing, wherever you are.</p>
     </div>
     <div id="sermon-grid" class="sermon-grid reveal" aria-live="polite" aria-busy="true">
       <div class="sermon-card is-skeleton"><div class="sermon-thumb"></div><div class="sermon-body"><span class="sk-line"></span><span class="sk-line short"></span></div></div>
@@ -406,7 +466,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
     </div>
     <div class="btn-row reveal" style="margin-top:48px;">
       <a href="https://www.youtube.com/@casadelreinomaincampus" target="_blank" rel="noopener" class="btn btn-outline-dark">
-        <span data-lang-es>Ver más en YouTube</span><span data-lang-en>More on YouTube</span>
+        <span data-lang-es>Ver más mensajes en YouTube</span><span data-lang-en>More messages on YouTube</span>
       </a>
     </div>
   </div>
@@ -465,7 +525,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   <div class="container">
     <div class="section-head reveal" style="margin:0 auto 48px;text-align:center;justify-items:center">
       <span class="eyebrow"><span data-lang-es>Dar</span><span data-lang-en>Give</span></span>
-      <h2><span data-lang-es>Da con generosidad</span><span data-lang-en>Give generously</span></h2>
+      <h2><span data-lang-es>Gracias por sembrar con nosotros</span><span data-lang-en>Thank you for sowing with us</span></h2>
       <p data-lang-es>"Cada uno debe dar según lo que haya decidido en su corazón, no de mala gana ni por obligación, porque Dios ama al que da con alegría." — 2 Corintios 9:7</p>
       <p data-lang-en>"Each one must give as he has decided in his heart, not reluctantly or under compulsion, for God loves a cheerful giver." — 2 Corinthians 9:7</p>
     </div>
@@ -480,6 +540,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
     <div class="section-head reveal">
       <span class="eyebrow"><span data-lang-es>Visítanos</span><span data-lang-en>Visit</span></span>
       <h2><span data-lang-es>Te guardamos un lugar</span><span data-lang-en>We'll save you a seat</span></h2>
+      <p data-lang-es>Ven como eres. Nos encantaría conocerte, darte un abrazo y caminar contigo.</p>
+      <p data-lang-en>Come as you are. We'd love to meet you, welcome you, and walk with you.</p>
     </div>
     <div class="visit-grid">
       <div class="reveal">
@@ -511,9 +573,13 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
             <a href="https://www.instagram.com/casadelreinofl/" target="_blank" rel="noopener">@casadelreinofl</a>
           </div>
         </div>
+        <div class="visit-actions">
+          <a class="btn btn-primary" href="https://www.google.com/maps/dir/?api=1&destination=1050+Aeronautical+Drive+Kissimmee+FL+34744" target="_blank" rel="noopener"><span data-lang-es>Cómo llegar</span><span data-lang-en>Get directions</span></a>
+          <a class="btn btn-outline-dark" href="tel:+14074835001"><span data-lang-es>Llámanos</span><span data-lang-en>Call us</span></a>
+        </div>
       </div>
       <div class="reveal map-frame">
-        <iframe src="https://www.google.com/maps?q=1050+Aeronautical+Drive,+Kissimmee,+FL+34744&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Casa Del Reino — 1050 Aeronautical Drive, Kissimmee, FL 34744"></iframe>
+        <iframe src="https://www.google.com/maps?q=1050+Aeronautical+Drive,+Kissimmee,+FL+34744&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa: Casa Del Reino — 1050 Aeronautical Drive, Kissimmee, FL 34744"></iframe>
       </div>
     </div>
   </div>
@@ -565,11 +631,32 @@ document.getElementById('year').textContent = new Date().getFullYear();
 
 (function(){
   var KEY='cdr-lang';
+  var menuBtn=document.querySelector('.menu-btn'), nav=document.querySelector('.nav');
+  var header=document.querySelector('.site-header');
+  var mq=window.matchMedia('(max-width:900px)');
+
+  function curLang(){return document.documentElement.getAttribute('data-active-lang')==='en'?'en':'es';}
+  function menuLabel(open){
+    var en=curLang()==='en';
+    return open?(en?'Close menu':'Cerrar menú'):(en?'Open menu':'Abrir menú');
+  }
+  function setMenu(open,restoreFocus){
+    nav.classList.toggle('is-open',open);
+    document.body.classList.toggle('nav-locked',open);
+    menuBtn.setAttribute('aria-expanded',open?'true':'false');
+    menuBtn.setAttribute('aria-label',menuLabel(open));
+    if(!open&&restoreFocus) menuBtn.focus();
+  }
   function setLang(l){
+    if(l!=='es'&&l!=='en') l='es';
     document.documentElement.setAttribute('data-active-lang',l);
+    document.documentElement.lang=l;
     document.querySelectorAll('.lang-toggle button').forEach(function(b){
-      b.classList.toggle('is-active', b.dataset.lang===l);
+      var on=b.dataset.lang===l;
+      b.classList.toggle('is-active',on);
+      b.setAttribute('aria-pressed',on?'true':'false');
     });
+    menuBtn.setAttribute('aria-label',menuLabel(nav.classList.contains('is-open')));
     try{localStorage.setItem(KEY,l);}catch(e){}
     if(window.__reformatSermonDates){window.__reformatSermonDates(l);}
   }
@@ -579,17 +666,28 @@ document.getElementById('year').textContent = new Date().getFullYear();
     b.addEventListener('click',function(){setLang(b.dataset.lang);});
   });
 
-  var menuBtn=document.querySelector('.menu-btn'), nav=document.querySelector('.nav');
-  menuBtn.addEventListener('click',function(){
-    nav.classList.toggle('is-open');
-    document.body.classList.toggle('nav-locked', nav.classList.contains('is-open'));
-  });
+  menuBtn.setAttribute('aria-controls','site-nav');
+  menuBtn.addEventListener('click',function(){setMenu(!nav.classList.contains('is-open'));});
   document.querySelectorAll('.nav-links a, .nav-give').forEach(function(a){
-    a.addEventListener('click',function(){
-      nav.classList.remove('is-open');
-      document.body.classList.remove('nav-locked');
-    });
+    a.addEventListener('click',function(){setMenu(false);});
   });
+  document.addEventListener('keydown',function(e){
+    if(!nav.classList.contains('is-open')) return;
+    if(e.key==='Escape'){ setMenu(false,true); return; }
+    if(e.key!=='Tab') return;
+    // keep keyboard focus inside the open full-screen menu
+    var f=Array.prototype.slice.call(header.querySelectorAll('a[href],button')).filter(function(el){return el.offsetParent!==null;});
+    if(!f.length) return;
+    var first=f[0], last=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+  });
+  // rotating a phone / widening the window must not leave the page scroll-locked
+  var onBreak=function(){ if(!mq.matches&&nav.classList.contains('is-open')) setMenu(false); };
+  if(mq.addEventListener) mq.addEventListener('change',onBreak); else mq.addListener(onBreak);
+
+  var onScroll=function(){header.classList.toggle('is-scrolled',window.scrollY>8);};
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
 
   var items=document.querySelectorAll('.reveal');
   if('IntersectionObserver' in window && items.length){
@@ -636,6 +734,31 @@ document.getElementById('year').textContent = new Date().getFullYear();
     }
   });
 
+  // The Events section is hidden between events — drop its nav link so it never leads nowhere.
+  var evSection=document.getElementById('events');
+  if(evSection&&evSection.hidden){
+    var evLink=document.querySelector('.nav-links a[href="/events"]');
+    if(evLink&&evLink.parentNode) evLink.parentNode.remove();
+  }
+  // Mark the nav link for the section currently on screen.
+  if('IntersectionObserver' in window){
+    var linkFor={};
+    document.querySelectorAll('.nav-links a[href^="/"]').forEach(function(a){
+      var id=sectionRoutes[normalizedPath(new URL(a.href,window.location.href).pathname)];
+      if(id) linkFor[id]=a;
+    });
+    var spy=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        var a=linkFor[e.target.id]; if(!a) return;
+        if(e.isIntersecting){
+          Object.keys(linkFor).forEach(function(k){linkFor[k].removeAttribute('aria-current');});
+          a.setAttribute('aria-current','true');
+        }else{ a.removeAttribute('aria-current'); }
+      });
+    },{rootMargin:'-45% 0px -50% 0px'});
+    Object.keys(linkFor).forEach(function(id){var s=document.getElementById(id); if(s) spy.observe(s);});
+  }
+
   if(location.hash && document.getElementById(location.hash.slice(1))){
     var legacyId=location.hash.slice(1);
     var cleanPath=legacyId==='top'?'/':'/'+legacyId;
@@ -662,6 +785,13 @@ document.getElementById('year').textContent = new Date().getFullYear();
         img.src='https://pushpay.com/Content/Beacons/eb.gif?error=EmbeddedWidgetLoadFailed';
         img.style.cssText='height:1px;width:1px;position:absolute;top:0;left:0;z-index:-1';
         document.body.appendChild(img);
+        // widget blocked or offline: still give people a way to give
+        if(!mount.querySelector('iframe')){
+          var a=document.createElement('a'); a.className='giving-fallback'; a.target='_blank'; a.rel='noopener';
+          a.href='https://pushpay.com/g/casadelreino';
+          a.innerHTML='<span data-lang-es>Dar en línea →</span><span data-lang-en>Give online →</span>';
+          mount.appendChild(a);
+        }
       }
     }
     e.async=true;
@@ -771,7 +901,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
       var card=document.createElement('div'); card.className='sermon-card';
       var thumb=document.createElement('button');
       thumb.type='button'; thumb.className='sermon-thumb';
-      thumb.setAttribute('aria-label','▶ '+v.title);
+      thumb.setAttribute('aria-label',(curLang()==='en'?'Play: ':'Reproducir: ')+v.title);
       thumb.style.backgroundImage="url('https://i.ytimg.com/vi/"+v.id+"/hqdefault.jpg')";
       thumb.innerHTML=playSVG();
       thumb.addEventListener('click',function(){
@@ -780,9 +910,10 @@ document.getElementById('year').textContent = new Date().getFullYear();
         iframe.title=v.title;
         iframe.allow='autoplay; encrypted-media; picture-in-picture';
         iframe.allowFullscreen=true;
-        thumb.innerHTML='';
-        thumb.appendChild(iframe);
-        thumb.style.cursor='default';
+        // swap the <button> for a plain box so the iframe isn't nested inside a button
+        var player=document.createElement('div'); player.className='sermon-thumb is-playing';
+        player.appendChild(iframe);
+        card.replaceChild(player,thumb);
       });
       var body=document.createElement('div'); body.className='sermon-body';
       var date=document.createElement('span'); date.className='sermon-date';
