@@ -64,8 +64,7 @@ If the section shows "couldn't load" or no videos:
 
 ## Image assets
 Optimized WebP + JPEG pairs (CSS `image-set` picks WebP when supported):
-- **Hero (desktop):** `hero.webp` / `hero.jpg`
-- **Hero (mobile ≤900px):** `mobile-hero.webp` / `mobile-hero.jpg`
+- **Hero slideshow:** `hero-1..5.webp` (desktop) and `hero-1..5-m.webp` (mobile ≤900px). Slide 1 is in `index.html`; slides 2–5 are listed in the "Hero background slideshow" script (add/replace there). Old `hero.*` / `mobile-hero.*` are no longer used.
 - **Apostles portrait:** `apostoles.webp` / `apostoles.jpg`
 - **Campus:** `campus.webp` / `campus.jpg`
 - **Logo:** `logo.png` (shared by header + footer; not inlined)

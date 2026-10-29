@@ -17,8 +17,8 @@
 <link rel="icon" href="/favicon-512x512.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-<link rel="preload" as="image" href="/hero.webp" type="image/webp" media="(min-width: 901px)">
-<link rel="preload" as="image" href="/mobile-hero.webp" type="image/webp" media="(max-width: 900px)">
+<link rel="preload" as="image" href="/hero-1.webp" type="image/webp" media="(min-width: 901px)">
+<link rel="preload" as="image" href="/hero-1-m.webp" type="image/webp" media="(max-width: 900px)">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -99,8 +99,12 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .nav-give:hover{transform:translateY(-2px);box-shadow:0 10px 24px -6px rgba(44,108,201,.85)}
 
 /* hero */
-.hero{position:relative;background:var(--black) center/cover no-repeat;background-image:url('/hero.jpg');background-image:image-set(url('/hero.webp') type('image/webp'),url('/hero.jpg') type('image/jpeg'));color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:100vh;min-height:min(100svh,920px);padding:clamp(56px,9vw,96px) 0 56px}
-.hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.55) 0%,rgba(11,11,12,.75) 55%,rgba(11,11,12,.96) 100%)}
+.hero{position:relative;background:var(--black);color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:100vh;min-height:min(100svh,920px);padding:clamp(56px,9vw,96px) 0 56px}
+.hero-slides{position:absolute;inset:0;z-index:0}
+.hero-slide{position:absolute;inset:0;background-size:cover;background-position:var(--pos,center);background-repeat:no-repeat;background-image:var(--d);opacity:0;transition:opacity 1.4s ease-in-out;transform:scale(1.04)}
+.hero-slide.is-active{opacity:1;animation:heroZoom 9s ease-out forwards}
+@keyframes heroZoom{from{transform:scale(1.04)}to{transform:scale(1)}}
+.hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.6) 0%,rgba(11,11,12,.72) 50%,rgba(11,11,12,.95) 100%)}
 .hero-inner{position:relative;z-index:2;display:grid;justify-items:center;text-align:center;gap:22px;width:100%}
 @keyframes heroIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes heroLineLeft{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:translateX(0)}}
@@ -256,7 +260,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 
 @media (max-width:900px){
   body.nav-locked{overflow:hidden}
-  .hero{background-image:url('/mobile-hero.jpg');background-image:image-set(url('/mobile-hero.webp') type('image/webp'),url('/mobile-hero.jpg') type('image/jpeg'));background-size:cover;background-position:top center}
+  .hero-slide{background-image:var(--m);background-position:var(--pos-m,center)}
   .hero-inner{gap:34px}
   .container{padding-left:28px;padding-right:28px}
   .nav-links,.lang-toggle,.nav-give,.nav-bottom{display:none}
@@ -293,6 +297,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 }
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
+  .hero-slide{transition:none;animation:none !important;transform:none}
   .live-dot,.hero .live-tag,.hero .btn-row,.hero-line-left,.hero-line-mid,.hero-line-right,.nav.is-open,.nav.is-open .nav-links li,.nav.is-open .nav-bottom{animation:none;opacity:1}
   html{scroll-behavior:auto}
 }
@@ -330,6 +335,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 
 <a id="top"></a>
 <section class="hero">
+  <div class="hero-slides" aria-hidden="true">
+    <div class="hero-slide is-active" style="--d:url(/hero-1.webp);--m:url(/hero-1-m.webp);--pos:60% 30%;--pos-m:58% center"></div>
+  </div>
   <div class="container hero-inner">
     <span class="live-tag" id="hero-live-tag" hidden>
       <span class="live-dot"></span>
@@ -809,6 +817,42 @@ document.getElementById('year').textContent = new Date().getFullYear();
     load();
   }
 })();
+/* ---- Hero background slideshow ----
+   Slide 1 is in the markup (fast first paint); the rest are added after the
+   page has loaded. Crossfades every 6s, pauses while the tab is hidden, and
+   stays on a single still image for people who prefer reduced motion. */
+(function(){
+  var wrap=document.querySelector('.hero-slides');
+  if(!wrap) return;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var extra=[
+    {n:2,pos:'center 35%',m:'45% center'},
+    {n:3,pos:'center 40%',m:'50% center'},
+    {n:4,pos:'center 55%',m:'35% center'},
+    {n:5,pos:'center 40%',m:'50% center'}
+  ];
+  var slides=[wrap.firstElementChild], idx=0, timer=null;
+  function show(i){
+    slides[idx].classList.remove('is-active');
+    idx=i; slides[idx].classList.add('is-active');
+  }
+  function next(){ show((idx+1)%slides.length); }
+  function start(){ if(!timer&&slides.length>1) timer=setInterval(next,6000); }
+  function stop(){ clearInterval(timer); timer=null; }
+  function build(){
+    extra.forEach(function(s){
+      var d=document.createElement('div'); d.className='hero-slide';
+      d.style.cssText='--d:url(/hero-'+s.n+'.webp);--m:url(/hero-'+s.n+'-m.webp);--pos:'+s.pos+';--pos-m:'+s.m;
+      wrap.appendChild(d); slides.push(d);
+    });
+    if(!reduce) start();
+  }
+  if(reduce) return;
+  document.addEventListener('visibilitychange',function(){ if(document.hidden) stop(); else start(); });
+  if(document.readyState==='complete') setTimeout(build,800);
+  else window.addEventListener('load',function(){ setTimeout(build,800); });
+})();
+
 /* ---- Live indicator ----
    Polls our own backend (which checks YouTube server-side) to see if the
    channel is currently live. While live: shows the red bar at the top, a
