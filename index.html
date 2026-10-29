@@ -56,7 +56,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 /* header */
 .site-header{position:sticky;top:0;z-index:100;background:rgba(11,11,12,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.12);transition:background .25s var(--ease),box-shadow .25s var(--ease)}
 .site-header.is-scrolled{background:rgba(11,11,12,.95);box-shadow:0 10px 28px -14px rgba(0,0,0,.6)}
-.header-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 0;min-height:72px}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding-top:12px;padding-bottom:12px;min-height:72px}
 .logo{position:relative;z-index:95;font-family:var(--font-display);font-weight:700;font-size:21px;letter-spacing:0;color:var(--white);display:flex;align-items:center;gap:12px}
 .logo-img{height:40px;width:auto;display:block;transition:transform .3s var(--ease)}
 .logo:hover .logo-img{transform:scale(1.06)}
@@ -256,6 +256,15 @@ a.sermon-title:hover{color:var(--blue)}
 
 a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 .site-header a:focus-visible,.site-header button:focus-visible,.section-dark a:focus-visible,.site-footer a:focus-visible,.hero a:focus-visible,.section-blue a:focus-visible{outline-color:var(--blue-light)}
+
+/* desktop: left-align the hero copy and darken the left side for legibility */
+@media (min-width:901px){
+  .hero::before{background:linear-gradient(90deg,rgba(11,11,12,.82) 0%,rgba(11,11,12,.55) 50%,rgba(11,11,12,.2) 100%),linear-gradient(180deg,rgba(11,11,12,.35) 0%,rgba(11,11,12,0) 40%,rgba(11,11,12,.85) 100%)}
+  .hero-inner{justify-items:start;text-align:left}
+  .hero h1{max-width:760px;font-size:clamp(44px,5.4vw,78px)}
+  .hero .hero-sub{margin-left:0}
+  .hero .btn-row{justify-content:flex-start}
+}
 
 @media (max-width:900px){
   body.nav-locked{overflow:hidden}
