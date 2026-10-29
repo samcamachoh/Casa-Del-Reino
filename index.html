@@ -198,11 +198,13 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .event-item.reveal{transition:opacity .9s var(--ease),transform .9s var(--ease),background-color .25s var(--ease)}
 .event-item:hover{background:rgba(255,255,255,.04)}
 .event-item-date{display:grid;justify-items:center;gap:2px}
-.event-item-date .month{font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+.event-item-date .month{font-family:var(--font-mono);font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-light)}
 .event-item-date .day{font-family:var(--font-display);font-size:clamp(32px,4vw,44px);font-weight:500;color:var(--white);line-height:1}
 .event-item-body{display:grid;gap:8px}
-.event-item-body .tag{font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
+.event-item-body .tag{font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-light)}
 .event-item-body h3{font-size:clamp(24px,3vw,32px)}
+.event-meta{font-weight:600;color:var(--white) !important}
+.event-actions{margin-top:8px}
 .event-item-body p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:16px;color:rgba(255,255,255,.78)}
 .event-item.reveal:nth-child(2){transition-delay:.1s}
 .event-item.reveal:nth-child(3){transition-delay:.2s}
@@ -418,21 +420,24 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   <span data-lang-en>Celebration Sundays · 11:00 AM &nbsp;—&nbsp; Fundamentos de Fe Thursdays · 7:30 PM</span>
 </div>
 
-<section class="section section-dark" id="events" hidden>
+<section class="section section-dark" id="events">
   <div class="container">
-    <div class="section-head reveal" style="margin:0 auto 48px;text-align:center;justify-items:center">
+    <div class="section-head is-center reveal" style="margin:0 auto 48px;text-align:center;justify-items:center">
       <h2><span data-lang-es>Eventos</span><span data-lang-en>Events</span></h2>
       <p data-lang-es>Mantente al tanto de lo que viene en Casa Del Reino.</p>
       <p data-lang-en>Stay in the loop on what's coming up at Casa Del Reino.</p>
     </div>
     <div class="events-list">
-      <div class="event-item reveal">
-        <div class="event-item-date"><span class="month">Sep</span><span class="day">11–13</span></div>
+      <div class="event-item reveal" data-end="2026-11-22">
+        <div class="event-item-date"><span class="month">Nov</span><span class="day">21</span></div>
         <div class="event-item-body">
-          <span class="tag"><span data-lang-es>Fin de semana especial</span><span data-lang-en>Special weekend</span></span>
-          <h3><span data-lang-es>10.º Aniversario</span><span data-lang-en>10th Anniversary</span></h3>
-          <p data-lang-es>Celebra con nosotros una década de fe, familia y transformación. Marca tu calendario para este fin de semana especial.</p>
-          <p data-lang-en>Join us as we celebrate a decade of faith, family, and transformation. Mark your calendar for this special weekend.</p>
+          <span class="tag"><span data-lang-es>Evento especial</span><span data-lang-en>Special event</span></span>
+          <h3><span data-lang-es>Entrega de Comida: Acción De Gracias</span><span data-lang-en>Food Delivery: Thanksgiving</span></h3>
+          <p class="event-meta"><span data-lang-es>Sábado 21 de noviembre · 10 AM</span><span data-lang-en>Saturday, November 21 · 10 AM</span></p>
+          <p><strong>Madison Crossing</strong><br>2299 Irlo Bronson Memorial Hwy<br>Kissimmee, FL 34744</p>
+          <div class="event-actions">
+            <a class="btn btn-primary" href="https://www.google.com/maps/dir/?api=1&destination=2299+Irlo+Bronson+Memorial+Hwy+Kissimmee+FL+34744" target="_blank" rel="noopener"><span data-lang-es>Cómo llegar</span><span data-lang-en>Get directions</span></a>
+          </div>
         </div>
       </div>
     </div>
@@ -683,6 +688,17 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
+
+// Events drop off automatically after their data-end date; no events left hides the section (and its nav link).
+(function(){
+  var sec=document.getElementById('events'); if(!sec) return;
+  var now=new Date();
+  sec.querySelectorAll('.event-item[data-end]').forEach(function(el){
+    var end=new Date(el.getAttribute('data-end')+'T00:00:00');
+    if(now>=end) el.remove();
+  });
+  if(!sec.querySelector('.event-item')) sec.hidden=true;
+})();
 
 (function(){
   var KEY='cdr-lang';
