@@ -27,11 +27,22 @@
   --font-body:'Inter',sans-serif; --font-mono:'JetBrains Mono',monospace;
   --container:1180px; --pad:clamp(20px,5vw,64px);
   --ease:cubic-bezier(.22,1,.36,1);
+  --surface:#ffffff; --surface-soft:#f7f7f5; --surface-warm:#fbf8f2; --text:#0b0b0c; --text-muted:#5d5d61; --border:#e3e3e0; --accent-text:#2c6cc9; --card-hover:#eaf1fb; --shimmer:#eeeeec;
+  color-scheme:light dark;
 }
+@media (prefers-color-scheme:dark){
+  :root{--surface:#17181b; --surface-soft:#131416; --surface-warm:#15161a; --text:#f2f2f0; --text-muted:#a9a9ae; --border:#2a2b30; --accent-text:#6ea3f0; --card-hover:#1c2536; --shimmer:#2a2b30}
+  .btn-outline-dark:hover{color:var(--black)}
+  .map-frame iframe{filter:invert(.92) hue-rotate(180deg) grayscale(.3) contrast(.95)}
+  .sermon-card:not(.is-skeleton):hover{box-shadow:0 14px 28px -12px rgba(0,0,0,.6)}
+  a:focus-visible,button:focus-visible{outline-color:var(--blue-light)}
+  .giving-embed{background:#fff}
+}
+
 *{box-sizing:border-box}
 [hidden]{display:none !important}
 html{scroll-behavior:smooth; scroll-padding-top:84px}
-body{margin:0;background:var(--white);color:var(--black);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--surface);color:var(--text);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
 img,svg{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 h1,h2,h3,h4{font-family:var(--font-display);font-weight:500;letter-spacing:-.01em;line-height:1.15;margin:0}
@@ -86,8 +97,8 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .btn-live:hover{background:#b81631;border-color:#b81631}
 .btn-outline-light{background:transparent;color:var(--white);border-color:rgba(255,255,255,.55)}
 .btn-outline-light:hover{border-color:var(--white);background:rgba(255,255,255,.1)}
-.btn-outline-dark{background:transparent;color:var(--black);border-color:var(--black)}
-.btn-outline-dark:hover{background:var(--black);color:var(--white)}
+.btn-outline-dark{background:transparent;color:var(--text);border-color:var(--text)}
+.btn-outline-dark:hover{background:var(--text);color:var(--surface)}
 .btn-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
 
 /* Dar/Give nav button — prominent, with a soft standing glow */
@@ -103,45 +114,45 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 
 /* sections */
 .section{padding:clamp(70px,9vw,120px) 0}
-.section-paper{background:var(--paper)}
-.section-warm{background:var(--warm)}
+.section-paper{background:var(--surface-soft)}
+.section-warm{background:var(--surface-warm)}
 .section-head.is-center{margin-left:auto;margin-right:auto;text-align:center;justify-items:center}
 .section-dark{background:var(--black);color:var(--white)}
 .section-blue{background:var(--blue);color:var(--white)}
 .section-head{display:grid;gap:18px;max-width:640px;margin-bottom:56px}
 .section-head h2{font-size:clamp(32px,4.4vw,48px)}
-.section-head p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:18px;line-height:1.65;color:var(--gray);letter-spacing:0}
+.section-head p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:18px;line-height:1.65;color:var(--text-muted);letter-spacing:0}
 .section-dark .section-head p{color:rgba(255,255,255,.78)}
 
 /* grids / cards */
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.value-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:36px 30px;display:grid;gap:14px;align-content:start}
-.value-card:hover{background:var(--blue-tint);border-color:var(--blue)}
+.value-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px 30px;display:grid;gap:14px;align-content:start}
+.value-card:hover{background:var(--card-hover);border-color:var(--accent-text)}
 .section-dark .value-card{background:var(--black)}
-.value-card .num{font-family:var(--font-mono);font-size:12px;color:var(--blue);letter-spacing:.1em}
+.value-card .num{font-family:var(--font-mono);font-size:12px;color:var(--accent-text);letter-spacing:.1em}
 .value-card h3{font-size:26px}
-.value-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:16px;line-height:1.65;color:var(--gray)}
+.value-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:16px;line-height:1.65;color:var(--text-muted)}
 .section-dark .value-card p{color:rgba(255,255,255,.68)}
 
 .ministry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
-.ministry-card{border:1px solid var(--line);padding:32px 28px;display:grid;gap:14px;transition:border-color .2s var(--ease),transform .2s var(--ease)}
+.ministry-card{border:1px solid var(--border);padding:32px 28px;display:grid;gap:14px;transition:border-color .2s var(--ease),transform .2s var(--ease)}
 .ministry-card:hover{border-color:var(--blue);transform:translateY(-3px)}
 .ministry-card h3{font-size:24px}
-.ministry-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:14.5px;color:var(--gray)}
+.ministry-card p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:14.5px;color:var(--text-muted)}
 .ministry-card .tag{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
 
 /* visit */
 .visit-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
-.detail-row{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:20px 0;border-bottom:1px solid var(--line)}
-.detail-row .label{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.detail-row{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:20px 0;border-bottom:1px solid var(--border)}
+.detail-row .label{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text)}
 .detail-row .value{font-size:16px}
-.detail-row .value a:hover{color:var(--blue)}
-.map-frame{border:1px solid var(--line);height:100%;min-height:380px;background:var(--paper)}
+.detail-row .value a:hover{color:var(--accent-text)}
+.map-frame{border:1px solid var(--border);height:100%;min-height:380px;background:var(--surface-soft)}
 .map-frame iframe{width:100%;height:100%;min-height:380px;border:0;filter:grayscale(.4) contrast(1.05)}
 .expect-list{display:grid;gap:22px;margin-top:36px}
 .expect-item{display:grid;grid-template-columns:26px 1fr;gap:14px}
 .expect-item .dot{width:8px;height:8px;background:var(--blue);margin-top:7px}
-.expect-item p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:15px;color:var(--gray)}
+.expect-item p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:15px;color:var(--text-muted)}
 .expect-item strong{display:block;font-size:15.5px;margin-bottom:3px;color:var(--black)}
 
 /* footer */
@@ -160,23 +171,23 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 
 /* sermons */
 .sermon-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
-.sermon-card{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--white);overflow:hidden;transition:border-color .2s var(--ease),transform .2s var(--ease)}
-.sermon-card:not(.is-skeleton):hover{border-color:var(--blue);transform:translateY(-3px)}
+.sermon-card{display:flex;flex-direction:column;border:1px solid var(--border);background:var(--surface);overflow:hidden;transition:border-color .2s var(--ease),transform .2s var(--ease)}
+.sermon-card:not(.is-skeleton):hover{border-color:var(--accent-text);transform:translateY(-3px)}
 .sermon-thumb{position:relative;aspect-ratio:16/9;background:#0b0b0c center/cover no-repeat;cursor:pointer;display:block;border:0;width:100%;padding:0}
 .sermon-thumb .play{position:absolute;inset:0;margin:auto;width:56px;height:56px;border-radius:999px;background:rgba(44,108,201,.92);display:flex;align-items:center;justify-content:center;transition:transform .2s var(--ease),background .2s var(--ease)}
 .sermon-thumb .play svg{width:20px;height:20px;margin-left:3px;fill:#fff}
 .sermon-card:hover .sermon-thumb .play{transform:scale(1.08);background:var(--blue)}
 .sermon-thumb iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .sermon-body{padding:22px 22px 24px;display:grid;gap:8px}
-.sermon-date{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+.sermon-date{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text)}
 .sermon-title{font-family:var(--font-display);font-weight:700;text-transform:uppercase;font-size:19px;line-height:1.05;letter-spacing:.01em;color:var(--black);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-a.sermon-title:hover{color:var(--blue)}
-.sermon-note{grid-column:1/-1;font-family:var(--font-body);color:var(--gray);font-size:15px}
+a.sermon-title:hover{color:var(--accent-text)}
+.sermon-note{grid-column:1/-1;font-family:var(--font-body);color:var(--text-muted);font-size:15px}
 /* skeleton */
 .is-skeleton .sermon-thumb{cursor:default}
-.sk-line{display:block;height:13px;border-radius:3px;background:linear-gradient(90deg,var(--line) 25%,#eee 37%,var(--line) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite}
+.sk-line{display:block;height:13px;border-radius:3px;background:linear-gradient(90deg,var(--border) 25%,var(--shimmer) 37%,var(--border) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite}
 .sk-line.short{width:55%}
-.is-skeleton .sermon-thumb{background:linear-gradient(90deg,var(--line) 25%,#eee 37%,var(--line) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite}
+.is-skeleton .sermon-thumb{background:linear-gradient(90deg,var(--border) 25%,var(--shimmer) 37%,var(--border) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite}
 @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
 
 /* reveal */
@@ -234,14 +245,14 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 }
 
 /* about page */
-.about-photo{background:var(--paper) center/cover no-repeat;border:1px solid var(--line);border-radius:16px}
+.about-photo{background:var(--surface-soft) center/cover no-repeat;border:1px solid var(--border);border-radius:16px}
 .leaders-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:56px;align-items:center}
 .leader-photo{aspect-ratio:4/5;background-position:center top;background-image:url('/apostoles.jpg');background-image:image-set(url('/apostoles.webp') type('image/webp'),url('/apostoles.jpg') type('image/jpeg'))}
 .leader-list{display:grid;gap:32px}
 .leader-item h3{font-size:26px;margin-bottom:8px}
-.leader-item p{font-family:var(--font-body);font-weight:400;text-transform:none;font-size:17px;line-height:1.65;color:var(--gray)}
+.leader-item p{font-family:var(--font-body);font-weight:400;text-transform:none;font-size:17px;line-height:1.65;color:var(--text-muted)}
 .campus-photo{aspect-ratio:21/9;background-image:url('/campus.jpg');background-image:image-set(url('/campus.webp') type('image/webp'),url('/campus.jpg') type('image/jpeg'))}
-.photo-caption{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--gray);margin-top:14px}
+.photo-caption{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--text-muted);margin-top:14px}
 @media (max-width:900px){
   .leaders-grid{grid-template-columns:1fr;gap:32px}
   .leader-photo{aspect-ratio:3/4}
@@ -262,7 +273,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
     <nav class="nav" id="site-nav" aria-label="Principal / Main">
       <ul class="nav-links">
         <li><a href="/about" aria-current="page"><span data-lang-es>Nosotros</span><span data-lang-en>About</span></a></li>
-        <!-- Events link omitted while the homepage Events section is hidden -->
+        <li><a href="/events"><span data-lang-es>Eventos</span><span data-lang-en>Events</span></a></li>
         <li><a href="/sermons"><span data-lang-es>Sermones</span><span data-lang-en>Sermons</span></a></li>
         <li><a href="/ministries"><span data-lang-es>Ministerios</span><span data-lang-en>Ministries</span></a></li>
         <li><a href="/visit"><span data-lang-es>Visítanos</span><span data-lang-en>Visit</span></a></li>
