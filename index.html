@@ -46,8 +46,6 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:800;text-transform:upper
 p{margin:0}
 .container{max-width:var(--container);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
 
-.eyebrow{font-family:var(--font-mono);font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);display:inline-flex;align-items:center;gap:10px}
-.eyebrow::before{content:'';width:18px;height:1px;background:var(--blue);display:inline-block}
 
 /* bilingual show/hide — hide the INACTIVE language only, with !important so
    component rules (e.g. .expect-item strong{display:block}) can't override it.
@@ -101,7 +99,9 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 /* hero */
 .hero{position:relative;background:var(--black);color:var(--white);overflow:hidden;display:flex;align-items:center;min-height:100vh;min-height:min(100svh,920px);padding:clamp(56px,9vw,96px) 0 56px}
 .hero-slides{position:absolute;inset:0;z-index:0}
-.hero-slide{position:absolute;inset:0;background-size:cover;background-position:var(--pos,center);background-repeat:no-repeat;background-image:var(--d);opacity:0;transition:opacity 1.4s ease-in-out;transform:scale(1.04)}
+/* real <img>s (not CSS vars) so every browser paints them */
+.hero-slide{position:absolute;inset:0;display:block;opacity:0;transition:opacity 1.4s ease-in-out;transform:scale(1.04)}
+.hero-slide img{width:100%;height:100%;object-fit:cover;object-position:var(--pos,center)}
 .hero-slide.is-active{opacity:1;animation:heroZoom 9s ease-out forwards}
 @keyframes heroZoom{from{transform:scale(1.04)}to{transform:scale(1)}}
 .hero::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(11,11,12,.6) 0%,rgba(11,11,12,.72) 50%,rgba(11,11,12,.95) 100%)}
@@ -142,10 +142,7 @@ html[data-active-lang="en"] [data-lang-es]{display:none !important}
 .section-head h2{font-size:clamp(34px,5vw,54px)}
 .section-head p{font-family:var(--font-body);text-transform:none;font-weight:400;font-size:18px;line-height:1.65;color:var(--gray);letter-spacing:0}
 .section-dark .section-head p{color:rgba(255,255,255,.78)}
-.section-dark .eyebrow,.section-dark .tag,.section-dark .num,.section-dark .month{color:var(--blue-light)}
-.section-dark .eyebrow::before{background:var(--blue-light)}
-.section-blue .eyebrow{color:var(--white)}
-.section-blue .eyebrow::before{background:var(--white)}
+.section-dark .tag,.section-dark .num,.section-dark .month{color:var(--blue-light)}
 .section-blue .section-head p{color:rgba(255,255,255,.92);font-style:italic}
 .giving-embed{background:var(--white);border-radius:16px;padding:clamp(24px,4vw,40px);max-width:600px;margin:0 auto}
 
@@ -260,7 +257,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 
 @media (max-width:900px){
   body.nav-locked{overflow:hidden}
-  .hero-slide{background-image:var(--m);background-position:var(--pos-m,center)}
+  .hero-slide img{object-position:var(--pos-m,center)}
   .hero-inner{gap:34px}
   .container{padding-left:28px;padding-right:28px}
   .nav-links,.lang-toggle,.nav-give,.nav-bottom{display:none}
@@ -336,7 +333,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <a id="top"></a>
 <section class="hero">
   <div class="hero-slides" aria-hidden="true">
-    <div class="hero-slide is-active" style="--d:url(/hero-1.webp);--m:url(/hero-1-m.webp);--pos:60% 30%;--pos-m:58% center"></div>
+    <picture class="hero-slide is-active" style="--pos:60% 30%;--pos-m:58% center"><source media="(max-width:900px)" srcset="/hero-1-m.webp"><img src="/hero-1.webp" alt="" width="1920" height="1280" fetchpriority="high" decoding="async"></picture>
   </div>
   <div class="container hero-inner">
     <span class="live-tag" id="hero-live-tag" hidden>
@@ -365,7 +362,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section section-dark" id="events" hidden>
   <div class="container">
     <div class="section-head reveal" style="margin:0 auto 48px;text-align:center;justify-items:center">
-      <span class="eyebrow"><span data-lang-es>Próximos eventos</span><span data-lang-en>Upcoming events</span></span>
       <h2><span data-lang-es>Eventos</span><span data-lang-en>Events</span></h2>
       <p data-lang-es>Mantente al tanto de lo que viene en Casa Del Reino.</p>
       <p data-lang-en>Stay in the loop on what's coming up at Casa Del Reino.</p>
@@ -387,7 +383,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section section-warm" id="welcome">
   <div class="container">
     <div class="section-head is-center reveal">
-      <span class="eyebrow"><span data-lang-es>Nuestra casa es tu casa</span><span data-lang-en>Our home is your home</span></span>
       <h2><span data-lang-es>Bienvenido a casa</span><span data-lang-en>Welcome home</span></h2>
       <p data-lang-es>Casa Del Reino nació con un sueño sencillo: construir una casa donde las familias encuentren amor real, una comunidad que las abrace y un camino claro de transformación a través de Jesús. No importa de dónde vengas ni qué temporada estés viviendo — aquí hay un lugar para ti.</p>
       <p data-lang-en>Casa Del Reino began with a simple dream: a house where families find real love, a community that embraces them, and a clear path of transformation through Jesus. No matter where you're coming from or what season you're in, there's a place for you here.</p>
@@ -426,7 +421,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section section-paper" id="first-visit">
   <div class="container">
     <div class="section-head is-center reveal">
-      <span class="eyebrow"><span data-lang-es>Tu primera visita</span><span data-lang-en>Your first visit</span></span>
       <h2><span data-lang-es>Ven como eres</span><span data-lang-en>Come as you are</span></h2>
       <p data-lang-es>Sabemos que visitar un lugar nuevo puede dar un poco de nervios. Aquí no tienes que aparentar nada: solo ven, y deja que nosotros hagamos el resto.</p>
       <p data-lang-en>We know visiting somewhere new can feel a little nerve-racking. You don't have to pretend here — just come, and let us take care of the rest.</p>
@@ -460,7 +454,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section" id="sermons">
   <div class="container">
     <div class="section-head reveal">
-      <span class="eyebrow"><span data-lang-es>Para tu semana</span><span data-lang-en>For your week</span></span>
       <h2><span data-lang-es>Sermones recientes</span><span data-lang-en>Recent sermons</span></h2>
       <p data-lang-es>¿No pudiste acompañarnos? Mira los mensajes más recientes y sigue creciendo desde donde estés.</p>
       <p data-lang-en>Couldn't join us? Watch the latest messages and keep growing, wherever you are.</p>
@@ -481,7 +474,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section section-dark" id="ministries">
   <div class="container">
     <div class="section-head reveal">
-      <span class="eyebrow"><span data-lang-es>Ministerios</span><span data-lang-en>Ministries</span></span>
       <h2><span data-lang-es>Hay un lugar para ti</span><span data-lang-en>There's a place for you</span></h2>
       <p data-lang-es>Cada ministerio es una puerta para conectar, crecer y servir. Encuentra el espacio donde tú y tu familia pueden echar raíces.</p>
       <p data-lang-en>Every ministry is a door to connect, grow, and serve. Find the space where you and your family can put down roots.</p>
@@ -530,7 +522,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section section-blue" id="giving">
   <div class="container">
     <div class="section-head reveal" style="margin:0 auto 48px;text-align:center;justify-items:center">
-      <span class="eyebrow"><span data-lang-es>Dar</span><span data-lang-en>Give</span></span>
       <h2><span data-lang-es>Gracias por sembrar con nosotros</span><span data-lang-en>Thank you for sowing with us</span></h2>
       <p data-lang-es>"Cada uno debe dar según lo que haya decidido en su corazón, no de mala gana ni por obligación, porque Dios ama al que da con alegría." — 2 Corintios 9:7</p>
       <p data-lang-en>"Each one must give as he has decided in his heart, not reluctantly or under compulsion, for God loves a cheerful giver." — 2 Corinthians 9:7</p>
@@ -544,7 +535,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section" id="visit">
   <div class="container">
     <div class="section-head reveal">
-      <span class="eyebrow"><span data-lang-es>Visítanos</span><span data-lang-en>Visit</span></span>
       <h2><span data-lang-es>Te guardamos un lugar</span><span data-lang-en>We'll save you a seat</span></h2>
       <p data-lang-es>Ven como eres. Nos encantaría conocerte, darte un abrazo y caminar contigo.</p>
       <p data-lang-en>Come as you are. We'd love to meet you, welcome you, and walk with you.</p>
@@ -841,8 +831,9 @@ document.getElementById('year').textContent = new Date().getFullYear();
   function stop(){ clearInterval(timer); timer=null; }
   function build(){
     extra.forEach(function(s){
-      var d=document.createElement('div'); d.className='hero-slide';
-      d.style.cssText='--d:url(/hero-'+s.n+'.webp);--m:url(/hero-'+s.n+'-m.webp);--pos:'+s.pos+';--pos-m:'+s.m;
+      var d=document.createElement('picture'); d.className='hero-slide';
+      d.style.cssText='--pos:'+s.pos+';--pos-m:'+s.m;
+      d.innerHTML='<source media="(max-width:900px)" srcset="/hero-'+s.n+'-m.webp"><img src="/hero-'+s.n+'.webp" alt="" width="1920" height="1280" decoding="async">';
       wrap.appendChild(d); slides.push(d);
     });
     if(!reduce) start();

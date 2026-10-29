@@ -38,8 +38,6 @@ h1,h2,h3,h4{font-family:var(--font-display);font-weight:800;text-transform:upper
 p{margin:0}
 .container{max-width:var(--container);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
 
-.eyebrow{font-family:var(--font-mono);font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--blue);display:inline-flex;align-items:center;gap:10px}
-.eyebrow::before{content:'';width:18px;height:1px;background:var(--blue);display:inline-block}
 
 /* bilingual show/hide — hide the INACTIVE language only, with !important so
    component rules (e.g. .expect-item strong{display:block}) can't override it.
@@ -227,7 +225,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 .leaders-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:56px;align-items:center}
 .leader-photo{aspect-ratio:4/5;background-position:center top;background-image:url('/apostoles.jpg');background-image:image-set(url('/apostoles.webp') type('image/webp'),url('/apostoles.jpg') type('image/jpeg'))}
 .leader-list{display:grid;gap:32px}
-.leader-item .role{margin-bottom:10px}
 .leader-item h3{font-size:26px;margin-bottom:8px}
 .leader-item p{font-family:var(--font-body);font-weight:400;text-transform:none;font-size:17px;line-height:1.65;color:var(--gray)}
 .campus-photo{aspect-ratio:21/9;background-image:url('/campus.jpg');background-image:image-set(url('/campus.webp') type('image/webp'),url('/campus.jpg') type('image/jpeg'))}
@@ -273,7 +270,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section section-warm" id="bienvenido">
   <div class="container">
     <div class="section-head is-center reveal">
-      <span class="eyebrow"><span data-lang-es>Nuestra historia</span><span data-lang-en>Our story</span></span>
       <h2><span data-lang-es>Bienvenido a casa</span><span data-lang-en>Welcome home</span></h2>
       <p data-lang-es>Casa Del Reino nació con un sueño sencillo: construir una casa donde las familias encuentren amor real, una comunidad que las abrace y un camino claro de transformación a través de Jesús. No importa de dónde vengas ni qué temporada estés viviendo — aquí hay un lugar para ti.</p>
       <p data-lang-en>Casa Del Reino began with a simple dream: a house where families find real love, a community that embraces them, and a clear path of transformation through Jesus. No matter where you're coming from or what season you're in, there's a place for you here.</p>
@@ -307,7 +303,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section" id="vision-mission">
   <div class="container">
     <div class="section-head reveal">
-      <span class="eyebrow"><span data-lang-es>Quiénes Somos</span><span data-lang-en>Who We Are</span></span>
       <h2><span data-lang-es>Visión y Misión</span><span data-lang-en>Vision &amp; Mission</span></h2>
     </div>
     <div class="grid-3">
@@ -333,14 +328,12 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section section-paper" id="leaders">
   <div class="container">
     <div class="section-head reveal">
-      <span class="eyebrow"><span data-lang-es>Nuestros Apóstoles</span><span data-lang-en>Our Apostles</span></span>
       <h2><span data-lang-es>Quienes te reciben en casa</span><span data-lang-en>Meet your pastors</span></h2>
     </div>
     <div class="leaders-grid reveal">
       <div class="about-photo leader-photo" role="img" aria-label="Apóstoles Luis Pérez y Shirley Roldán"></div>
       <div class="leader-list">
         <div class="leader-item">
-          <span class="eyebrow role"><span data-lang-es>Apóstoles</span><span data-lang-en>Apostles</span></span>
           <h3>Luis Pérez &amp; Shirley Roldán</h3>
           <p data-lang-es>Juntos lideran Casa Del Reino con un corazón pastoral, guiando a la congregación en fe, familia y propósito.</p>
           <p data-lang-en>Together, they lead Casa Del Reino with a pastoral heart, guiding the congregation in faith, family, and purpose.</p>
@@ -353,7 +346,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section" id="campus">
   <div class="container">
     <div class="section-head reveal">
-      <span class="eyebrow"><span data-lang-es>Nuestro Hogar</span><span data-lang-en>Our Home</span></span>
       <h2><span data-lang-es>Te esperamos en el campus</span><span data-lang-en>We'll see you at the campus</span></h2>
     </div>
     <div class="reveal">
@@ -366,7 +358,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
 <section class="section section-dark" id="invite">
   <div class="container">
     <div class="section-head is-center reveal" style="margin-bottom:32px">
-      <span class="eyebrow" style="color:var(--blue-light)"><span data-lang-es>Te esperamos</span><span data-lang-en>We're expecting you</span></span>
       <h2><span data-lang-es>Hay un lugar para ti</span><span data-lang-en>There's a place for you</span></h2>
       <p data-lang-es>Ven este domingo y sé parte de nuestra familia.</p>
       <p data-lang-en>Join us this Sunday and become part of our family.</p>
