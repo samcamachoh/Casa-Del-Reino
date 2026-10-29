@@ -290,8 +290,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offse
   .hero h1 .hero-line-right{display:inline-block}
   .hero h1 .hero-line-mid{margin:.04em 0}
   .hero .live-tag{justify-self:start}
-  .hero .btn-row{flex-direction:column;align-items:stretch;gap:12px;justify-content:flex-start}
-  .hero .btn{width:100%;min-height:54px;padding:0 24px;font-size:16px}
+  /* buttons only as wide as the longest label (about the width of the headline), not the whole screen */
+  .hero .btn-row{display:grid;grid-template-columns:auto;width:max-content;max-width:100%;justify-self:start;gap:12px}
+  .hero .btn{width:100%;min-height:50px;padding:0 26px;font-size:15px}
   .container{padding-left:28px;padding-right:28px}
   .nav-links,.lang-menu,.nav-give,.nav-bottom{display:none}
   .menu-btn{display:flex}
