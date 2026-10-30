@@ -1068,12 +1068,16 @@ document.getElementById('year').textContent = new Date().getFullYear();
         card.replaceChild(player,thumb);
       });
       var body=document.createElement('div'); body.className='sermon-body';
-      var date=document.createElement('span'); date.className='sermon-date';
-      date.setAttribute('data-iso',v.published); date.textContent=fmtDate(v.published,curLang());
+      var date=null;
+      if(v.published){
+        date=document.createElement('span'); date.className='sermon-date';
+        date.setAttribute('data-iso',v.published); date.textContent=fmtDate(v.published,curLang());
+      }
       var title=document.createElement('a'); title.className='sermon-title';
       title.href='https://www.youtube.com/watch?v='+v.id; title.target='_blank'; title.rel='noopener';
       title.textContent=v.title;
-      body.appendChild(date); body.appendChild(title);
+      if(date) body.appendChild(date);
+      body.appendChild(title);
       card.appendChild(thumb); card.appendChild(body);
       grid.appendChild(card);
     });

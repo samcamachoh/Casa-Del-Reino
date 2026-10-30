@@ -183,6 +183,7 @@ async function scrapeChannel(dbg) {
   const tabs = await Promise.all([scrapeTab('streams', dbg), scrapeTab('videos', dbg)]);
   const byId = {}, list = [];
   tabs.forEach(function (arr) { arr.forEach(function (v) { if (!byId[v.id]) { byId[v.id] = v; list.push(v); } }); });
+  list.length = Math.min(list.length, 6);
   const dates = await Promise.all(list.map(function (v) { return publishDate(v.id); }));
   list.forEach(function (v, i) { v.published = dates[i]; });
   // newest first when dates are known; otherwise keep page order (already newest first)
