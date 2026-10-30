@@ -16,16 +16,27 @@
 // failures easy to pinpoint.
 
 const PLAYLIST_ID = 'PLARohoB7nsl4';
+const CHANNEL_ID = 'UCnmH19dzWxrnHigDRzhE0ZQ';
 const FEED = 'https://www.youtube.com/feeds/videos.xml?playlist_id=' + PLAYLIST_ID;
+const CHANNEL_FEED = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + CHANNEL_ID;
 
-// Tried in order. Direct first (clean, no third party). The proxies are only a
-// backup in case YouTube refuses Vercel's datacenter IP — they return the XML
-// untouched, so parsing is identical.
-const SOURCES = [
-  { label: 'direct', url: FEED },
-  { label: 'allorigins', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(FEED) },
-  { label: 'corsproxy', url: 'https://corsproxy.io/?url=' + encodeURIComponent(FEED) }
-];
+// A real playlist id is "PL" + 32 characters. A shorter one (a truncated copy
+// from a URL) makes YouTube answer 404 for the feed, and the sermons section
+// then stays empty — so it is skipped, and the channel's uploads feed is used.
+const PLAYLIST_LOOKS_VALID = /^(PL|UU|OL|FL)[\w-]{16,}$/.test(PLAYLIST_ID);
+
+// Tried in order. Direct first (clean, no third party). The playlist is the
+// curated source; the channel feed is the fallback so the section is never
+// empty. The proxies are only a last backup in case YouTube refuses Vercel's
+// datacenter IP — they return the XML untouched, so parsing is identical.
+const SOURCES = [].concat(
+  PLAYLIST_LOOKS_VALID ? [{ label: 'direct', url: FEED }] : [],
+  [{ label: 'channel', url: CHANNEL_FEED }],
+  PLAYLIST_LOOKS_VALID ? [
+    { label: 'allorigins', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(FEED) },
+    { label: 'corsproxy', url: 'https://corsproxy.io/?url=' + encodeURIComponent(FEED) }
+  ] : []
+);
 
 function decodeEntities(s) {
   return s
@@ -93,19 +104,21 @@ async function filterOutLive(items, apiKey) {
 // Walk the sources until one returns XML that actually contains entries.
 async function getFeed() {
   let lastStatus = 0, lastErr = '';
+  const attempts = [];
   for (const s of SOURCES) {
     try {
       const r = await fetchWithTimeout(s.url, 7000);
       lastStatus = r.status;
-      if (!r.ok) { lastErr = 'status ' + r.status; continue; }
+      if (!r.ok) { lastErr = 'status ' + r.status; attempts.push(s.label + ': ' + lastErr); continue; }
       const xml = await r.text();
-      if (xml.indexOf('<entry') !== -1) return { xml: xml, source: s.label, status: r.status };
+      if (xml.indexOf('<entry') !== -1) { attempts.push(s.label + ': ok'); return { xml: xml, source: s.label, status: r.status, attempts: attempts }; }
       lastErr = 'no <entry> in response';
     } catch (e) {
       lastErr = (e && e.name === 'AbortError') ? 'timeout' : String((e && e.message) || e);
     }
+    attempts.push(s.label + ': ' + lastErr);
   }
-  return { xml: '', source: null, status: lastStatus, error: lastErr };
+  return { xml: '', source: null, status: lastStatus, error: lastErr, attempts: attempts };
 }
 
 module.exports = async function handler(req, res) {
@@ -125,6 +138,8 @@ module.exports = async function handler(req, res) {
       upstreamStatus: feed.status,
       error: feed.error || null,
       playlistId: PLAYLIST_ID,
+      playlistIdLooksValid: PLAYLIST_LOOKS_VALID,
+      attempts: feed.attempts,
       entriesParsed: all.length,
       liveFilterApplied: liveFilter.applied,
       entriesAfterLiveFilter: liveFilter.items.length,
