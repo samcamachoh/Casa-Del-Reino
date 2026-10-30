@@ -101,6 +101,95 @@ async function filterOutLive(items, apiKey) {
   }
 }
 
+// ---- Page scrape (used when the RSS feeds are unavailable) ----
+// YouTube's RSS feeds sometimes answer 404 to everything (observed from
+// Vercel for both the playlist and the channel feed), while the normal
+// channel pages still load. So as a fallback we read the channel's /videos and
+// /streams tabs (church services are usually streams), pull video ids + titles
+// out of the embedded ytInitialData JSON, then read each watch page for its
+// publish date and drop anything live/upcoming.
+function extractJsonAfter(html, marker) {
+  const markerIdx = html.indexOf(marker);
+  if (markerIdx === -1) return null;
+  const start = html.indexOf('{', markerIdx);
+  if (start === -1) return null;
+  let depth = 0, inStr = false, esc = false;
+  for (let i = start; i < html.length; i++) {
+    const c = html[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (c === '\\') esc = true;
+      else if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') { inStr = true; continue; }
+    if (c === '{') depth++;
+    else if (c === '}') { depth--; if (depth === 0) return html.slice(start, i + 1); }
+  }
+  return null;
+}
+
+function collectVideos(node, out, seen) {
+  if (!node || typeof node !== 'object') return;
+  if (Array.isArray(node)) { for (const n of node) collectVideos(n, out, seen); return; }
+  const vr = node.videoRenderer;
+  if (vr && vr.videoId && !seen[vr.videoId]) {
+    seen[vr.videoId] = 1;
+    const title = vr.title && ((vr.title.runs && vr.title.runs[0] && vr.title.runs[0].text) || vr.title.simpleText) || '';
+    const overlays = JSON.stringify(vr.thumbnailOverlays || '');
+    const isLive = !!vr.upcomingEventData || /"style":"(LIVE|UPCOMING)"/.test(overlays);
+    if (!isLive) out.push({ id: vr.videoId, title: title });
+  }
+  const lv = node.lockupViewModel;
+  if (lv && lv.contentId && lv.contentType === 'LOCKUP_CONTENT_TYPE_VIDEO' && !seen[lv.contentId]) {
+    seen[lv.contentId] = 1;
+    const title = lv.metadata && lv.metadata.lockupMetadataViewModel && lv.metadata.lockupMetadataViewModel.title && lv.metadata.lockupMetadataViewModel.title.content || '';
+    const isLive = /"(LIVE|UPCOMING)"/.test(JSON.stringify(lv.contentImage || ''));
+    if (!isLive) out.push({ id: lv.contentId, title: title });
+  }
+  for (const k of Object.keys(node)) collectVideos(node[k], out, seen);
+}
+
+async function scrapeTab(tab, dbg) {
+  try {
+    const r = await fetchWithTimeout('https://www.youtube.com/channel/' + CHANNEL_ID + '/' + tab + '?hl=en', 8000);
+    dbg[tab + 'Status'] = r.status;
+    if (!r.ok) return [];
+    const html = await r.text();
+    const raw = extractJsonAfter(html, 'var ytInitialData =') || extractJsonAfter(html, 'window["ytInitialData"] =');
+    dbg[tab + 'FoundData'] = !!raw;
+    if (!raw) return [];
+    const out = [];
+    collectVideos(JSON.parse(raw), out, {});
+    dbg[tab + 'Videos'] = out.length;
+    return out.slice(0, 8);
+  } catch (e) {
+    dbg[tab + 'Error'] = (e && e.name === 'AbortError') ? 'timeout' : String((e && e.message) || e);
+    return [];
+  }
+}
+
+async function publishDate(id) {
+  try {
+    const r = await fetchWithTimeout('https://www.youtube.com/watch?v=' + id + '&hl=en', 7000);
+    if (!r.ok) return '';
+    const html = await r.text();
+    const m = html.match(/"publishDate":"([^"]+)"/) || html.match(/itemprop="datePublished" content="([^"]+)"/) || html.match(/"uploadDate":"([^"]+)"/);
+    return m ? m[1] : '';
+  } catch (e) { return ''; }
+}
+
+async function scrapeChannel(dbg) {
+  const tabs = await Promise.all([scrapeTab('streams', dbg), scrapeTab('videos', dbg)]);
+  const byId = {}, list = [];
+  tabs.forEach(function (arr) { arr.forEach(function (v) { if (!byId[v.id]) { byId[v.id] = v; list.push(v); } }); });
+  const dates = await Promise.all(list.map(function (v) { return publishDate(v.id); }));
+  list.forEach(function (v, i) { v.published = dates[i]; });
+  // newest first when dates are known; otherwise keep page order (already newest first)
+  list.sort(function (a, b) { return (b.published || '').localeCompare(a.published || ''); });
+  return list;
+}
+
 // Walk the sources until one returns XML that actually contains entries.
 async function getFeed() {
   let lastStatus = 0, lastErr = '';
@@ -126,7 +215,12 @@ module.exports = async function handler(req, res) {
   const debug = q.debug === '1' || q.debug === 'true';
 
   const feed = await getFeed();
-  const all = feed.xml ? parseFeed(feed.xml) : [];
+  const scrapeDbg = {};
+  let all = feed.xml ? parseFeed(feed.xml) : [];
+  if (!all.length) {
+    all = await scrapeChannel(scrapeDbg);
+    if (all.length) feed.source = 'scrape';
+  }
   const liveFilter = await filterOutLive(all, process.env.YOUTUBE_API_KEY);
   const items = liveFilter.items.slice(0, 3);
 
@@ -140,6 +234,7 @@ module.exports = async function handler(req, res) {
       playlistId: PLAYLIST_ID,
       playlistIdLooksValid: PLAYLIST_LOOKS_VALID,
       attempts: feed.attempts,
+      scrape: scrapeDbg,
       entriesParsed: all.length,
       liveFilterApplied: liveFilter.applied,
       entriesAfterLiveFilter: liveFilter.items.length,
