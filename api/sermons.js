@@ -16,16 +16,27 @@
 // failures easy to pinpoint.
 
 const PLAYLIST_ID = 'PLARohoB7nsl4';
+const CHANNEL_ID = 'UCnmH19dzWxrnHigDRzhE0ZQ';
 const FEED = 'https://www.youtube.com/feeds/videos.xml?playlist_id=' + PLAYLIST_ID;
+const CHANNEL_FEED = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + CHANNEL_ID;
 
-// Tried in order. Direct first (clean, no third party). The proxies are only a
-// backup in case YouTube refuses Vercel's datacenter IP — they return the XML
-// untouched, so parsing is identical.
-const SOURCES = [
-  { label: 'direct', url: FEED },
-  { label: 'allorigins', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(FEED) },
-  { label: 'corsproxy', url: 'https://corsproxy.io/?url=' + encodeURIComponent(FEED) }
-];
+// A real playlist id is "PL" + 32 characters. A shorter one (a truncated copy
+// from a URL) makes YouTube answer 404 for the feed, and the sermons section
+// then stays empty — so it is skipped, and the channel's uploads feed is used.
+const PLAYLIST_LOOKS_VALID = /^(PL|UU|OL|FL)[\w-]{16,}$/.test(PLAYLIST_ID);
+
+// Tried in order. Direct first (clean, no third party). The playlist is the
+// curated source; the channel feed is the fallback so the section is never
+// empty. The proxies are only a last backup in case YouTube refuses Vercel's
+// datacenter IP — they return the XML untouched, so parsing is identical.
+const SOURCES = [].concat(
+  PLAYLIST_LOOKS_VALID ? [{ label: 'direct', url: FEED }] : [],
+  [{ label: 'channel', url: CHANNEL_FEED }],
+  PLAYLIST_LOOKS_VALID ? [
+    { label: 'allorigins', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(FEED) },
+    { label: 'corsproxy', url: 'https://corsproxy.io/?url=' + encodeURIComponent(FEED) }
+  ] : []
+);
 
 function decodeEntities(s) {
   return s
@@ -90,22 +101,114 @@ async function filterOutLive(items, apiKey) {
   }
 }
 
+// ---- Page scrape (used when the RSS feeds are unavailable) ----
+// YouTube's RSS feeds sometimes answer 404 to everything (observed from
+// Vercel for both the playlist and the channel feed), while the normal
+// channel pages still load. So as a fallback we read the channel's /videos and
+// /streams tabs (church services are usually streams), pull video ids + titles
+// out of the embedded ytInitialData JSON, then read each watch page for its
+// publish date and drop anything live/upcoming.
+function extractJsonAfter(html, marker) {
+  const markerIdx = html.indexOf(marker);
+  if (markerIdx === -1) return null;
+  const start = html.indexOf('{', markerIdx);
+  if (start === -1) return null;
+  let depth = 0, inStr = false, esc = false;
+  for (let i = start; i < html.length; i++) {
+    const c = html[i];
+    if (inStr) {
+      if (esc) esc = false;
+      else if (c === '\\') esc = true;
+      else if (c === '"') inStr = false;
+      continue;
+    }
+    if (c === '"') { inStr = true; continue; }
+    if (c === '{') depth++;
+    else if (c === '}') { depth--; if (depth === 0) return html.slice(start, i + 1); }
+  }
+  return null;
+}
+
+function collectVideos(node, out, seen) {
+  if (!node || typeof node !== 'object') return;
+  if (Array.isArray(node)) { for (const n of node) collectVideos(n, out, seen); return; }
+  const vr = node.videoRenderer;
+  if (vr && vr.videoId && !seen[vr.videoId]) {
+    seen[vr.videoId] = 1;
+    const title = vr.title && ((vr.title.runs && vr.title.runs[0] && vr.title.runs[0].text) || vr.title.simpleText) || '';
+    const overlays = JSON.stringify(vr.thumbnailOverlays || '');
+    const isLive = !!vr.upcomingEventData || /"style":"(LIVE|UPCOMING)"/.test(overlays);
+    if (!isLive) out.push({ id: vr.videoId, title: title });
+  }
+  const lv = node.lockupViewModel;
+  if (lv && lv.contentId && lv.contentType === 'LOCKUP_CONTENT_TYPE_VIDEO' && !seen[lv.contentId]) {
+    seen[lv.contentId] = 1;
+    const title = lv.metadata && lv.metadata.lockupMetadataViewModel && lv.metadata.lockupMetadataViewModel.title && lv.metadata.lockupMetadataViewModel.title.content || '';
+    const isLive = /"(LIVE|UPCOMING)"/.test(JSON.stringify(lv.contentImage || ''));
+    if (!isLive) out.push({ id: lv.contentId, title: title });
+  }
+  for (const k of Object.keys(node)) collectVideos(node[k], out, seen);
+}
+
+async function scrapeTab(tab, dbg) {
+  try {
+    const r = await fetchWithTimeout('https://www.youtube.com/channel/' + CHANNEL_ID + '/' + tab + '?hl=en', 8000);
+    dbg[tab + 'Status'] = r.status;
+    if (!r.ok) return [];
+    const html = await r.text();
+    const raw = extractJsonAfter(html, 'var ytInitialData =') || extractJsonAfter(html, 'window["ytInitialData"] =');
+    dbg[tab + 'FoundData'] = !!raw;
+    if (!raw) return [];
+    const out = [];
+    collectVideos(JSON.parse(raw), out, {});
+    dbg[tab + 'Videos'] = out.length;
+    return out.slice(0, 8);
+  } catch (e) {
+    dbg[tab + 'Error'] = (e && e.name === 'AbortError') ? 'timeout' : String((e && e.message) || e);
+    return [];
+  }
+}
+
+async function publishDate(id) {
+  try {
+    const r = await fetchWithTimeout('https://www.youtube.com/watch?v=' + id + '&hl=en', 7000);
+    if (!r.ok) return '';
+    const html = await r.text();
+    const m = html.match(/"publishDate":"([^"]+)"/) || html.match(/itemprop="datePublished" content="([^"]+)"/) || html.match(/"uploadDate":"([^"]+)"/);
+    return m ? m[1] : '';
+  } catch (e) { return ''; }
+}
+
+async function scrapeChannel(dbg) {
+  const tabs = await Promise.all([scrapeTab('streams', dbg), scrapeTab('videos', dbg)]);
+  const byId = {}, list = [];
+  tabs.forEach(function (arr) { arr.forEach(function (v) { if (!byId[v.id]) { byId[v.id] = v; list.push(v); } }); });
+  list.length = Math.min(list.length, 6);
+  const dates = await Promise.all(list.map(function (v) { return publishDate(v.id); }));
+  list.forEach(function (v, i) { v.published = dates[i]; });
+  // newest first when dates are known; otherwise keep page order (already newest first)
+  list.sort(function (a, b) { return (b.published || '').localeCompare(a.published || ''); });
+  return list;
+}
+
 // Walk the sources until one returns XML that actually contains entries.
 async function getFeed() {
   let lastStatus = 0, lastErr = '';
+  const attempts = [];
   for (const s of SOURCES) {
     try {
       const r = await fetchWithTimeout(s.url, 7000);
       lastStatus = r.status;
-      if (!r.ok) { lastErr = 'status ' + r.status; continue; }
+      if (!r.ok) { lastErr = 'status ' + r.status; attempts.push(s.label + ': ' + lastErr); continue; }
       const xml = await r.text();
-      if (xml.indexOf('<entry') !== -1) return { xml: xml, source: s.label, status: r.status };
+      if (xml.indexOf('<entry') !== -1) { attempts.push(s.label + ': ok'); return { xml: xml, source: s.label, status: r.status, attempts: attempts }; }
       lastErr = 'no <entry> in response';
     } catch (e) {
       lastErr = (e && e.name === 'AbortError') ? 'timeout' : String((e && e.message) || e);
     }
+    attempts.push(s.label + ': ' + lastErr);
   }
-  return { xml: '', source: null, status: lastStatus, error: lastErr };
+  return { xml: '', source: null, status: lastStatus, error: lastErr, attempts: attempts };
 }
 
 module.exports = async function handler(req, res) {
@@ -113,7 +216,12 @@ module.exports = async function handler(req, res) {
   const debug = q.debug === '1' || q.debug === 'true';
 
   const feed = await getFeed();
-  const all = feed.xml ? parseFeed(feed.xml) : [];
+  const scrapeDbg = {};
+  let all = feed.xml ? parseFeed(feed.xml) : [];
+  if (!all.length) {
+    all = await scrapeChannel(scrapeDbg);
+    if (all.length) feed.source = 'scrape';
+  }
   const liveFilter = await filterOutLive(all, process.env.YOUTUBE_API_KEY);
   const items = liveFilter.items.slice(0, 3);
 
@@ -125,6 +233,9 @@ module.exports = async function handler(req, res) {
       upstreamStatus: feed.status,
       error: feed.error || null,
       playlistId: PLAYLIST_ID,
+      playlistIdLooksValid: PLAYLIST_LOOKS_VALID,
+      attempts: feed.attempts,
+      scrape: scrapeDbg,
       entriesParsed: all.length,
       liveFilterApplied: liveFilter.applied,
       entriesAfterLiveFilter: liveFilter.items.length,
